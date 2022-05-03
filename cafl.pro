@@ -9,14 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src\main.cpp \
-    src\mainwindow.cpp
+    src/Windows/WindowsManager.cpp \
+    src/Windows/SandboxWindow/SandboxWindow.cpp \
+    src/Windows/TitleWindow/TitleWindow.cpp \
+    src/main.cpp
 
 HEADERS += \
-    src\mainwindow.h
+    src/Windows/WindowsManager.h \
+    src/Windows/SandboxWindow/SandboxWindow.h \
+    src/Windows/TitleWindow/TitleWindow.h
 
 FORMS += \
-    res\ui\mainwindow.ui
+    res/ui/sandboxwindow.ui \
+    res/ui/titlewindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

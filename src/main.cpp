@@ -1,11 +1,12 @@
-#include "mainwindow.h"
+#include "src/Windows/WindowsManager.h"
 
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+
+    WINDOWS()->changeWindow();
+
     return a.exec();
 }
