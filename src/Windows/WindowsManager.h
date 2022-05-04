@@ -11,11 +11,10 @@ public:
     WindowsManager();
     ~WindowsManager();
 
+    void changeWindow(std::string windowType = "title");
+private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
     std::shared_ptr<TitleWindow> createTitleWindow();
-    void changeWindow(std::string windowType = "title");
-
-private:
     static WindowsManager* instance;
     std::shared_ptr<QMainWindow> curWindow;
 };

@@ -31,20 +31,6 @@ WindowsManager::~WindowsManager()
     qInfo("~WindowsManager finished");
 }
 
-std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()
-{
-    std::shared_ptr<SandboxWindow> window = std::make_shared<SandboxWindow>();
-    window->show();
-    return window;
-}
-
-std::shared_ptr<TitleWindow> WindowsManager::createTitleWindow()
-{
-    std::shared_ptr<TitleWindow> window = std::make_shared<TitleWindow>();
-    window->show();
-    return window;
-}
-
 void WindowsManager::changeWindow(std::string windowType)
 {
     if (curWindow)
@@ -60,4 +46,18 @@ void WindowsManager::changeWindow(std::string windowType)
         curWindow = createTitleWindow();
     else
         qInfo("error");
+}
+
+std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()
+{
+    std::shared_ptr<SandboxWindow> window = std::make_shared<SandboxWindow>();
+    window->show();
+    return window;
+}
+
+std::shared_ptr<TitleWindow> WindowsManager::createTitleWindow()
+{
+    std::shared_ptr<TitleWindow> window = std::make_shared<TitleWindow>();
+    window->show();
+    return window;
 }

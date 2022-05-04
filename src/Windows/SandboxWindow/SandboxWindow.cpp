@@ -1,5 +1,15 @@
 #include "SandboxWindow.h"
 #include "ui_sandboxwindow.h"
+#include "src/Utils/Utils.h"
+
+// init()
+#include "src/Sandbox/Node.h"
+#include "src/Sandbox/GraphicsView.h"
+
+// #include <QGraphicsView>
+// #include <QGraphicsScene>
+
+#include <QMouseEvent>
 
 #include <QAction>
 #include <QFile>
@@ -14,6 +24,7 @@ SandboxWindow::SandboxWindow(QWidget *parent)
     ui->setupUi(this);
     this->setCentralWidget(ui->centralwidget);
 
+    init();
     initActions();
 }
 
@@ -21,6 +32,22 @@ SandboxWindow::~SandboxWindow()
 {
     delete ui;
     qInfo("~SandboxWindow finished");
+}
+
+void SandboxWindow::init()
+{
+    graphicsView = std::make_shared<GraphicsView>(ui->mainFrame->frameRect());
+
+    node0 = std::make_shared<Node>(200.0,200.0,100.0);
+    graphicsView->scene()->addItem(node0.get());
+
+    // qInfo:
+    // std::string pos = strFormat("node0 pos = %f:%f\n ", node0->pos().x(), node0->pos().y());
+    // qInfo(pos.c_str());
+    // std::string wh = strFormat("node0 wh = %f:%f\n ", node0->rect().width(), node0->rect().height());
+    // qInfo(wh.c_str());
+
+    setMouseTracking(true);
 }
 
 void SandboxWindow::initActions()
@@ -36,12 +63,27 @@ void SandboxWindow::initActions()
     connect(ui->actionRedo,     &QAction::triggered, this, &SandboxWindow::redo);
 }
 
+void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
+{
+    // int x = event->pos().x();
+    // int y = event->pos().y();
+    int x = event->pos().x() - ui->mainFrame->pos().x();
+    int y = event->pos().y() - ui->mainFrame->pos().y();
+
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x > ui->mainFrame->width()) x = ui->mainFrame->width();
+    if (y > ui->mainFrame->height()) y = ui->mainFrame->height();
+
+    std::string pos = strFormat("mouse pos = %d:%d\n ", x, y);
+    ui->label_3->setText(QString(pos.c_str()));
+}
+
 void SandboxWindow::newFile()
 {
     qInfo("Sandbox::newFile()");
     // ui->textEdit->setText(QString());
 }
-
 
 void SandboxWindow::openFile()
 {
@@ -59,7 +101,6 @@ void SandboxWindow::openFile()
     // ui->textEdit->setText(text);
     // file.close();
 }
-
 
 void SandboxWindow::saveAs()
 {

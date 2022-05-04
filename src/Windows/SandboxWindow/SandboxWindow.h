@@ -8,6 +8,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SandboxWindow; }
 QT_END_NAMESPACE
 
+class Node;
+class GraphicsView;
 class SandboxWindow : public QMainWindow
 {
     Q_OBJECT
@@ -28,7 +30,13 @@ private slots:
     void redo();
 
 private:
+    void init();
     void initActions();
+
+    void mouseMoveEvent(QMouseEvent* event);
+    
+    std::shared_ptr<GraphicsView> graphicsView; 
+    std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;
 };
 #endif // SANDBOXWINDOW_H
