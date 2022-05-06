@@ -9,7 +9,6 @@ WindowsManager* WindowsManager::getInstance()
 {
 	if (!instance)
 	{
-        qInfo("new WM instance");
         instance = new WindowsManager();
     }
 	return instance;
@@ -52,6 +51,7 @@ std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()
 {
     std::shared_ptr<SandboxWindow> window = std::make_shared<SandboxWindow>();
     window->show();
+    window->initUI();
     return window;
 }
 

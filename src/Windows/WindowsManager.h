@@ -1,6 +1,8 @@
 #pragma once
 #include <QMainWindow>
 
+#define WINDOWS WindowsManager::getInstance()
+
 class SandboxWindow;
 class TitleWindow;
 class WindowsManager
@@ -19,6 +21,8 @@ private:
     std::shared_ptr<QMainWindow> curWindow;
 };
 
-inline WindowsManager* WINDOWS() {
-    return WindowsManager::getInstance();
-}
+
+
+// inline WindowsManager* WINDOWS() {
+//     return WindowsManager::getInstance();
+// }

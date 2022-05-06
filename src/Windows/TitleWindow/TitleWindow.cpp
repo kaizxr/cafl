@@ -36,7 +36,7 @@ void TitleWindow::newProject()
 {
     qInfo("newProject");
 
-    WINDOWS()->changeWindow("sandbox");
+    WINDOWS->changeWindow("sandbox");
 }
 
 void TitleWindow::openProject()
@@ -46,7 +46,7 @@ void TitleWindow::openProject()
     QString filename = QFileDialog::getOpenFileName(this);
     if (!filename.isEmpty())
     {
-        WINDOWS()->changeWindow("sandbox");
+        WINDOWS->changeWindow("sandbox");
     }
     // QFile file(filename);
     // if (!file.open(QIODevice::ReadOnly | QFile::Text)) {

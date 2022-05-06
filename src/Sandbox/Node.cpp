@@ -3,15 +3,13 @@
 #include "src/Utils/Utils.h"
 #include <QBrush>
 
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneHoverEvent>
+#include <QApplication>
+
 Node::Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent) : QGraphicsEllipseItem(0,0,radius,radius,parent)
 {
-    // std::string temp;
-    // qInfo("Node constructor");
-    // temp = strFormat("xy = %f:%f\n ", x, y);
-    // qInfo(temp.c_str());
-    setPos(x, y);
-    // temp = strFormat("pos = %f:%f\n ", this->pos().x(), this->pos().y());
-    // qInfo(temp.c_str());
+    setPos(x - radius / 2, y - radius / 2);
     setBrush(Qt::blue);
     setAcceptHoverEvents(true);
 }
@@ -19,4 +17,40 @@ Node::Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent) : QGraphicsEll
 Node::~Node()
 {
 
+}
+
+void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    qInfo("Node::mousePressEvent");
+}
+
+void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+
+}
+
+void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    qInfo("Node::mouseReleaseEvent");
+}
+
+void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+
+}
+
+
+void Node::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    setCursor(Qt::OpenHandCursor);
+}
+
+void Node::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+
+}
+
+void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    setCursor(Qt::ArrowCursor);
 }

@@ -2,12 +2,13 @@
 #include "ui_sandboxwindow.h"
 #include "src/Utils/Utils.h"
 
-// init()
-#include "src/Sandbox/Node.h"
+// initUI()
 #include "src/Sandbox/GraphicsView.h"
+#include "src/Sandbox/Node.h"
+#include "src/Utils/Constants.h"
 
-// #include <QGraphicsView>
-// #include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 #include <QMouseEvent>
 
@@ -21,8 +22,8 @@ SandboxWindow::SandboxWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SandboxWindow)
 {
+    qInfo("SandboxWindow constructor");
     ui->setupUi(this);
-    this->setCentralWidget(ui->centralwidget);
 
     init();
     initActions();
@@ -34,19 +35,21 @@ SandboxWindow::~SandboxWindow()
     qInfo("~SandboxWindow finished");
 }
 
+void SandboxWindow::initUI()
+{
+    qInfo("initUI");
+    graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
+    graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
+
+    graphicsView->addNode(200,200);
+
+    qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());
+}
+
 void SandboxWindow::init()
 {
-    graphicsView = std::make_shared<GraphicsView>(ui->mainFrame->frameRect());
-
-    node0 = std::make_shared<Node>(200.0,200.0,100.0);
-    graphicsView->scene()->addItem(node0.get());
-
-    // qInfo:
-    // std::string pos = strFormat("node0 pos = %f:%f\n ", node0->pos().x(), node0->pos().y());
-    // qInfo(pos.c_str());
-    // std::string wh = strFormat("node0 wh = %f:%f\n ", node0->rect().width(), node0->rect().height());
-    // qInfo(wh.c_str());
-
+    graphicsView = std::make_shared<GraphicsView>(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()),ui->mainFrame);
+    graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     setMouseTracking(true);
 }
 
@@ -63,20 +66,26 @@ void SandboxWindow::initActions()
     connect(ui->actionRedo,     &QAction::triggered, this, &SandboxWindow::redo);
 }
 
+void SandboxWindow::resizeEvent(QResizeEvent* event)
+{
+    graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(),ui->mainFrame->height()));
+}
+
 void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
 {
-    // int x = event->pos().x();
-    // int y = event->pos().y();
-    int x = event->pos().x() - ui->mainFrame->pos().x();
-    int y = event->pos().y() - ui->mainFrame->pos().y();
+    std::string temp;
+    int x = event->pos().x() - ui->mainFrame->x();
+    int y = event->pos().y() - ui->mainFrame->y();
 
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     if (x > ui->mainFrame->width()) x = ui->mainFrame->width();
     if (y > ui->mainFrame->height()) y = ui->mainFrame->height();
 
-    std::string pos = strFormat("mouse pos = %d:%d\n ", x, y);
-    ui->label_3->setText(QString(pos.c_str()));
+    temp = strFormat("mainFrame pos = %d:%d:%d:%d\n mouse pos = %d:%d\n ",
+        ui->mainFrame->x(), ui->mainFrame->y(), ui->mainFrame->width(), ui->mainFrame->height(),
+        x, y);
+    ui->label_3->setText(QString(temp.c_str()));
 }
 
 void SandboxWindow::newFile()

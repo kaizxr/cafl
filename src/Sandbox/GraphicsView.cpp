@@ -1,17 +1,17 @@
 #include "GraphicsView.h"
 
 #include "src/Utils/Utils.h"
+#include "src/Utils/Constants.h"
+#include "src/Sandbox/Node.h"
+
+#include <QMouseEvent>
 
 GraphicsView::GraphicsView(QRect rect, QWidget* parent) : QGraphicsView(parent)
 {
-    std::string wh;
     qInfo("GraphicsView constructor");
-    this->setScene(new QGraphicsScene());
+    this->setScene(new QGraphicsScene(this));
     this->setSceneRect(rect);
-    wh = strFormat("rect = %d:%d:%d:%d\n ", rect.x(), rect.y(), rect.width(), rect.height());
-    qInfo(wh.c_str());
-    wh = strFormat("scene rect = %f:%f:%f:%f\n ", scene()->sceneRect().x(), scene()->sceneRect().y(), scene()->sceneRect().width(), scene()->sceneRect().height());
-    qInfo(wh.c_str());
+    qInfo("scene rect = %f:%f:%f:%f\n ", scene()->sceneRect().x(), scene()->sceneRect().y(), scene()->sceneRect().width(), scene()->sceneRect().height());
 }
 
 GraphicsView::~GraphicsView()
@@ -19,7 +19,43 @@ GraphicsView::~GraphicsView()
 
 }
 
-void GraphicsView::addNode(std::shared_ptr<Node> node)
+void GraphicsView::addNode(int x, int y)
 {
+    int radius = CONST["Node"]["radius"];
+    std::shared_ptr<Node> node = std::make_shared<Node>(x,y,radius);
+    scene()->addItem(node.get());
     nodes.push_back(node);
+}
+
+void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+void GraphicsView::mousePressEvent(QMouseEvent* event)
+{
+    int x = event->pos().x();
+    int y = event->pos().y();
+    qInfo("x:y %d:%d",x,y);
+    if (event->button() == Qt::MouseButton::MiddleButton)
+    {
+        qInfo("add node");
+        addNode(x,y);
+    }
+    else if (event->button() == Qt::MouseButton::RightButton)
+    {
+
+    }
+
+    QGraphicsView::mousePressEvent(event);
+}
+
+void GraphicsView::mouseMoveEvent(QMouseEvent* event)
+{
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
+{
+    QGraphicsView::mouseReleaseEvent(event);
 }

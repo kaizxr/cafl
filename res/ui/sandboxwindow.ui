@@ -66,6 +66,9 @@ color: rgb(255, 255, 255);</string>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QFrame" name="frame">
             <property name="minimumSize">
@@ -324,12 +327,6 @@ background-color: rgb(102, 102, 102);</string>
           <property name="mouseTracking">
            <bool>false</bool>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
          </widget>
         </item>
         <item>
@@ -356,7 +353,7 @@ background-color: rgb(102, 102, 102);</string>
              <x>0</x>
              <y>0</y>
              <width>256</width>
-             <height>704</height>
+             <height>726</height>
             </rect>
            </property>
            <property name="sizePolicy">
