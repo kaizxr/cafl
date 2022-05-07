@@ -9,6 +9,8 @@
 
 Node::Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent) : QGraphicsEllipseItem(0,0,radius,radius,parent)
 {
+    selected = false;
+
     setPos(x - radius / 2, y - radius / 2);
     setBrush(Qt::blue);
     setAcceptHoverEvents(true);
@@ -53,4 +55,17 @@ void Node::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     setCursor(Qt::ArrowCursor);
+}
+
+void Node::setSelected(bool value)
+{
+    selected = value;
+    if (selected)
+    {
+        setBrush(Qt::red);
+    }
+    else
+    {
+        setBrush(Qt::blue);
+    }
 }

@@ -12,6 +12,7 @@ SOURCES += \
     src/Utils/Constants.cpp \
     src/Sandbox/GraphicsView.cpp \
     src/Sandbox/Node.cpp \
+    src/Sandbox/Selector.cpp \
     src/Windows/WindowsManager.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     src/Utils/Utils.h \
     src/Sandbox/GraphicsView.h \
     src/Sandbox/Node.h \
+    src/Sandbox/Selector.h \
     src/Windows/WindowsManager.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
     src/Windows/TitleWindow/TitleWindow.h

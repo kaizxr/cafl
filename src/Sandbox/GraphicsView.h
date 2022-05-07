@@ -2,6 +2,7 @@
 #include <QGraphicsView>
 
 class Node;
+class Selector;
 class GraphicsView : public QGraphicsView
 {
 public:
@@ -16,4 +17,5 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
 private:
     std::list<std::shared_ptr<Node>> nodes;
+    std::shared_ptr<Selector> selector;
 };
