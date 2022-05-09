@@ -11,10 +11,10 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
-    // void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void checkNodes();
 
-    void checkNodes(std::list<std::shared_ptr<Node>> nodes);
+    QList<QGraphicsItem *> getSelectedNodes();
 
 private:
-    QPoint startPoint;
+    QList<QGraphicsItem *> nodes;
 };

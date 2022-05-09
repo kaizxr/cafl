@@ -15,7 +15,21 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+    enum class eActionType
+    {
+        NONE,
+        SELECT,
+        MOVE
+    };
 private:
     std::list<std::shared_ptr<Node>> nodes;
     std::shared_ptr<Selector> selector;
+
+    QList<QGraphicsItem*> selectedNodes;
+
+    eActionType actionType;
+
+    int oldmx;
+    int oldmy;
 };

@@ -20,7 +20,9 @@ TitleWindow::TitleWindow(QWidget *parent)
 TitleWindow::~TitleWindow()
 {
     delete ui;
+#ifdef DEBUG
     qInfo("~TitleWindow finished");
+#endif
 }
 
 void TitleWindow::initActions()
@@ -34,14 +36,18 @@ void TitleWindow::initActions()
 
 void TitleWindow::newProject()
 {
+#ifdef DEBUG
     qInfo("newProject");
+#endif
 
     WINDOWS->changeWindow("sandbox");
 }
 
 void TitleWindow::openProject()
 {
+#ifdef DEBUG
     qInfo("openProject");
+#endif
 
     QString filename = QFileDialog::getOpenFileName(this);
     if (!filename.isEmpty())
@@ -57,16 +63,22 @@ void TitleWindow::openProject()
 
 void TitleWindow::faType()
 {
+#ifdef DEBUG
     qInfo("faType");
+#endif
 }
 
 void TitleWindow::pdaType()
 {
+#ifdef DEBUG
     qInfo("pdaType");
+#endif
 }
 
 void TitleWindow::tmType()
 {
+#ifdef DEBUG
     qInfo("tmType");
+#endif
 }
 

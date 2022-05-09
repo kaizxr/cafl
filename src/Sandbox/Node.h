@@ -1,7 +1,8 @@
 #pragma once
-#include <QGraphicsEllipseItem>
+#include <QGraphicsItem>
+#include <QPen>
 
-class Node : public QGraphicsEllipseItem
+class Node : public QGraphicsItem
 {
 public:
     Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent = nullptr);
@@ -15,8 +16,14 @@ public:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+    QPainterPath shape() const override;
+    QRectF boundingRect() const override;
     
-    void setSelected(bool value);
 private:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+    QPen pen;
+    int radius;
     bool selected;
 };

@@ -5,15 +5,18 @@
 
 #include "src/Sandbox/Node.h"
 
+#include <QList>
+
 Selector::Selector(const QRectF &rect, QGraphicsItem *parent) : QGraphicsRectItem(rect, parent)
 {
     setPen(Qt::SolidLine);
     setBrush(Qt::red);
+    setZValue(20);
 }
 
 Selector::~Selector()
 {
-    
+    nodes.clear();
 }
 
 QRectF Selector::boundingRect() const
@@ -44,18 +47,23 @@ void Selector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     update(updr);
 }
 
-void Selector::checkNodes(std::list<std::shared_ptr<Node>> nodes)
+void Selector::checkNodes()
 {
-    for (auto& node : nodes)
+    if (!nodes.empty())
     {
-        const auto& r = this->shape();
-        const auto& l = node->shape();
-        qInfo("selector shape: %f:%f:%f:%f",r.currentPosition().x(),r.currentPosition().y(),r.boundingRect().width(),r.boundingRect().height());
-        qInfo("node shape: %f:%f:%f:%f",l.currentPosition().x(),l.currentPosition().y(),l.boundingRect().width(),l.boundingRect().height());
-
-        if (this->collidesWithItem(node.get()))
-
-        if (node->collidesWithItem(this))
-            setSelected(true);
+        for (auto node : nodes)
+        {
+            node->setSelected(false);
+        }
     }
+    nodes = collidingItems();
+    for (auto node : nodes)
+    {
+        node->setSelected(true);
+    }
+}
+
+QList<QGraphicsItem *> Selector::getSelectedNodes()
+{
+    return nodes;
 }

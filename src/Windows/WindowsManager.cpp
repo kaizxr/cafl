@@ -27,7 +27,9 @@ WindowsManager::WindowsManager()
 
 WindowsManager::~WindowsManager()
 {
+#ifdef DEBUG
     qInfo("~WindowsManager finished");
+#endif
 }
 
 void WindowsManager::changeWindow(std::string windowType)
@@ -43,8 +45,10 @@ void WindowsManager::changeWindow(std::string windowType)
         curWindow = createSandboxWindow();
     else if (windowType == "title")
         curWindow = createTitleWindow();
+#ifdef DEBUG
     else
         qInfo("error");
+#endif
 }
 
 std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()

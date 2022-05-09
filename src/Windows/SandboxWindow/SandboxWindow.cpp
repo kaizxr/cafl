@@ -22,7 +22,9 @@ SandboxWindow::SandboxWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SandboxWindow)
 {
+#ifdef DEBUG
     qInfo("SandboxWindow constructor");
+#endif
     ui->setupUi(this);
 
     init();
@@ -32,18 +34,24 @@ SandboxWindow::SandboxWindow(QWidget *parent)
 SandboxWindow::~SandboxWindow()
 {
     delete ui;
+#ifdef DEBUG
     qInfo("~SandboxWindow finished");
+#endif
 }
 
 void SandboxWindow::initUI()
 {
+#ifdef DEBUG
     qInfo("initUI");
+#endif
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
 
     graphicsView->addNode(200,200);
 
+#ifdef DEBUG
     qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());
+#endif
 }
 
 void SandboxWindow::init()
@@ -90,13 +98,17 @@ void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
 
 void SandboxWindow::newFile()
 {
+#ifdef DEBUG
     qInfo("Sandbox::newFile()");
+#endif
     // ui->textEdit->setText(QString());
 }
 
 void SandboxWindow::openFile()
 {
+#ifdef DEBUG
     qInfo("Sandbox::openFile()");
+#endif
     // QString filename = QFileDialog::getOpenFileName(this, QString("Open the file"));
     // QFile file(filename);
     // curFileName = filename;
@@ -113,7 +125,9 @@ void SandboxWindow::openFile()
 
 void SandboxWindow::saveAs()
 {
+#ifdef DEBUG
     qInfo("Sandbox::saveAs()");
+#endif
     // QString filename = QFileDialog::getSaveFileName(this, QString("Save as"));
     // QFile file(filename);
     // if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -130,37 +144,49 @@ void SandboxWindow::saveAs()
 
 void SandboxWindow::exit()
 {
+#ifdef DEBUG
     qInfo("Sandbox::exit()");
+#endif
     QApplication::quit();
 }
 
 void SandboxWindow::copy()
 {
+#ifdef DEBUG
     qInfo("Sandbox::copy()");
+#endif
     // ui->textEdit->copy();
 }
 
 void SandboxWindow::paste()
 {
+#ifdef DEBUG
     qInfo("Sandbox::paste()");
+#endif
     // ui->textEdit->paste();
 }
 
 void SandboxWindow::cut()
 {
+#ifdef DEBUG
     qInfo("Sandbox::cut()");
+#endif
     // ui->textEdit->cut();
 }
 
 void SandboxWindow::undo()
 {
+#ifdef DEBUG
     qInfo("Sandbox::undo()");
+#endif
     // ui->textEdit->undo();
 }
 
 void SandboxWindow::redo()
 {
+#ifdef DEBUG
     qInfo("Sandbox::redo()");
+#endif
     // ui->textEdit->redo();
 }
 
