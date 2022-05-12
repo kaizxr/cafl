@@ -1,5 +1,13 @@
 {
     "Node": {
         "radius": 50
+    },
+    "Sandbox": {
+        "enough": 50
+    },
+    "Edge": {
+        "pointSize": 5,
+        "arrowSize": 15,
+        "pathOffset": 5
     }
 }

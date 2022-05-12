@@ -1,11 +1,13 @@
 #pragma once
+#include "src/Sandbox/SandboxObject.h"
 #include <QGraphicsItem>
 #include <QPen>
 
-class Node : public QGraphicsItem
+class BaseEdge;
+class Node : public SandboxObject
 {
 public:
-    Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent = nullptr);
+    Node(int id, QPoint pos, QString text = nullptr, QGraphicsItem* parent = nullptr);
     ~Node();
     
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -17,12 +19,20 @@ public:
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
+    QList<BaseEdge*> getEdges() const;
     QPainterPath shape() const override;
     QRectF boundingRect() const override;
+    QPoint centeredPos() const;
+    void addEdge(BaseEdge *edge);
+    void removeEdge(BaseEdge *edge);
+
     
 private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
+    QList<BaseEdge*> edgeList;
+    QPointF newPos;
     QPen pen;
     int radius;
     bool selected;

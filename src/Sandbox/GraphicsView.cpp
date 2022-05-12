@@ -1,10 +1,11 @@
 #include "GraphicsView.h"
 
 #include "src/Utils/Utils.h"
-#include "src/Utils/Constants.h"
 #include "src/Sandbox/Node.h"
 #include "src/Sandbox/Selector.h"
+#include "src/Sandbox/Edge/Edge.h"
 
+#include <QGraphicsItem>
 #include <QMouseEvent>
 
 #define DEBUG
@@ -19,6 +20,8 @@ GraphicsView::GraphicsView(QRect rect, QWidget* parent) : QGraphicsView(parent)
 #ifdef DEBUG
     qInfo("scene rect = %f:%f:%f:%f\n ", scene()->sceneRect().x(), scene()->sceneRect().y(), scene()->sceneRect().width(), scene()->sceneRect().height());
 #endif
+    lastGivenNodeId = 0;
+    lastGivenEdgeId = 0;
     actionType = eActionType::NONE;
 }
 
@@ -29,8 +32,7 @@ GraphicsView::~GraphicsView()
 
 void GraphicsView::addNode(int x, int y)
 {
-    int radius = CONST["Node"]["radius"];
-    std::shared_ptr<Node> node = std::make_shared<Node>(x,y,radius);
+    std::shared_ptr<Node> node = std::make_shared<Node>(lastGivenNodeId++, QPoint(x, y));
     scene()->addItem(node.get());
     nodes.push_back(node);
 }
@@ -47,6 +49,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
 #endif
     oldmx = event->pos().x();
     oldmy = event->pos().y();
+    
     if (event->button() == Qt::MouseButton::LeftButton)
     {
         bool intersects = false;
@@ -63,14 +66,14 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             }
         }
 
-        if (!selector && !intersects)
+        if (!selector && !scene()->selectedItems().size())
         {
             selectedNodes.clear();
             actionType = eActionType::SELECT;
             selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),10,10));
             scene()->addItem(selector.get());
         }
-        else if (!selector && intersects)
+        else if (!selector && scene()->selectedItems().size())
         {
             actionType = eActionType::MOVE;
         }
@@ -81,6 +84,17 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
     }
     else if (event->button() == Qt::MouseButton::RightButton)
     {
+        actionType = eActionType::ADD_EDGE;
+
+        for (const auto& node : nodes)
+        {
+            if (node->contains(event->pos()-node->pos()))
+            {
+                sourceNode = node;
+                qInfo("source node id = %d pos = %f:%f",sourceNode->id(),sourceNode->pos().x(),sourceNode->pos().y());
+                break;
+            }
+        }
 
     }
 
@@ -151,6 +165,20 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
         {
             selectedNodes.front()->setSelected(false);
             selectedNodes.clear();
+        }
+        break;
+    case eActionType::ADD_EDGE:
+        for (const auto& node : nodes)
+        {
+            if (node->contains(event->pos()-node->pos()))
+            {
+                destNode = node;
+                qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
+                Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get());
+                edges.append(edge);
+                scene()->addItem(edge);
+                break;
+            }
         }
         break;
     }

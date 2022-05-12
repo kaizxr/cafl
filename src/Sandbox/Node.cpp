@@ -1,6 +1,8 @@
 #include "Node.h"
 
 #include "src/Utils/Utils.h"
+#include "src/Utils/Constants.h"
+#include "src/Sandbox/Edge/Edge.h"
 #include <QBrush>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -9,10 +11,11 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QApplication>
 
-Node::Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent)
+Node::Node(int id, QPoint pos, QString text, QGraphicsItem* parent) : SandboxObject(id, text)
 {
+    objectType = eSandboxType::NODE;
     pen = QPen(Qt::black, 2);
-    this->radius = radius;
+    radius = CONST["Node"]["radius"];
     selected = false;
 
     setFlag(ItemIsSelectable);
@@ -21,7 +24,7 @@ Node::Node(qreal x, qreal y, qreal radius, QGraphicsItem* parent)
     setCacheMode(DeviceCoordinateCache);
     setZValue(10);
 
-    setPos(x - radius, y - radius);
+    setPos(pos.x() - radius, pos.y() - radius);
     setAcceptHoverEvents(true);
 }
 
@@ -76,6 +79,11 @@ void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     setCursor(Qt::ArrowCursor);
 }
 
+QList<BaseEdge*> Node::getEdges() const
+{
+    return edgeList;
+}
+
 QPainterPath Node::shape() const
 {
     QPainterPath path;
@@ -88,6 +96,32 @@ QRectF Node::boundingRect() const
     return shape().boundingRect();
 }
 
+QPoint Node::centeredPos() const
+{
+    return QPoint(
+        pos().x() + boundingRect().width() / 2,
+        pos().y() + boundingRect().height() / 2
+    );
+}
+
+void Node::addEdge(BaseEdge *edge)
+{
+    if (!edgeList.contains(edge))
+        edgeList.push_back(edge);
+}
+
+void Node::removeEdge(BaseEdge *edge)
+{
+    QMutableListIterator<BaseEdge *> iter(edgeList);
+    while (iter.hasNext()) {
+        BaseEdge *e = iter.next();
+        if (e == edge) {
+            iter.remove();
+            break;
+        }
+    }
+}
+
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush((option->state & QStyle::State_Selected ? Qt::cyan: Qt::white));
@@ -96,3 +130,17 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setFont(QFont("Times", 12, QFont::Bold));
 }
 
+QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    switch (change) {
+    case ItemPositionHasChanged:
+        foreach (BaseEdge *edge, edgeList) {
+            edge->adjust();
+        }
+        break;
+    default:
+        break;
+    };
+
+    return QGraphicsItem::itemChange(change, value);
+}

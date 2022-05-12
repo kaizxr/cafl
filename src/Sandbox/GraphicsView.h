@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsView>
 
+class Edge;
 class Node;
 class Selector;
 class GraphicsView : public QGraphicsView
@@ -20,16 +21,23 @@ public:
     {
         NONE,
         SELECT,
-        MOVE
+        MOVE,
+        ADD_EDGE
     };
 private:
     std::list<std::shared_ptr<Node>> nodes;
     std::shared_ptr<Selector> selector;
 
     QList<QGraphicsItem*> selectedNodes;
+    QList<Edge*> edges;
 
     eActionType actionType;
 
+    std::shared_ptr<Node> sourceNode;
+    std::shared_ptr<Node> destNode;
+
+    int lastGivenNodeId;
+    int lastGivenEdgeId;
     int oldmx;
     int oldmy;
 };

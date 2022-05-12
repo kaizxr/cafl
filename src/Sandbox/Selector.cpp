@@ -6,6 +6,7 @@
 #include "src/Sandbox/Node.h"
 
 #include <QList>
+#include <QGraphicsScene>
 
 Selector::Selector(const QRectF &rect, QGraphicsItem *parent) : QGraphicsRectItem(rect, parent)
 {
