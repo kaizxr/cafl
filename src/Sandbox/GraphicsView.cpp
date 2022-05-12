@@ -47,6 +47,8 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
 #ifdef DEBUG
     qInfo("GraphicsView::mousePressEvent");
 #endif
+    QGraphicsView::mousePressEvent(event);
+
     oldmx = event->pos().x();
     oldmy = event->pos().y();
     
@@ -97,8 +99,6 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
         }
 
     }
-
-    QGraphicsView::mousePressEvent(event);
 }
 
 void GraphicsView::mouseMoveEvent(QMouseEvent* event)
@@ -132,7 +132,8 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* event)
 #ifdef DEBUG_MOVE
             qInfo("moveBy = %d:%d",event->pos().x()-oldmx,event->pos().y()-oldmy);
 #endif
-            node->moveBy(event->pos().x()-oldmx,event->pos().y()-oldmy);
+            if (node->type() == (int)eSandboxType::NODE)
+                node->moveBy(event->pos().x()-oldmx,event->pos().y()-oldmy);
         }
         break;
     }
