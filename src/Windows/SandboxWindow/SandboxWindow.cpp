@@ -90,10 +90,10 @@ void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
     if (x > ui->mainFrame->width()) x = ui->mainFrame->width();
     if (y > ui->mainFrame->height()) y = ui->mainFrame->height();
 
-    temp = strFormat("mainFrame pos = %d:%d:%d:%d\n mouse pos = %d:%d\n ",
-        ui->mainFrame->x(), ui->mainFrame->y(), ui->mainFrame->width(), ui->mainFrame->height(),
-        x, y);
-    ui->label_3->setText(QString(temp.c_str()));
+    // temp = strFormat("mainFrame pos = %d:%d:%d:%d\n mouse pos = %d:%d\n ",
+    //     ui->mainFrame->x(), ui->mainFrame->y(), ui->mainFrame->width(), ui->mainFrame->height(),
+    //     x, y);
+    // ui->label_3->setText(QString(temp.c_str()));
 }
 
 void SandboxWindow::newFile()
