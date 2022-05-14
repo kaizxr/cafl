@@ -7,6 +7,7 @@
 
 #include <QGraphicsItem>
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 #define DEBUG
 
@@ -54,12 +55,10 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
     
     if (event->button() == Qt::MouseButton::LeftButton)
     {
-        bool intersects = false;
         for (const auto& node : nodes)
         {
             if (node->contains(event->pos()-node->pos()))
             {
-                intersects = true;
                 if (selectedNodes.indexOf(node.get()) == -1 && selectedNodes.empty())
                 {
                     selectedNodes.push_back(node.get());
@@ -136,6 +135,12 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* event)
                 node->moveBy(event->pos().x()-oldmx,event->pos().y()-oldmy);
         }
         break;
+    case eActionType::ADD_EDGE:
+#ifdef DEBUG_MOVE
+        qInfo("eActionType::ADD_EDGE");
+        qInfo("size = %d",selectedNodes.size());
+#endif
+        break;
     }
     oldmx = event->pos().x();
     oldmy = event->pos().y();
@@ -160,7 +165,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
     case eActionType::MOVE:
 #ifdef DEBUG
         qInfo("release eActionType::MOVE");
-        qInfo("size = %d",selectedNodes.size());
+        qInfo("size = %lld",selectedNodes.size());
 #endif
         if (selectedNodes.size() == 1)
         {
@@ -187,3 +192,74 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
     QGraphicsView::mouseReleaseEvent(event);
     actionType = eActionType::NONE;
 }
+
+void GraphicsView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Delete)
+    {
+        removeObjects();
+    }
+    QGraphicsView::keyPressEvent(event);
+}
+
+void GraphicsView::keyReleaseEvent(QKeyEvent *event)
+{
+    QGraphicsView::keyReleaseEvent(event);
+}
+
+void GraphicsView::removeObjects()
+{
+    qInfo("delete");
+    if (scene()->selectedItems().size())
+    {
+        QList<QGraphicsItem*> edgesToRemove;
+        QList<std::shared_ptr<Node>> nodesToRemove;
+        QList<QGraphicsItem*> selected = scene()->selectedItems();
+        for (const auto& item : selected)
+        {
+            if (auto node = dynamic_cast<Node*>(item))
+            {
+                for (auto& edge : node->getEdges())
+                {
+                    if (edgesToRemove.indexOf(edge) == -1)
+                    {
+                        edge->remove();
+                        edges.removeAll(edge);
+                        edgesToRemove.append(edge);
+                    }
+                }
+                for (auto& n : nodes)
+                {
+                    if (n->id() == node->id())
+                    {
+                        nodesToRemove.append(n);
+                        break;
+                    }
+                }
+            }
+            else if (auto edge = dynamic_cast<Edge*>(item))                
+            {
+                if (edgesToRemove.indexOf(edge) == -1)
+                {
+                    edge->remove();
+                    edges.removeAll(edge);
+                    edgesToRemove.append(edge);
+                }
+            }
+        }
+        for (const auto& item : edgesToRemove)
+        {
+            scene()->removeItem(item);
+            delete item;
+        }
+        for (const auto& item : nodesToRemove)
+        {
+            scene()->removeItem(item.get());
+            const auto& i = nodes.indexOf(item);
+            nodes.takeAt(i).reset();
+        }
+    }
+    qInfo("updated nodes size: %lld", nodes.size());
+    qInfo("updated edges size: %lld", edges.size());
+}
+

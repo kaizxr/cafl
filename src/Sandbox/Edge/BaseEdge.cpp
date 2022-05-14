@@ -29,9 +29,6 @@ BaseEdge::BaseEdge() : SandboxObject(0)
 
 BaseEdge::~BaseEdge()
 {
-    source->removeEdge(this);
-    if (source != dest)
-        dest->removeEdge(this);
 }
 
 void BaseEdge::setTextContent(QString text)
@@ -78,6 +75,13 @@ BaseEdge *BaseEdge::create(const QJsonObject &json)
     //     return new EdgeCircle(json, graphicsView);
     // }
     return nullptr;
+}
+
+void BaseEdge::remove()
+{
+    source->removeEdge(this);
+    if (source != dest)
+        dest->removeEdge(this);
 }
 
 QPolygonF BaseEdge::arrowPolygon(QPointF peak, qreal angle) const

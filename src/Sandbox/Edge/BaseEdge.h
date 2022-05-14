@@ -15,6 +15,7 @@ public:
     void adjust();
     QPainterPath pathPoint(QPointF point) const;
     static BaseEdge *create(const QJsonObject &json);
+    void remove();
 protected:
     Node *source, *dest;
     qreal arrowSize;

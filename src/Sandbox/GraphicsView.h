@@ -17,6 +17,9 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+
     enum class eActionType
     {
         NONE,
@@ -25,10 +28,13 @@ public:
         ADD_EDGE
     };
 private:
-    std::list<std::shared_ptr<Node>> nodes;
+    void removeObjects();
+    
     std::shared_ptr<Selector> selector;
 
     QList<QGraphicsItem*> selectedNodes;
+
+    QList<std::shared_ptr<Node>> nodes;
     QList<Edge*> edges;
 
     eActionType actionType;

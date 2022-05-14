@@ -46,6 +46,8 @@ void Selector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->drawLine(upperRight, lowerRight);
     painter->drawLine(lowerLeft, lowerRight);
     update(updr);
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
 }
 
 void Selector::checkNodes()

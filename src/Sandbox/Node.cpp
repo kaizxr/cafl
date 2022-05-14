@@ -30,7 +30,6 @@ Node::Node(int id, QPoint pos, QString text, QGraphicsItem* parent) : SandboxObj
 
 Node::~Node()
 {
-
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -38,6 +37,7 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 #ifdef DEBUG
     qInfo("Node::mousePressEvent");
 #endif
+    Q_UNUSED(event);
 }
 
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -45,6 +45,7 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 #ifdef DEBUG
     qInfo("Node::mouseMoveEvent");
 #endif
+    Q_UNUSED(event);
 }
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -52,6 +53,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 #ifdef DEBUG
     qInfo("Node::mouseReleaseEvent");
 #endif
+    Q_UNUSED(event);
 }
 
 void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
@@ -59,6 +61,7 @@ void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 #ifdef DEBUG
     qInfo("Node::mouseDoubleClickEvent");
 #endif
+    Q_UNUSED(event);
 }
 
 
@@ -72,11 +75,13 @@ void Node::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 #ifdef DEBUG
     qInfo("Node::hoverMoveEvent");
 #endif
+    Q_UNUSED(event);
 }
 
 void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     setCursor(Qt::ArrowCursor);
+    Q_UNUSED(event);
 }
 
 QList<BaseEdge*> Node::getEdges() const
@@ -128,6 +133,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setPen(pen);
     painter->drawEllipse(0, 0, 2 * radius, 2 * radius);
     painter->setFont(QFont("Times", 12, QFont::Bold));
+    Q_UNUSED(widget);
 }
 
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
