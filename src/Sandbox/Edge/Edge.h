@@ -10,11 +10,14 @@ public:
 protected:
     QPointF bezier;
     QLineF beforeLine;
+    QPainterPath path;
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void drawText(QPainter *painter, QPainterPath path, QString text);
     QPointF newPosBezier() const;
     QPointF posText() const override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     QPainterPath pathBezierCurve() const;
+    QPainterPath pathText() const override;
 };

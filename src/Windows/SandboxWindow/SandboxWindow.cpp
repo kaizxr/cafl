@@ -47,7 +47,8 @@ void SandboxWindow::initUI()
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
 
-    graphicsView->addNode(200,200);
+    graphicsView->addNode(150,450);
+    graphicsView->addNode(400,450);
 
 #ifdef DEBUG
     qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());

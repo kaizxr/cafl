@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QFont>
+#include <QFontMetrics>
 
 enum class eSandboxType
 {
@@ -22,7 +24,8 @@ public:
     virtual QString textContent() const { return text; }
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 protected:
-
+    QFont font;
+    QFontMetrics fm;
     QString text;
     eSandboxType objectType;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

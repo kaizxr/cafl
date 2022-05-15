@@ -96,17 +96,3 @@ QPolygonF BaseEdge::arrowPolygon(QPointF peak, qreal angle) const
     l2.setAngle(angle + 180 + 10);
     return QPolygonF() << peak << l1.p2() << l2.p2();
 }
-
-QPainterPath BaseEdge::pathText() const {
-    QPainterPath path;
-    QPointF textPoint = posText();
-    qreal x = textPoint.x();
-    qreal y = textPoint.y();
-    path.moveTo(x, y);
-    path.lineTo(x, y - 18); // for QFont("Times", 11)
-    path.lineTo(x + 8 * text.size(), y - 18);
-    path.lineTo(x + 8 * text.size(), y + 4);
-    path.lineTo(x, y + 4);
-    path.lineTo(x, y);
-    return path;
-}

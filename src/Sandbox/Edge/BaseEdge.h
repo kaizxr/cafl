@@ -22,5 +22,5 @@ protected:
     static int _idStatic;
     QPolygonF arrowPolygon(QPointF peak, qreal angle) const;
     virtual QPointF posText() const = 0;
-    QPainterPath pathText() const;
+    virtual QPainterPath pathText() const = 0;
 };
