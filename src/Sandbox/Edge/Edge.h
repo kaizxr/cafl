@@ -20,4 +20,5 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     QPainterPath pathBezierCurve() const;
     QPainterPath pathText() const override;
+    qreal getAngleAtMiddle(QPainterPath path) const;
 };
