@@ -10,6 +10,7 @@ QT_END_NAMESPACE
 
 class Node;
 class GraphicsView;
+class ButtonGroup;
 class SandboxWindow : public QMainWindow
 {
     Q_OBJECT
@@ -41,5 +42,6 @@ private:
     std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;
+    std::shared_ptr<ButtonGroup> buttonGroup;
 };
 #endif // SANDBOXWINDOW_H

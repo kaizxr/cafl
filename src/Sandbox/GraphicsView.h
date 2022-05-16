@@ -25,7 +25,8 @@ public:
         NONE,
         SELECT,
         MOVE,
-        ADD_EDGE
+        ADD_EDGE,
+        ADD_NODE
     };
 private:
     void removeObjects();

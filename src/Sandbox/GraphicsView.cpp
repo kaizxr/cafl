@@ -9,6 +9,8 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 
+#include "src/Sandbox/ToolsManager.h"
+
 #define DEBUG
 
 GraphicsView::GraphicsView(QRect rect, QWidget* parent) : QGraphicsView(parent)
@@ -55,48 +57,60 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
     
     if (event->button() == Qt::MouseButton::LeftButton)
     {
-        for (const auto& node : nodes)
+        const auto& tool = TOOLS->tool();
+        switch (tool)
         {
-            if (node->contains(event->pos()-node->pos()))
+        case ToolsManager::eToolType::SELECT:
+
+            for (const auto& node : nodes)
             {
-                if (selectedNodes.indexOf(node.get()) == -1 && selectedNodes.empty())
+                if (node->contains(event->pos()-node->pos()))
                 {
-                    selectedNodes.push_back(node.get());
-                    node->setSelected(true);
+                    if (selectedNodes.indexOf(node.get()) == -1 && selectedNodes.empty())
+                    {
+                        selectedNodes.push_back(node.get());
+                        node->setSelected(true);
+                    }
                 }
             }
-        }
+            if (!selector && !scene()->selectedItems().size())
+            {
+                selectedNodes.clear();
+                selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),10,10));
+                scene()->addItem(selector.get());
+                actionType = eActionType::SELECT;
+            }
+            else if (!selector && scene()->selectedItems().size())
+                actionType = eActionType::MOVE;
+            break;
+        case ToolsManager::eToolType::NODE:
 
-        if (!selector && !scene()->selectedItems().size())
-        {
-            selectedNodes.clear();
-            actionType = eActionType::SELECT;
-            selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),10,10));
-            scene()->addItem(selector.get());
+            addNode(event->pos().x(),event->pos().y());
+            actionType = eActionType::ADD_NODE;
+            break;
+        case ToolsManager::eToolType::EDGE:
+
+            for (const auto& node : nodes)
+            {
+                if (node->contains(event->pos()-node->pos()))
+                {
+                    sourceNode = node;
+                    qInfo("source node id = %d pos = %f:%f",sourceNode->id(),sourceNode->pos().x(),sourceNode->pos().y());
+                    break;
+                }
+            }
+            actionType = eActionType::ADD_EDGE;
+            break;
+        default:
+            break;
         }
-        else if (!selector && scene()->selectedItems().size())
-        {
-            actionType = eActionType::MOVE;
-        }
+        
     }
     else if (event->button() == Qt::MouseButton::MiddleButton)
     {
-        addNode(event->pos().x(),event->pos().y());
     }
     else if (event->button() == Qt::MouseButton::RightButton)
     {
-        actionType = eActionType::ADD_EDGE;
-
-        for (const auto& node : nodes)
-        {
-            if (node->contains(event->pos()-node->pos()))
-            {
-                sourceNode = node;
-                qInfo("source node id = %d pos = %f:%f",sourceNode->id(),sourceNode->pos().x(),sourceNode->pos().y());
-                break;
-            }
-        }
-
     }
 }
 

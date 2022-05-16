@@ -10,12 +10,15 @@ CONFIG += c++17
 
 SOURCES += \
     src/Utils/Constants.cpp \
+    src/Sandbox/Buttons/ButtonGroup.cpp \
+    src/Sandbox/Buttons/ToggleButton.cpp \
     src/Sandbox/Edge/BaseEdge.cpp \
     src/Sandbox/Edge/Edge.cpp \
     src/Sandbox/GraphicsView.cpp \
     src/Sandbox/Node.cpp \
     src/Sandbox/SandboxObject.cpp \
     src/Sandbox/Selector.cpp \
+    src/Sandbox/ToolsManager.cpp \
     src/Windows/WindowsManager.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
@@ -25,12 +28,15 @@ HEADERS += \
     lib/json.hpp \
     src/Utils/Constants.h \
     src/Utils/Utils.h \
+    src/Sandbox/Buttons/ButtonGroup.h \
+    src/Sandbox/Buttons/ToggleButton.h \
     src/Sandbox/Edge/BaseEdge.h \
     src/Sandbox/Edge/Edge.h \
     src/Sandbox/GraphicsView.h \
     src/Sandbox/Node.h \
     src/Sandbox/SandboxObject.h \
     src/Sandbox/Selector.h \
+    src/Sandbox/ToolsManager.h \
     src/Windows/WindowsManager.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
     src/Windows/TitleWindow/TitleWindow.h

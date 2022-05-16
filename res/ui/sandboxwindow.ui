@@ -77,130 +77,12 @@ color: rgb(255, 255, 255);</string>
               <height>0</height>
              </size>
             </property>
-            <widget class="QPushButton" name="pushButton">
-             <property name="geometry">
-              <rect>
-               <x>8</x>
-               <y>8</y>
-               <width>32</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	border: 1px solid #ffffff;
-    border-radius: 8px;
-}
-
-QPushButton:pressed {
-	background-color: rgba(118, 223, 211,50);
-}</string>
-             </property>
-             <property name="text">
-              <string>1</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton_1">
-             <property name="geometry">
-              <rect>
-               <x>48</x>
-               <y>8</y>
-               <width>32</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	border: 1px solid #ffffff;
-    border-radius: 8px;
-}
-
-QPushButton:pressed {
-	background-color: rgba(118, 223, 211,50);
-}</string>
-             </property>
-             <property name="text">
-              <string>1</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="geometry">
-              <rect>
-               <x>88</x>
-               <y>8</y>
-               <width>32</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	border: 1px solid #ffffff;
-    border-radius: 8px;
-}
-
-QPushButton:pressed {
-	background-color: rgba(118, 223, 211,50);
-}</string>
-             </property>
-             <property name="text">
-              <string>1</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="geometry">
-              <rect>
-               <x>128</x>
-               <y>8</y>
-               <width>32</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	border: 1px solid #ffffff;
-    border-radius: 8px;
-}
-
-QPushButton:pressed {
-	background-color: rgba(118, 223, 211,50);
-}</string>
-             </property>
-             <property name="text">
-              <string>1</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="geometry">
-              <rect>
-               <x>168</x>
-               <y>8</y>
-               <width>32</width>
-               <height>32</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	border: 1px solid #ffffff;
-    border-radius: 8px;
-}
-
-QPushButton:pressed {
-	background-color: rgba(118, 223, 211,50);
-}</string>
-             </property>
-             <property name="text">
-              <string>1</string>
-             </property>
-             <property name="autoDefault">
-              <bool>false</bool>
-             </property>
-             <property name="default">
-              <bool>false</bool>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
-            </widget>
+            <property name="maximumSize">
+             <size>
+              <width>208</width>
+              <height>16777215</height>
+             </size>
+            </property>
            </widget>
           </item>
           <item>
@@ -304,8 +186,12 @@ background-color: rgb(102, 102, 102);</string>
             </rect>
            </property>
            <property name="text">
-            <string>Средняя кнопка мыши - добавить состояние;
-Правая кнопка мыши - добавить переход между двумя состояниями.</string>
+            <string>Краткая инструкция:
+
+Кнопки в тулбоксе:
+1. Инструмент &quot;Выбрать&quot;
+2. Добавление вершины
+3. Добавление ребра</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>

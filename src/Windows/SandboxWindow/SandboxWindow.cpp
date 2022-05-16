@@ -6,6 +6,8 @@
 #include "src/Sandbox/GraphicsView.h"
 #include "src/Sandbox/Node.h"
 #include "src/Utils/Constants.h"
+#include "src/Sandbox/Buttons/ToggleButton.h"
+#include "src/Sandbox/Buttons/ButtonGroup.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -17,6 +19,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+
 
 SandboxWindow::SandboxWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -49,6 +52,8 @@ void SandboxWindow::initUI()
 
     graphicsView->addNode(150,450);
     graphicsView->addNode(400,450);
+
+    buttonGroup = std::make_shared<ButtonGroup>(ui->frame);
 
 #ifdef DEBUG
     qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());
