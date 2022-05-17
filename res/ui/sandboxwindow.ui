@@ -188,7 +188,7 @@ background-color: rgb(102, 102, 102);</string>
            <property name="text">
             <string>Краткая инструкция:
 
-Кнопки в тулбоксе:
+Кнопки в сверху переключают инструменты:
 1. Инструмент &quot;Выбрать&quot;
 2. Добавление вершины
 3. Добавление ребра</string>
@@ -223,48 +223,6 @@ background-color: rgb(102, 102, 102);</string>
           <property name="mouseTracking">
            <bool>false</bool>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QFrame" name="rightFrame">
-          <property name="maximumSize">
-           <size>
-            <width>256</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">border-color: rgb(112, 0, 0);
-background-color: rgb(102, 102, 102);</string>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QLabel" name="label_4">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>256</width>
-             <height>726</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>rightFrame</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
          </widget>
         </item>
        </layout>

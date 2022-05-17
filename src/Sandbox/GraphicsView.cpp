@@ -193,13 +193,18 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
             if (node->contains(event->pos()-node->pos()))
             {
                 destNode = node;
-                qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
-                Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get());
-                edges.append(edge);
-                scene()->addItem(edge);
+                if (destNode != sourceNode)
+                {
+                    qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
+                    Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get());
+                    edges.append(edge);
+                    scene()->addItem(edge);
+                }
                 break;
             }
         }
+        sourceNode = nullptr;
+        destNode = nullptr;
         break;
     }
 

@@ -8,6 +8,8 @@
     "Edge": {
         "pointSize": 5,
         "arrowSize": 15,
-        "pathOffset": 5
+        "pathOffset": 5,
+        "textOffset": 20,
+        "textMargin": 5
     }
 }
