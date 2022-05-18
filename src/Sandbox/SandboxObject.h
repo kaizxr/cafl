@@ -24,11 +24,12 @@ public:
     virtual QString textContent() const { return text; }
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    QRectF enoughBoundingRect(QRectF rect) const;
+
     QFont font;
     QFontMetrics fm;
     QString text;
     eSandboxType objectType;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     int objectId;
-    QRectF enoughBoundingRect(QRectF rect) const;
 };

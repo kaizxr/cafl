@@ -58,25 +58,33 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::MouseButton::LeftButton)
     {
         const auto& tool = TOOLS->tool();
+        bool intersects = false;
         switch (tool)
         {
         case ToolsManager::eToolType::SELECT:
-
             for (const auto& node : nodes)
             {
                 if (node->contains(event->pos()-node->pos()))
                 {
-                    if (selectedNodes.indexOf(node.get()) == -1 && selectedNodes.empty())
+                    intersects = true;
+                    if (scene()->selectedItems().indexOf(node.get()) == -1 && scene()->selectedItems().empty())
                     {
-                        selectedNodes.push_back(node.get());
+                        node->setSelected(true);
+                    }
+                    else if (scene()->selectedItems().indexOf(node.get()) == -1 && !scene()->selectedItems().empty())
+                    {
+                        scene()->clearSelection();
                         node->setSelected(true);
                     }
                 }
             }
+            if (!intersects)
+                scene()->clearSelection();
+
+            qInfo("press selected items size %d", scene()->selectedItems().size());
             if (!selector && !scene()->selectedItems().size())
             {
-                selectedNodes.clear();
-                selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),10,10));
+                selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),0,0));
                 scene()->addItem(selector.get());
                 actionType = eActionType::SELECT;
             }
@@ -132,6 +140,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* event)
             event->pos().x() - selector->rect().x(),
             event->pos().y() - selector->rect().y()
         );
+        scene()->setSelectionArea(selector->getPath());
 
         selector->checkNodes();
         break;
@@ -140,7 +149,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* event)
         qInfo("eActionType::MOVE");
         qInfo("size = %d",selectedNodes.size());
 #endif
-        for (auto& node : selectedNodes)
+        for (auto& node : scene()->selectedItems())
         {
 #ifdef DEBUG_MOVE
             qInfo("moveBy = %d:%d",event->pos().x()-oldmx,event->pos().y()-oldmy);
@@ -172,20 +181,14 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
         qInfo("release eActionType::SELECT");
         qInfo("remove selector");
 #endif
-        selectedNodes = selector->getSelectedNodes();
         scene()->removeItem(selector.get());
         selector.reset();
         break;
     case eActionType::MOVE:
 #ifdef DEBUG
         qInfo("release eActionType::MOVE");
-        qInfo("size = %lld",selectedNodes.size());
+        qInfo("size = %lld",scene()->selectedItems().size());
 #endif
-        if (selectedNodes.size() == 1)
-        {
-            selectedNodes.front()->setSelected(false);
-            selectedNodes.clear();
-        }
         break;
     case eActionType::ADD_EDGE:
         for (const auto& node : nodes)
@@ -208,6 +211,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
         break;
     }
 
+    qInfo("press selected items size %d", scene()->selectedItems().size());
     QGraphicsView::mouseReleaseEvent(event);
     actionType = eActionType::NONE;
 }

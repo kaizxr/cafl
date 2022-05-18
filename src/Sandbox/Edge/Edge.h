@@ -8,9 +8,6 @@ public:
     Edge(const QJsonObject &json);
 
 protected:
-    QPointF bezier;
-    QLineF beforeLine;
-    QPainterPath path;
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -21,4 +18,8 @@ protected:
     QPainterPath pathBezierCurve() const;
     QPainterPath pathText() const override;
     qreal getAngleAtMiddle(QPainterPath path) const;
+    
+    QPointF bezier;
+    QLineF beforeLine;
+    QPainterPath path;
 };

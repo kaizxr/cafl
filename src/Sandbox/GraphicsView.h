@@ -33,8 +33,6 @@ private:
     
     std::shared_ptr<Selector> selector;
 
-    QList<QGraphicsItem*> selectedNodes;
-
     QList<std::shared_ptr<Node>> nodes;
     QList<Edge*> edges;
 

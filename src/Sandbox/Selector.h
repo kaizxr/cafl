@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsRectItem>
 
+class QPainterPath;
 class Node;
 class Selector : public QGraphicsRectItem
 {
@@ -14,6 +15,7 @@ public:
     void checkNodes();
 
     QList<QGraphicsItem *> getSelectedNodes();
+    QPainterPath getPath() const;
 
 private:
     QList<QGraphicsItem *> nodes;

@@ -2,6 +2,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 
 #include "src/Sandbox/Node.h"
 
@@ -37,14 +38,7 @@ void Selector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     const auto& r = boundingRect();
     float d = std::max(r.width(),r.height())*0.25f;
     const auto& updr = QRect(r.x()-d,r.y()-d,r.width()+d,r.height()+d);
-    QPoint upperLeft = QPoint(r.x(), r.y());
-    QPoint upperRight = QPoint(r.width(), r.y());
-    QPoint lowerLeft = QPoint(r.x(), r.height());
-    QPoint lowerRight = QPoint(r.width(), r.height());
-    painter->drawLine(upperLeft, upperRight);
-    painter->drawLine(upperLeft, lowerLeft);
-    painter->drawLine(upperRight, lowerRight);
-    painter->drawLine(lowerLeft, lowerRight);
+    painter->drawPath(getPath());
     update(updr);
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -69,4 +63,20 @@ void Selector::checkNodes()
 QList<QGraphicsItem *> Selector::getSelectedNodes()
 {
     return nodes;
+}
+
+QPainterPath Selector::getPath() const
+{
+    QPainterPath path;
+    const auto& br = boundingRect();
+    QPointF a = QPoint(br.x(),     br.y()     );
+    QPointF b = QPoint(br.width(), br.y()     );
+    QPointF c = QPoint(br.width(), br.height());
+    QPointF d = QPoint(br.x(),     br.height());
+    path.moveTo(a);
+    path.lineTo(b);
+    path.lineTo(c);
+    path.lineTo(d);
+    path.lineTo(a);
+    return path;
 }

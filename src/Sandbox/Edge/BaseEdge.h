@@ -17,10 +17,11 @@ public:
     static BaseEdge *create(const QJsonObject &json);
     void remove();
 protected:
-    Node *source, *dest;
-    qreal arrowSize;
-    static int _idStatic;
     QPolygonF arrowPolygon(QPointF peak, qreal angle) const;
     virtual QPointF posText() const = 0;
     virtual QPainterPath pathText() const = 0;
+    
+    Node *source, *dest;
+    qreal arrowSize;
+    static int _idStatic;
 };

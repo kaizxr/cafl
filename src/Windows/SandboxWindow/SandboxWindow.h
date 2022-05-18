@@ -32,13 +32,13 @@ private slots:
     void undo();
     void redo();
 
-private:
+private:    
     void init();
     void initActions();
 
     void resizeEvent(QResizeEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
-    
+
     std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;
