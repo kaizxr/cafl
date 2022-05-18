@@ -7,7 +7,7 @@ class Selector;
 class GraphicsView : public QGraphicsView
 {
 public:
-    GraphicsView(QRect rect, QWidget* parent = nullptr);
+    GraphicsView(QWidget* parent = nullptr);
     ~GraphicsView();
 
     void addNode(int x, int y);
@@ -29,7 +29,9 @@ public:
         ADD_NODE
     };
 private:
+    void resizeEvent(QResizeEvent *event) override;
     void removeObjects();
+
     
     std::shared_ptr<Selector> selector;
 

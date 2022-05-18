@@ -10,7 +10,8 @@ public:
         NONE = -1,
         SELECT,
         NODE,
-        EDGE
+        EDGE,
+        HAND
     };
     static ToolsManager* getInstance();
     static void cleanup();

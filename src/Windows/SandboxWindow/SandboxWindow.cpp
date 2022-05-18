@@ -7,7 +7,7 @@
 #include "src/Sandbox/Node.h"
 #include "src/Utils/Constants.h"
 #include "src/Sandbox/Buttons/ToggleButton.h"
-#include "src/Sandbox/Buttons/ButtonGroup.h"
+#include "src/Sandbox/Buttons/ToolButtonGroup.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -48,12 +48,13 @@ void SandboxWindow::initUI()
     qInfo("initUI");
 #endif
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
-    graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
-
+    // graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
+    
     graphicsView->addNode(150,450);
     graphicsView->addNode(400,450);
 
-    buttonGroup = std::make_shared<ButtonGroup>(ui->frame);
+    auto instance = ToolButtonGroup::getInstance(ui->frame);
+    buttonGroup = std::shared_ptr<ToolButtonGroup>(instance);
 
 #ifdef DEBUG
     qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());
@@ -62,8 +63,7 @@ void SandboxWindow::initUI()
 
 void SandboxWindow::init()
 {
-    graphicsView = std::make_shared<GraphicsView>(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()),ui->mainFrame);
-    graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
+    graphicsView = std::make_shared<GraphicsView>(ui->mainFrame);
     setMouseTracking(true);
 }
 

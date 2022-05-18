@@ -10,7 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     src/Utils/Constants.cpp \
-    src/Sandbox/Buttons/ButtonGroup.cpp \
+    src/Sandbox/Buttons/ToolButtonGroup.cpp \
     src/Sandbox/Buttons/ToggleButton.cpp \
     src/Sandbox/Edge/BaseEdge.cpp \
     src/Sandbox/Edge/Edge.cpp \
@@ -28,7 +28,7 @@ HEADERS += \
     lib/json.hpp \
     src/Utils/Constants.h \
     src/Utils/Utils.h \
-    src/Sandbox/Buttons/ButtonGroup.h \
+    src/Sandbox/Buttons/ToolButtonGroup.h \
     src/Sandbox/Buttons/ToggleButton.h \
     src/Sandbox/Edge/BaseEdge.h \
     src/Sandbox/Edge/Edge.h \

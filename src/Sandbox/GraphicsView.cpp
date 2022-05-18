@@ -10,19 +10,17 @@
 #include <QKeyEvent>
 
 #include "src/Sandbox/ToolsManager.h"
+#include "src/Sandbox/Buttons/ToolButtonGroup.h"
+#include <QAbstractButton>
 
 #define DEBUG
 
-GraphicsView::GraphicsView(QRect rect, QWidget* parent) : QGraphicsView(parent)
+GraphicsView::GraphicsView(QWidget* parent) : QGraphicsView(parent)
 {
 #ifdef DEBUG
     qInfo("GraphicsView constructor");
 #endif
     this->setScene(new QGraphicsScene(this));
-    this->setSceneRect(rect);
-#ifdef DEBUG
-    qInfo("scene rect = %f:%f:%f:%f\n ", scene()->sceneRect().x(), scene()->sceneRect().y(), scene()->sceneRect().width(), scene()->sceneRect().height());
-#endif
     lastGivenNodeId = 0;
     lastGivenEdgeId = 0;
     actionType = eActionType::NONE;
@@ -222,12 +220,64 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     {
         removeObjects();
     }
+    if (event->key() == Qt::Key_Q)
+    {
+        const auto& toolType = ToolsManager::eToolType::SELECT;
+        TOOLS->setToolType(toolType);
+        auto ptr = TOOLBOX->getInstance();
+        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
+        ptr->button((int)toolType)->setChecked(true);
+    }
+    if (event->key() == Qt::Key_W)
+    {
+        const auto& toolType = ToolsManager::eToolType::NODE;
+        TOOLS->setToolType(toolType);
+        auto ptr = TOOLBOX->getInstance();
+        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
+        ptr->button((int)toolType)->setChecked(true);
+    }
+    if (event->key() == Qt::Key_E)
+    {
+        const auto& toolType = ToolsManager::eToolType::EDGE;
+        TOOLS->setToolType(toolType);
+        auto ptr = TOOLBOX->getInstance();
+        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
+        ptr->button((int)toolType)->setChecked(true);
+    }
+    if (event->key() == Qt::Key_Z)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+z was called");
+        }
+    }
+    if (event->key() == Qt::Key_C)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+c was called");
+        }
+    }
+    if (event->key() == Qt::Key_V)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+v was called");
+        }
+    }
     QGraphicsView::keyPressEvent(event);
 }
 
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
     QGraphicsView::keyReleaseEvent(event);
+}
+
+void GraphicsView::resizeEvent(QResizeEvent *event)
+{
+    auto newSize = event->size();
+    qInfo("newSize %d:%d",newSize.width(),newSize.height());
+    scene()->setSceneRect(QRect(0,0,newSize.width(),newSize.height()));
 }
 
 void GraphicsView::removeObjects()
