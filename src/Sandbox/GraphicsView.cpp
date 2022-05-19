@@ -28,7 +28,6 @@ GraphicsView::GraphicsView(QWidget* parent) : QGraphicsView(parent)
 
 GraphicsView::~GraphicsView()
 {
-
 }
 
 void GraphicsView::addNode(int x, int y)
@@ -45,11 +44,6 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 
 void GraphicsView::mousePressEvent(QMouseEvent* event)
 {
-#ifdef DEBUG
-    qInfo("GraphicsView::mousePressEvent");
-#endif
-    QGraphicsView::mousePressEvent(event);
-
     oldmx = event->pos().x();
     oldmy = event->pos().y();
     
@@ -60,6 +54,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
         switch (tool)
         {
         case ToolsManager::eToolType::SELECT:
+            QGraphicsView::mousePressEvent(event);
             for (const auto& node : nodes)
             {
                 if (node->contains(event->pos()-node->pos()))
@@ -79,7 +74,6 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             if (!intersects)
                 scene()->clearSelection();
 
-            qInfo("press selected items size %d", scene()->selectedItems().size());
             if (!selector && !scene()->selectedItems().size())
             {
                 selector = std::make_shared<Selector>(QRect(event->pos().x(),event->pos().y(),0,0));
@@ -107,6 +101,10 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             }
             actionType = eActionType::ADD_EDGE;
             break;
+        case ToolsManager::eToolType::HAND:
+            // scene()->clearSelection();
+            actionType = eActionType::HAND_MOVE;
+            break;
         default:
             break;
         }
@@ -122,49 +120,49 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent* event)
 {
-#ifdef DEBUG_MOVE
-    qInfo("GraphicsView::mouseMoveEvent");
-#endif
+    // to prevent out of bounds event while mouse is holding
+    int localX = event->x();
+    int localY = event->y();
+    if (event->x() < 0) localX = 0;
+    if (event->x() > rect().width()) localX = rect().width();
+    if (event->y() < 0) localY = 0;
+    if (event->y() > rect().height()) localY = rect().height();
+
     switch (actionType)
     {
     case eActionType::NONE:
         break;
     case eActionType::SELECT:
-#ifdef DEBUG_MOVE
-        qInfo("move eActionType::SELECT");
-#endif
         selector->setRect(
             selector->rect().x(), selector->rect().y(),
-            event->pos().x() - selector->rect().x(),
-            event->pos().y() - selector->rect().y()
+            localX - selector->rect().x(),
+            localY - selector->rect().y()
         );
         scene()->setSelectionArea(selector->getPath());
 
         selector->checkNodes();
         break;
-    case eActionType::MOVE:
-#ifdef DEBUG_MOVE
-        qInfo("eActionType::MOVE");
-        qInfo("size = %d",selectedNodes.size());
-#endif
-        for (auto& node : scene()->selectedItems())
-        {
-#ifdef DEBUG_MOVE
-            qInfo("moveBy = %d:%d",event->pos().x()-oldmx,event->pos().y()-oldmy);
-#endif
-            if (node->type() == (int)eSandboxType::NODE)
-                node->moveBy(event->pos().x()-oldmx,event->pos().y()-oldmy);
-        }
+    case eActionType::ADD_NODE:
         break;
     case eActionType::ADD_EDGE:
-#ifdef DEBUG_MOVE
-        qInfo("eActionType::ADD_EDGE");
-        qInfo("size = %d",selectedNodes.size());
-#endif
+        break;
+    case eActionType::HAND_MOVE:
+        for (auto& node : scene()->items())
+        {
+            if (node->type() == (int)eSandboxType::NODE)
+                node->moveBy(localX-oldmx,localY-oldmy);
+        }
+        break;
+    case eActionType::MOVE:
+        for (auto& node : scene()->selectedItems())
+        {
+            if (node->type() == (int)eSandboxType::NODE)
+                node->moveBy(localX-oldmx,localY-oldmy);
+        }
         break;
     }
-    oldmx = event->pos().x();
-    oldmy = event->pos().y();
+    oldmx = localX;
+    oldmy = localY;
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -181,12 +179,6 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
 #endif
         scene()->removeItem(selector.get());
         selector.reset();
-        break;
-    case eActionType::MOVE:
-#ifdef DEBUG
-        qInfo("release eActionType::MOVE");
-        qInfo("size = %lld",scene()->selectedItems().size());
-#endif
         break;
     case eActionType::ADD_EDGE:
         for (const auto& node : nodes)
@@ -207,15 +199,23 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
         sourceNode = nullptr;
         destNode = nullptr;
         break;
+    case eActionType::HAND_MOVE:
+        break;
+    case eActionType::MOVE:
+        break;
     }
 
-    qInfo("press selected items size %d", scene()->selectedItems().size());
     QGraphicsView::mouseReleaseEvent(event);
     actionType = eActionType::NONE;
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
+    if (event->isAutoRepeat()) //for holding down one button
+    {
+        return;
+    }
+
     if (event->key() == Qt::Key_Delete)
     {
         removeObjects();
@@ -224,25 +224,38 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     {
         const auto& toolType = ToolsManager::eToolType::SELECT;
         TOOLS->setToolType(toolType);
-        auto ptr = TOOLBOX->getInstance();
-        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
-        ptr->button((int)toolType)->setChecked(true);
+        TOOLBOX->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_W)
     {
         const auto& toolType = ToolsManager::eToolType::NODE;
         TOOLS->setToolType(toolType);
-        auto ptr = TOOLBOX->getInstance();
-        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
-        ptr->button((int)toolType)->setChecked(true);
+        TOOLBOX->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_E)
     {
         const auto& toolType = ToolsManager::eToolType::EDGE;
         TOOLS->setToolType(toolType);
-        auto ptr = TOOLBOX->getInstance();
-        ptr->button(ptr->getCurrentActiveId())->setChecked(false);
-        ptr->button((int)toolType)->setChecked(true);
+        TOOLBOX->toggleButtonGroup((int)toolType);
+    }
+    if (event->key() == Qt::Key_R)
+    {
+        const auto& toolType = ToolsManager::eToolType::HAND;
+        TOOLS->setToolType(toolType);
+        TOOLBOX->toggleButtonGroup((int)toolType);
+    }
+    if (event->key() == Qt::Key_Space)
+    {
+        qInfo("press space");
+        auto toolbox = TOOLBOX;
+        if (!toolbox->isHolding())
+        {
+            qInfo("TOOLBOX !isHolding");
+            const auto& toolType = ToolsManager::eToolType::HAND;
+            TOOLS->setToolType(toolType);
+            toolbox->toggleButtonGroup((int)toolType);
+            toolbox->setHolding(true);
+        }
     }
     if (event->key() == Qt::Key_Z)
     {
@@ -265,11 +278,33 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             qInfo("ctrl+v was called");
         }
     }
+    if (event->key() == Qt::Key_A)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+a was called");
+        }
+    }
     QGraphicsView::keyPressEvent(event);
 }
 
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
+    if (event->isAutoRepeat()) //for holding down one button
+    {
+        return;
+    }
+    if (event->key() == Qt::Key_Space)
+    {
+        auto toolbox = TOOLBOX;
+        if (toolbox->isHolding())
+        {
+            const int t = toolbox->getPrevActiveId();
+            TOOLS->setToolType((ToolsManager::eToolType)t);
+            toolbox->toggleButtonGroup(t);
+            toolbox->setHolding(false);
+        }
+    }
     QGraphicsView::keyReleaseEvent(event);
 }
 
@@ -310,7 +345,7 @@ void GraphicsView::removeObjects()
                     }
                 }
             }
-            else if (auto edge = dynamic_cast<Edge*>(item))                
+            else if (auto edge = dynamic_cast<BaseEdge*>(item))                
             {
                 if (edgesToRemove.indexOf(edge) == -1)
                 {
@@ -322,14 +357,19 @@ void GraphicsView::removeObjects()
         }
         for (const auto& item : edgesToRemove)
         {
+            auto edge = dynamic_cast<BaseEdge*>(item);
+            qInfo("remove edge %d s = %d d = %d", edge->id(),edge->sourceNode()->id(),edge->destNode()->id());
             scene()->removeItem(item);
             delete item;
+            qInfo("edge removed");
         }
         for (const auto& item : nodesToRemove)
         {
+            qInfo("remove node %d", item->id());
             scene()->removeItem(item.get());
             const auto& i = nodes.indexOf(item);
             nodes.takeAt(i).reset();
+            qInfo("node removed");
         }
     }
     qInfo("updated nodes size: %lld", nodes.size());

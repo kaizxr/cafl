@@ -29,6 +29,7 @@ BaseEdge::BaseEdge() : SandboxObject(0)
 
 BaseEdge::~BaseEdge()
 {
+    qInfo("baseedge destructor");
 }
 
 void BaseEdge::setTextContent(QString text)

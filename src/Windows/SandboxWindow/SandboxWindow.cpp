@@ -64,6 +64,7 @@ void SandboxWindow::initUI()
 void SandboxWindow::init()
 {
     graphicsView = std::make_shared<GraphicsView>(ui->mainFrame);
+    graphicsView->setFocus();
     setMouseTracking(true);
 }
 

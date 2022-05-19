@@ -24,9 +24,10 @@ public:
     {
         NONE,
         SELECT,
-        MOVE,
         ADD_EDGE,
-        ADD_NODE
+        ADD_NODE,
+        HAND_MOVE,
+        MOVE
     };
 private:
     void resizeEvent(QResizeEvent *event) override;

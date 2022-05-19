@@ -30,6 +30,7 @@ Node::Node(int id, QPoint pos, QString text, QGraphicsItem* parent) : SandboxObj
 
 Node::~Node()
 {
+    qInfo("node destructor");
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -67,7 +68,7 @@ void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Node::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    setCursor(Qt::OpenHandCursor);
+    Q_UNUSED(event);
 }
 
 void Node::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
@@ -80,7 +81,6 @@ void Node::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 
 void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    setCursor(Qt::ArrowCursor);
     Q_UNUSED(event);
 }
 

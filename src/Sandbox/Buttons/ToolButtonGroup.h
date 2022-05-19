@@ -11,10 +11,15 @@ public:
     static void cleanup();
     ToolButtonGroup(QWidget* widgetParent = nullptr);
     ~ToolButtonGroup();
-    int getCurrentActiveId();
+    void toggleButtonGroup(int buttonId);
+    void setHolding(bool holding);
+    int getPrevActiveId() const;
+    bool isHolding() const;
 private:
     static ToolButtonGroup* instance;
     int currentActiveId;
+    int prevActiveId;
+    bool holding;
 
 private slots:
     void reactToToggled(QAbstractButton *button, bool checked);

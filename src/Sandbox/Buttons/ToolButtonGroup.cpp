@@ -1,6 +1,7 @@
 #include "ToolButtonGroup.h"
 #include "ToggleButton.h"
 #include "src/Sandbox/ToolsManager.h"
+#include <QApplication>
 #include <QWidget>
 
 ToolButtonGroup* ToolButtonGroup::instance = nullptr;
@@ -34,17 +35,33 @@ ToolButtonGroup::~ToolButtonGroup()
 {
 
 }
-
-int ToolButtonGroup::getCurrentActiveId()
+void ToolButtonGroup::toggleButtonGroup(int buttonId)
 {
-    return currentActiveId;
+    button(currentActiveId)->setChecked(false);
+    button(buttonId)->setChecked(true);
 }
 
+void ToolButtonGroup::setHolding(bool holding)
+{
+    this->holding = holding;
+}
+
+int ToolButtonGroup::getPrevActiveId() const
+{
+    return prevActiveId;
+}
+
+bool ToolButtonGroup::isHolding() const
+{
+    return holding;
+}
 
 void ToolButtonGroup::reactToToggled(QAbstractButton *button, bool checked)
 {
     qInfo("button %d is toggled to %d",id(button),checked);
     int tId = id(button);
+    QApplication::restoreOverrideCursor();
+    prevActiveId = currentActiveId;
     currentActiveId = tId;
     switch (tId)
     {
@@ -58,6 +75,7 @@ void ToolButtonGroup::reactToToggled(QAbstractButton *button, bool checked)
         TOOLS->setToolType(ToolsManager::eToolType::EDGE);
         break;
     case 3:
+        QApplication::setOverrideCursor(Qt::OpenHandCursor);
         TOOLS->setToolType(ToolsManager::eToolType::HAND);
         break;
     default:

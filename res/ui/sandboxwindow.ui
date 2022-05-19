@@ -189,9 +189,12 @@ background-color: rgb(102, 102, 102);</string>
             <string>Краткая инструкция:
 
 Кнопки в сверху переключают инструменты:
-1. Инструмент &quot;Выбрать&quot;
-2. Добавление вершины
-3. Добавление ребра</string>
+1. Инструмент &quot;Выбрать&quot; [Q]
+2. Добавление вершины [W]
+3. Добавление ребра [E]
+4. Инструмент &quot;Рука&quot; [R/Spacebar]
+
+</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -204,16 +207,6 @@ background-color: rgb(102, 102, 102);</string>
            </property>
            <property name="margin">
             <number>8</number>
-           </property>
-          </widget>
-          <widget class="QListWidget" name="listWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>100</y>
-             <width>256</width>
-             <height>192</height>
-            </rect>
            </property>
           </widget>
          </widget>
