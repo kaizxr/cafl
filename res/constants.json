@@ -10,6 +10,9 @@
         "arrowSize": 15,
         "pathOffset": 5,
         "textOffset": 20,
-        "textMargin": 5
+        "textMargin": 5,
+        "InputBox": {
+            "w": 100, "h": 30
+        }
     }
 }

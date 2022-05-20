@@ -9,9 +9,12 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 
+#include "src/Utils/Constants.h"
 #include "src/Sandbox/ToolsManager.h"
 #include "src/Sandbox/Buttons/ToolButtonGroup.h"
 #include <QAbstractButton>
+
+#include <QPlainTextEdit>
 
 #define DEBUG
 
@@ -24,6 +27,7 @@ GraphicsView::GraphicsView(QWidget* parent) : QGraphicsView(parent)
     lastGivenNodeId = 0;
     lastGivenEdgeId = 0;
     actionType = eActionType::NONE;
+    textEdit = nullptr;
 }
 
 GraphicsView::~GraphicsView()
@@ -55,6 +59,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
         {
         case ToolsManager::eToolType::SELECT:
             QGraphicsView::mousePressEvent(event);
+
             for (const auto& node : nodes)
             {
                 if (node->contains(event->pos()-node->pos()))
@@ -89,6 +94,21 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             actionType = eActionType::ADD_NODE;
             break;
         case ToolsManager::eToolType::EDGE:
+            if (actionType == eActionType::WAIT_EDGE_NAME && textEdit)
+            {
+                if (!textEdit->rect().contains(event->pos()-textEdit->pos()))
+                {
+                    qInfo(textEdit->toPlainText().toStdString().c_str());
+                    Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get(),textEdit->toPlainText());
+                    edges.append(edge);
+                    scene()->addItem(edge);
+                    textEdit.reset();
+                    textEdit = nullptr;
+                    actionType == eActionType::NONE;
+                    sourceNode = nullptr;
+                    destNode = nullptr;
+                }
+            }
 
             for (const auto& node : nodes)
             {
@@ -189,15 +209,22 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
                 if (destNode != sourceNode)
                 {
                     qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
-                    Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get());
-                    edges.append(edge);
-                    scene()->addItem(edge);
+                    
+                    textEdit = std::make_shared<QPlainTextEdit>(this);
+                    int radius = CONST["Node"]["radius"];
+                    auto dPos = destNode->pos()+QPointF(radius,radius);
+                    auto sPos = sourceNode->pos()+QPointF(radius,radius);
+                    int w = CONST["Edge"]["InputBox"]["w"];
+                    int h = CONST["Edge"]["InputBox"]["h"];
+                    textEdit->setGeometry(QRect((dPos.x()+sPos.x())/2,(dPos.y()+sPos.y())/2,w,h));
+                    textEdit->show();
+                    textEdit->setFocus();
+                    actionType = eActionType::WAIT_EDGE_NAME;
+                    return;
                 }
                 break;
             }
         }
-        sourceNode = nullptr;
-        destNode = nullptr;
         break;
     case eActionType::HAND_MOVE:
         break;
@@ -215,7 +242,6 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     {
         return;
     }
-
     if (event->key() == Qt::Key_Delete)
     {
         removeObjects();

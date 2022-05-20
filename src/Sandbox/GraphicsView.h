@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsView>
 
+class QPlainTextEdit;
 class Edge;
 class Node;
 class Selector;
@@ -25,6 +26,7 @@ public:
         NONE,
         SELECT,
         ADD_EDGE,
+        WAIT_EDGE_NAME,
         ADD_NODE,
         HAND_MOVE,
         MOVE
@@ -32,7 +34,7 @@ public:
 private:
     void resizeEvent(QResizeEvent *event) override;
     void removeObjects();
-
+    void setTool(int tooltype);
     
     std::shared_ptr<Selector> selector;
 
@@ -43,6 +45,7 @@ private:
 
     std::shared_ptr<Node> sourceNode;
     std::shared_ptr<Node> destNode;
+    std::shared_ptr<QPlainTextEdit> textEdit;
 
     int lastGivenNodeId;
     int lastGivenEdgeId;
