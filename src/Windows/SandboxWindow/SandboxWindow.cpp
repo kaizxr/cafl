@@ -18,6 +18,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
+#include <fstream>
+#include <iostream>
 #include <QMessageBox>
 
 
@@ -66,6 +68,52 @@ void SandboxWindow::init()
     graphicsView = std::make_shared<GraphicsView>(ui->mainFrame);
     graphicsView->setFocus();
     setMouseTracking(true);
+}
+
+void SandboxWindow::saveJson(nlohmann::json data)
+{
+    QString filter = "JSON file (*.json)";
+    QString filename = QFileDialog::getSaveFileName(this, QString("Save as"),QString(),filter,&filter);
+    QFile file(filename);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "Cannot save file : " + file.errorString());
+        return;
+    }
+    curFilename = filename;
+    auto start = curFilename.lastIndexOf("/")+1;
+    auto end = curFilename.lastIndexOf(".");
+    curFilename = curFilename.mid(start,end-start);
+    setWindowTitle(curFilename);
+    ui->titleLabel->setText(curFilename);
+
+    std::ofstream out(filename.toStdString());
+    out << std::setw(4) << data << std::endl;
+    file.close();
+}
+
+void SandboxWindow::openGraph()
+{
+    QString filter = "JSON file (*.json)";
+    QString filename = QFileDialog::getOpenFileName(this, QString("Open the file"),QString(),filter,&filter);
+    QFile file(filename);
+
+    curFilename = filename;
+    auto start = curFilename.lastIndexOf("/")+1;
+    auto end = curFilename.lastIndexOf(".");
+    curFilename = curFilename.mid(start,end-start);
+    setWindowTitle(curFilename);
+    ui->titleLabel->setText(curFilename);
+
+    if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "Cannot open file : " + file.errorString());
+        return;
+    }   
+    std::ifstream in(filename.toStdString().c_str());
+    nlohmann::json data;
+    in >> data;
+    file.close();
+
+    graphicsView->openFromJson(data);
 }
 
 void SandboxWindow::initActions()
@@ -135,18 +183,19 @@ void SandboxWindow::saveAs()
 #ifdef DEBUG
     qInfo("Sandbox::saveAs()");
 #endif
-    // QString filename = QFileDialog::getSaveFileName(this, QString("Save as"));
-    // QFile file(filename);
-    // if (!file.open(QFile::WriteOnly | QFile::Text)) {
-    //     QMessageBox::warning(this, "Warning", "Cannot save file : " + file.errorString());
-    //     return;
-    // }
-    // curFileName = filename;
-    // setWindowTitle(filename);
-    // QTextStream out(&file);
+    QString filename = QFileDialog::getSaveFileName(this, QString("Save as"));
+    QFile file(filename);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "Cannot save file : " + file.errorString());
+        return;
+    }
+    curFilename = filename;
+    setWindowTitle(filename);
+    // ui->
+    QTextStream out(&file);
     // QString text = ui->textEdit->toPlainText();
     // out << text;
-    // file.close();
+    file.close();
 }
 
 void SandboxWindow::exit()

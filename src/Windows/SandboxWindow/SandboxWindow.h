@@ -3,6 +3,7 @@
 #define SANDBOXWINDOW_H
 
 #include <QMainWindow>
+#include "lib/json.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SandboxWindow; }
@@ -20,6 +21,8 @@ public:
     ~SandboxWindow();
 
     void initUI();
+    void saveJson(nlohmann::json data);
+    void openGraph();
 
 private slots:
     void newFile();
@@ -39,6 +42,7 @@ private:
     void resizeEvent(QResizeEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
 
+    QString curFilename;
     std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;

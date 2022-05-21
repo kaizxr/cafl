@@ -1,5 +1,6 @@
 #pragma once
 #include <QGraphicsView>
+#include "lib/json.hpp"
 
 class QPlainTextEdit;
 class Edge;
@@ -10,8 +11,13 @@ class GraphicsView : public QGraphicsView
 public:
     GraphicsView(QWidget* parent = nullptr);
     ~GraphicsView();
+    nlohmann::json toJson();
+    void writeToJson();
+    void openFromJson(const nlohmann::json& data);
 
-    void addNode(int x, int y);
+    void addNode(int x, int y, int id = -1);
+    void addEdge(int sourceId, int destId, QString text = nullptr, int id = -1);
+    std::shared_ptr<Node> getNodeById(int id);
 
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

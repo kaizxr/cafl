@@ -50,6 +50,13 @@ void WindowsManager::changeWindow(std::string windowType)
         qInfo("error");
 #endif
 }
+SandboxWindow* WindowsManager::getSandboxWindow()
+{
+    auto window = dynamic_cast<SandboxWindow*>(curWindow.get());
+    if (window)
+        return window;
+    return nullptr;
+}
 
 std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()
 {
