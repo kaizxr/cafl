@@ -14,7 +14,10 @@
 #include "src/Sandbox/Buttons/ToolButtonGroup.h"
 #include <QAbstractButton>
 
+#include "src/Windows/WindowsManager.h"
+#include "src/Windows/SandboxWindow/SandboxWindow.h"
 #include <QPlainTextEdit>
+#include <iostream>
 
 #define DEBUG
 
@@ -34,11 +37,102 @@ GraphicsView::~GraphicsView()
 {
 }
 
-void GraphicsView::addNode(int x, int y)
+nlohmann::json GraphicsView::toJson()
 {
-    std::shared_ptr<Node> node = std::make_shared<Node>(lastGivenNodeId++, QPoint(x, y));
+    nlohmann::json data;
+    for (const auto& node : nodes)
+    {
+        const auto& nodeStr = QString::number(node->id()).toStdString().c_str();
+        data["Graph"]["Node"][nodeStr]["pos"]["x"] = node->pos().x();
+        data["Graph"]["Node"][nodeStr]["pos"]["y"] = node->pos().y();
+    }
+    for (const auto& edge : edges)
+    {
+        const auto& edgeStr = QString::number(edge->id()).toStdString().c_str();
+        data["Graph"]["Edge"][edgeStr]["source"] = edge->sourceNode()->id();
+        data["Graph"]["Edge"][edgeStr]["dest"] = edge->destNode()->id();
+        data["Graph"]["Edge"][edgeStr]["text"] = edge->textContent().toStdString().c_str();
+    }
+    std::cout << std::setw(4) << data << std::endl;
+    return data;
+}
+
+void GraphicsView::writeToJson()
+{
+    const auto& data = toJson();
+    WINDOWS->getInstance()->getSandboxWindow()->saveJson(data);
+}
+
+void GraphicsView::openFromJson(const nlohmann::json& data)
+{
+    qInfo("openFromJson");
+    if (data.is_null())
+        return;
+    scene()->clearSelection();
+    QPainterPath path;
+    path.moveTo(0,0);
+    path.lineTo(width(),0);
+    path.lineTo(width(),height());
+    path.lineTo(0,height());
+    path.lineTo(0,0);
+    scene()->setSelectionArea(path);
+    removeObjects();
+    lastGivenEdgeId = 0;
+    lastGivenNodeId = 0;
+    qInfo("objects removed");
+    for (auto it = data["Graph"]["Node"].begin(); it != data["Graph"]["Node"].end(); ++it)
+    {
+        std::cout << it.key() << " | " << it.value() << "\n";
+        auto id = std::stoi(it.key());
+        int radius = CONST["Node"]["radius"];
+        int x = it.value()["pos"]["x"];
+        int y = it.value()["pos"]["y"];
+        x += radius;
+        y += radius;
+        addNode(x,y,id);
+    }
+    std::cout << "nodes added" << std::endl;
+    for (auto it = data["Graph"]["Edge"].begin(); it != data["Graph"]["Edge"].end(); ++it)
+    {
+        std::cout << it.key() << " | " << it.value() << "\n";
+        auto id = std::stoi(it.key());
+        int sourceId = it.value()["source"];
+        int destId = it.value()["dest"];
+        std::string stdtext = it.value()["text"];
+        QString text(stdtext.c_str());
+        addEdge(sourceId,destId,text,id);
+    }
+    std::cout << "edges added" << std::endl;
+}
+
+void GraphicsView::addNode(int x, int y, int id)
+{
+    if (id == -1)
+        id = lastGivenNodeId++;
+    else
+        lastGivenNodeId = id+1;
+    std::shared_ptr<Node> node = std::make_shared<Node>(id, QPoint(x, y));
     scene()->addItem(node.get());
     nodes.push_back(node);
+}
+
+void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
+{
+    if (id == -1)
+        id = lastGivenEdgeId++;
+    else
+        lastGivenEdgeId = id+1;
+    Edge* edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
+    edges.append(edge);
+    scene()->addItem(edge);
+}
+
+std::shared_ptr<Node> GraphicsView::getNodeById(int id)
+{
+    for (const auto& node : nodes)
+        if (node->id() == id)
+            return node;
+    return nullptr;
 }
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
@@ -99,9 +193,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
                 if (!textEdit->rect().contains(event->pos()-textEdit->pos()))
                 {
                     qInfo(textEdit->toPlainText().toStdString().c_str());
-                    Edge* edge = new Edge(lastGivenEdgeId++,sourceNode.get(),destNode.get(),textEdit->toPlainText());
-                    edges.append(edge);
-                    scene()->addItem(edge);
+                    addEdge(sourceNode->id(),destNode->id(),textEdit->toPlainText());
                     textEdit.reset();
                     textEdit = nullptr;
                     actionType == eActionType::NONE;
@@ -281,6 +373,22 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             TOOLS->setToolType(toolType);
             toolbox->toggleButtonGroup((int)toolType);
             toolbox->setHolding(true);
+        }
+    }
+    if (event->key() == Qt::Key_S)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+s was called");
+            writeToJson();
+        }
+    }
+    if (event->key() == Qt::Key_O)
+    {
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            qInfo("ctrl+o was called");
+            WINDOWS->getSandboxWindow()->openGraph();
         }
     }
     if (event->key() == Qt::Key_Z)

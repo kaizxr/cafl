@@ -58,7 +58,6 @@ bool ToolButtonGroup::isHolding() const
 
 void ToolButtonGroup::reactToToggled(QAbstractButton *button, bool checked)
 {
-    qInfo("button %d is toggled to %d",id(button),checked);
     int tId = id(button);
     QApplication::restoreOverrideCursor();
     prevActiveId = currentActiveId;

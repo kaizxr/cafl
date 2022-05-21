@@ -13,6 +13,8 @@ public:
     WindowsManager();
     ~WindowsManager();
     void changeWindow(std::string windowType = "title");
+    SandboxWindow* getSandboxWindow();
+
 private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
     std::shared_ptr<TitleWindow> createTitleWindow();
