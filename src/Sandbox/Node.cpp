@@ -19,6 +19,7 @@ Node::Node(int id, QPoint pos, QString text, QGraphicsItem* parent) : SandboxObj
     selected = false;
     initial = false;
     final = false;
+    text = QString::number(id);
 
     setFlag(ItemIsSelectable);
     setFlag(ItemIsMovable);
@@ -159,7 +160,10 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->setBrush(Qt::BrushStyle::NoBrush);
         painter->drawEllipse(0.2 * radius / 2, 0.2 * radius / 2, 1.8 * radius, 1.8 * radius);
     }
-    painter->setFont(QFont("Times", 12, QFont::Bold));
+    painter->setFont(QFont("Segoe UI", 18, QFont::Bold));
+    painter->drawText(radius-painter->fontMetrics().boundingRect(text).width()/2,
+                      radius+painter->fontMetrics().height()/3,
+                      text);
     Q_UNUSED(widget);
 }
 

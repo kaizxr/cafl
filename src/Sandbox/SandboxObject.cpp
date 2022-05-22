@@ -6,11 +6,9 @@
 class GraphicsView;
 
 SandboxObject::SandboxObject(int id, QString text)
-    : text(text), objectId(id), font(QFont("Segoe UI", 11)), fm(QFontMetrics(font))
+    : text(text), objectId(id), font(QFont("Segoe UI", 16)), fm(QFontMetrics(font))
 {
     objectType = eSandboxType::NONE;
-    // font = QFont("Segoe UI", 11);
-    // fm = QFontMetrics(font);
     if (text.isEmpty()) {
         this->text = QString("%1").arg(objectId);
     } else {

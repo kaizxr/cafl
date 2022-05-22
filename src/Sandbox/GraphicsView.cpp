@@ -616,6 +616,10 @@ void GraphicsView::makeInitial(Node* item)
     if (initialNode)
     {
         initialNode->setInitial(false);
+        int radius = CONST["Node"]["radius"];
+        update(initialNode->centeredPos().x()-radius*2,
+               initialNode->centeredPos().y()-radius*2,
+               radius*4,radius*4);
     }
     for (const auto& node : nodes)
     {
