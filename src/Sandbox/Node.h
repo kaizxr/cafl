@@ -26,7 +26,11 @@ public:
     void addEdge(BaseEdge *edge);
     void removeEdge(BaseEdge *edge);
 
-    
+    bool isInitial();
+    void setInitial(bool initial);
+    bool isFinal();
+    void setFinal(bool final);
+
 private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
@@ -36,4 +40,7 @@ private:
     QPen pen;
     int radius;
     bool selected;
+
+    bool initial;
+    bool final;
 };

@@ -1,3 +1,5 @@
+#pragma once
+#include "Object.h"
 #include "lib/json.hpp"
 #include <QPoint>
 
@@ -5,18 +7,18 @@ namespace AA
 {
     class Automata;
     class State;
-    class Transition
+    class Transition : public Object
     {
     public:
         Transition(State* source, State* dest);
-        ~Transition();
+        virtual ~Transition();
         State* getSource();
         State* getDest();
         void setSource(State* state);
         void setDest(State* state);
         Automata* getAutomata();
         nlohmann::json toJson();
-        bool isEqualTo(Transition* other);
+        virtual bool isEqualTo(Object* other);
         QPoint getControl();
         void setControl(QPoint point);
     private:

@@ -17,6 +17,8 @@ Node::Node(int id, QPoint pos, QString text, QGraphicsItem* parent) : SandboxObj
     pen = QPen(Qt::black, 2);
     radius = CONST["Node"]["radius"];
     selected = false;
+    initial = false;
+    final = false;
 
     setFlag(ItemIsSelectable);
     setFlag(ItemIsMovable);
@@ -93,6 +95,15 @@ QPainterPath Node::shape() const
 {
     QPainterPath path;
     path.addEllipse(-pen.width(), -pen.width(), 2 * radius + pen.width(), 2 * radius + pen.width());
+    if (initial)
+    {
+        int x = -pen.width();
+        int y = -pen.width() + radius;
+        path.moveTo(x, y);
+        path.lineTo(x - 30, y - 20);
+        path.lineTo(x - 30, y + 20);
+        path.lineTo(x, y);
+    }
     return path;
 }
 
@@ -132,6 +143,22 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush((option->state & QStyle::State_Selected ? Qt::cyan: Qt::white));
     painter->setPen(pen);
     painter->drawEllipse(0, 0, 2 * radius, 2 * radius);
+    if (initial)
+    {
+        QPainterPath initial;
+        int x = -pen.width();
+        int y = -pen.width() + radius;
+        initial.moveTo(x, y);
+        initial.lineTo(x - 30, y - 20);
+        initial.lineTo(x - 30, y + 20);
+        initial.lineTo(x, y);
+        painter->drawPath(initial);
+    }
+    if (final)
+    {
+        painter->setBrush(Qt::BrushStyle::NoBrush);
+        painter->drawEllipse(0.2 * radius / 2, 0.2 * radius / 2, 1.8 * radius, 1.8 * radius);
+    }
     painter->setFont(QFont("Times", 12, QFont::Bold));
     Q_UNUSED(widget);
 }
@@ -149,4 +176,26 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
     };
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+bool Node::isInitial()
+{
+    return initial;
+}
+
+void Node::setInitial(bool initial)
+{
+    this->initial = initial;
+    update(boundingRect());
+}
+
+bool Node::isFinal()
+{
+    return final;
+}
+
+void Node::setFinal(bool final)
+{
+    this->final = final;
+    update(boundingRect());
 }

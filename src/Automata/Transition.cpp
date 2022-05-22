@@ -1,5 +1,6 @@
 #include "Transition.h"
 #include "src/Automata/State.h"
+
 using namespace AA;
 
 Transition::Transition(State* source, State* dest) {
@@ -8,7 +9,6 @@ Transition::Transition(State* source, State* dest) {
 }
 
 Transition::~Transition() {
-    
 }
 
 State* Transition::getSource() {
@@ -35,9 +35,10 @@ nlohmann::json Transition::toJson() {
     // TO-DO:
 }
 
-bool Transition::isEqualTo(Transition* other) {
-    if (dynamic_cast<Transition*>(other))
-        return dest == other->dest && source == other->source;
+bool Transition::isEqualTo(Object* other) {
+    auto casted = dynamic_cast<Transition*>(other);
+    if (casted)
+        return dest == casted->dest && source == casted->source;
     return false;
 }
 

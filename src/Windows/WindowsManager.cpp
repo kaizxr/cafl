@@ -2,6 +2,7 @@
 
 #include "src/Windows/SandboxWindow/SandboxWindow.h"
 #include "src/Windows/TitleWindow/TitleWindow.h"
+#include "src/Windows/Simulation/Output.h"
 
 WindowsManager* WindowsManager::instance = nullptr;
 
@@ -45,6 +46,10 @@ void WindowsManager::changeWindow(std::string windowType)
         curWindow = createSandboxWindow();
     else if (windowType == "title")
         curWindow = createTitleWindow();
+    else if (windowType == "output")
+    {
+        curWindow = createOutputWindow();
+    }
 #ifdef DEBUG
     else
         qInfo("error");
@@ -70,5 +75,13 @@ std::shared_ptr<TitleWindow> WindowsManager::createTitleWindow()
 {
     std::shared_ptr<TitleWindow> window = std::make_shared<TitleWindow>();
     window->show();
+    return window;
+}
+
+std::shared_ptr<Window::Simulation::Output> WindowsManager::createOutputWindow()
+{
+    std::shared_ptr<Window::Simulation::Output> window = std::make_shared<Window::Simulation::Output>();
+    window->show();
+    window->init();
     return window;
 }

@@ -14,5 +14,43 @@
         "InputBox": {
             "w": 100, "h": 30
         }
+    },
+    "Simulate": {
+        "WarningStep": 500
+    },
+    "Window": {
+        "Simulation": {
+            "FastRun": {
+                "TraceObject": {
+                    "w": 380,
+                    "h": 60,
+                    "State": {
+                        "x": 40,
+                        "y": 10,
+                        "radius": 40
+                    },
+                    "Input": {
+                        "x": 90,
+                        "y": 15,
+                        "w": 220,
+                        "h": 30
+                    },
+                    "InitialSign": {
+                        "Points": [
+                            { "x": 40, "y": 30 },
+                            { "x": 17, "y": 17 },
+                            { "x": 17, "y": 43 }
+                        ]
+                    },
+                    "ParentArrow": {
+                        "Points": [
+                            { "x": 190, "y": 12 },
+                            { "x": 177, "y": 4 },
+                            { "x": 203, "y": 4 }
+                        ]
+                    }
+                }
+            }
+        }
     }
 }

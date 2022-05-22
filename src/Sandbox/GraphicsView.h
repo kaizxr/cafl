@@ -15,7 +15,7 @@ public:
     void writeToJson();
     void openFromJson(const nlohmann::json& data);
 
-    void addNode(int x, int y, int id = -1);
+    std::shared_ptr<Node> addNode(int x, int y, int id = -1);
     void addEdge(int sourceId, int destId, QString text = nullptr, int id = -1);
     std::shared_ptr<Node> getNodeById(int id);
 
@@ -41,6 +41,10 @@ private:
     void resizeEvent(QResizeEvent *event) override;
     void removeObjects();
     void setTool(int tooltype);
+    void makeNodesFinal();
+    void tryMakeInitial();
+    void makeInitial(Node* node);
+    void convertToFSA();
     
     std::shared_ptr<Selector> selector;
 
@@ -49,6 +53,7 @@ private:
 
     eActionType actionType;
 
+    std::shared_ptr<Node> initialNode;
     std::shared_ptr<Node> sourceNode;
     std::shared_ptr<Node> destNode;
     std::shared_ptr<QPlainTextEdit> textEdit;

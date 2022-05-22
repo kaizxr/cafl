@@ -1,24 +1,27 @@
+#pragma once
+#include "Object.h"
 #include "lib/json.hpp"
-#include <QPoint>
+#include <QPointF>
 
 namespace AA
 {
     class Automata;
-    class State
+    class State : public Object
     {
     public:
-        State(int id, QPoint point, Automata* automata);
+        State(int id, QPointF point, Automata* automata);
         ~State();
-        QPoint getPoint();
+        QPointF getPoint();
         Automata* getAutomata();
         int getId() const;
         nlohmann::json toJson();
+        // bool operator<(const State& other);
     protected:
         void setId(int id);
     private:
         Automata* automata;
         int id;
-        QPoint point;
+        QPointF point;
         nlohmann::json data;
     };
 }

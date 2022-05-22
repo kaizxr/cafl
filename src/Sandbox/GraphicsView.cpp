@@ -18,6 +18,11 @@
 #include "src/Windows/SandboxWindow/SandboxWindow.h"
 #include <QPlainTextEdit>
 #include <iostream>
+#include <QMessageBox>
+#include <QSpacerItem>
+#include <QGridLayout>
+
+#include <src/Windows/Simulation/Output.h>
 
 #define DEBUG
 
@@ -45,6 +50,10 @@ nlohmann::json GraphicsView::toJson()
         const auto& nodeStr = QString::number(node->id()).toStdString().c_str();
         data["Graph"]["Node"][nodeStr]["pos"]["x"] = node->pos().x();
         data["Graph"]["Node"][nodeStr]["pos"]["y"] = node->pos().y();
+        if (node->isInitial())
+            data["Graph"]["Node"][nodeStr]["initial"] = true;
+        if (node->isFinal())
+            data["Graph"]["Node"][nodeStr]["final"] = true;
     }
     for (const auto& edge : edges)
     {
@@ -87,9 +96,17 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
         int radius = CONST["Node"]["radius"];
         int x = it.value()["pos"]["x"];
         int y = it.value()["pos"]["y"];
+        bool final = false;
+        bool initial = false;
+        if (it.value().contains("final"))
+            final = it.value()["final"];
+        if (it.value().contains("initial"))
+            initial = it.value()["initial"];
         x += radius;
         y += radius;
-        addNode(x,y,id);
+        auto node = addNode(x,y,id);
+        node->setFinal(final);
+        node->setInitial(initial);
     }
     std::cout << "nodes added" << std::endl;
     for (auto it = data["Graph"]["Edge"].begin(); it != data["Graph"]["Edge"].end(); ++it)
@@ -105,7 +122,7 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
     std::cout << "edges added" << std::endl;
 }
 
-void GraphicsView::addNode(int x, int y, int id)
+std::shared_ptr<Node> GraphicsView::addNode(int x, int y, int id)
 {
     if (id == -1)
         id = lastGivenNodeId++;
@@ -114,6 +131,7 @@ void GraphicsView::addNode(int x, int y, int id)
     std::shared_ptr<Node> node = std::make_shared<Node>(id, QPoint(x, y));
     scene()->addItem(node.get());
     nodes.push_back(node);
+    return node;
 }
 
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
@@ -375,6 +393,43 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             toolbox->setHolding(true);
         }
     }
+    // if (event->key() == Qt::Key_D)
+    // {
+    //     QString str;
+    //     QMessageBox::StandardButtons buttons = QMessageBox::Ok;
+    //     auto sandbox = WINDOWS->getSandboxWindow();
+    //     auto box = new QMessageBox(QMessageBox::Icon(),"Found config","asdasdasdasdasdasdasdasdas",buttons,sandbox);
+    //     const auto& r = box->rect();
+    //     qInfo("sandbox pos %d:%d",sandbox->pos().x(),sandbox->pos().y());
+    //     box->setGeometry(sandbox->pos().x()+sandbox->width()/2,sandbox->pos().y()+sandbox->height()/2,600,400);
+    //     box->setStyleSheet("QLabel{min-width:200 px;min-height:120 px}");
+
+    //     // QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    //     // QGridLayout* layout = (QGridLayout*)box->layout();
+    //     // layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    //     box->exec();
+    // }
+//    if (event->key() == Qt::Key_F)
+//    {
+//        auto window = new Window::Simulation::Output(WINDOWS->getSandboxWindow());
+//        qInfo("window created");
+//        window->show();
+//        window->init();
+//    }
+    if (event->key() == Qt::Key_D)
+    {
+        convertToFSA();
+    }
+    if (event->key() == Qt::Key_F)
+    {
+        qInfo("F");
+        makeNodesFinal();
+    }
+    if (event->key() == Qt::Key_G)
+    {
+        qInfo("G");
+        tryMakeInitial();
+    }
     if (event->key() == Qt::Key_S)
     {
         if (event->modifiers() == Qt::ControlModifier)
@@ -510,3 +565,103 @@ void GraphicsView::removeObjects()
     qInfo("updated edges size: %lld", edges.size());
 }
 
+void GraphicsView::makeNodesFinal()
+{
+    if (scene()->selectedItems().size() > 0)
+    {
+        for (const auto& item : scene()->selectedItems())
+        {
+            if (auto casted = dynamic_cast<Node*>(item))
+            {
+                casted->setFinal(!casted->isFinal());
+                qInfo("set to %d", casted->isFinal());
+            }
+        }
+    }
+}
+
+void GraphicsView::tryMakeInitial()
+{
+    if (scene()->selectedItems().size() > 0)
+    {
+        if (scene()->selectedItems().size() == 1)
+        {
+            const auto& item = scene()->selectedItems().front();
+            if (auto casted = dynamic_cast<Node*>(item))
+            {
+                makeInitial(casted);
+            }
+        }
+        else
+        {
+            Node* casted;
+            int initialNodeCount = 0;
+            for (const auto& item : scene()->selectedItems())
+            {
+                if (casted = dynamic_cast<Node*>(item))
+                {
+                    initialNodeCount++;
+                }
+            }
+            if (initialNodeCount == 1)
+            {
+                makeInitial(casted);
+            }
+        }
+    }
+}
+
+void GraphicsView::makeInitial(Node* item)
+{
+    if (initialNode)
+    {
+        initialNode->setInitial(false);
+    }
+    for (const auto& node : nodes)
+    {
+        if (node->id() == item->id())
+            initialNode = node;
+    }
+    initialNode->setInitial(true);
+}
+
+#include "src/Automata/FSA/FSAAutomata.h"
+#include "src/Automata/FSA/FSAConfiguration.h"
+#include "src/Automata/FSA/FSATransition.h"
+#include "src/Automata/State.h"
+#include "src/Automata/Actions/FastRun.h"
+#include "src/Automata/FSA/FSAStepByStepSimulator.h"
+
+void GraphicsView::convertToFSA()
+{
+    auto automata = new FSA::Automata();
+    auto states = QList<AA::State*>();
+    auto transitions = QList<FSA::Transition*>();
+
+    for (const auto& node : nodes)
+    {
+        auto state = automata->createState(node->pos(),node->id());
+        if (node->isInitial())
+            automata->setInitialState(state);
+        if (node->isFinal())
+            automata->addFinalState(state);
+    }
+    for (const auto& edge : edges)
+    {
+        auto findState = [&](const int& id)->AA::State*{
+            for (const auto& state : states)
+                if (state->getId() == id)
+                    return state;
+            return nullptr;
+        };
+        auto transition = new FSA::Transition(
+            automata->getStateById(edge->sourceNode()->id()),
+            automata->getStateById(edge->destNode()->id()),
+            edge->textContent());
+        automata->addTransition(transition);
+    }
+    auto data = automata->toJson();
+    
+    auto fr = new AA::Actions::FastRun(automata);
+    fr->actionPerformed();
+}

@@ -1,4 +1,7 @@
+#pragma once
+#include "Object.h"
 #include "lib/json.hpp"
+#include <QPointF>
 #include <QSet>
 #include <QMap>
 #include <QList>
@@ -7,7 +10,7 @@ namespace AA
 {
     class State;
     class Transition;
-    class Automata
+    class Automata : public Object
     {
     public:
         Automata();
@@ -21,7 +24,7 @@ namespace AA
         void replaceTransition(Transition* oldT, Transition* newT);
         void removeTransition(Transition* transition);
 
-        State* createState(QPoint point, int id = -1);
+        State* createState(QPointF point, int id = -1);
         void addState(State* state);
         void removeState(State* state);
         State* getStateById(int id);
@@ -37,7 +40,7 @@ namespace AA
         QList<State*> getFinalStates();
         bool isFinalState(State* state);
 
-        nlohmann::json toJson();
+        virtual nlohmann::json toJson();
     protected:
         QSet<State*> states;
         QSet<Transition*> transitions;

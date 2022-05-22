@@ -1,10 +1,12 @@
 #include "Automata.h"
 #include "src/Automata/State.h"
 #include "src/Automata/Transition.h"
+#include "src/Utils/Utils.h"
 
 using namespace AA;
 
 Automata::Automata() {
+    initialState = nullptr;
     lastGivenId = 0;
 }
 
@@ -35,6 +37,7 @@ QList<Transition*> Automata::getTransitionsStateToState(State* source, State* de
 
 QList<Transition*> Automata::getTransitions() {
     QList<Transition*> list(transitions.begin(),transitions.end());
+    return list;
 }
 
 void Automata::addTransition(Transition* transition) {
@@ -44,13 +47,13 @@ void Automata::addTransition(Transition* transition) {
         return;
     transitions.insert(transition);
     if (fromTransitions.empty()) fromTransitions = QMap<int,QList<Transition*>>();
-    QList<Transition*> list = fromTransitions[transition->getDest()->getId()];
+    QList<Transition*> list = fromTransitions[transition->getSource()->getId()];
     list.append(transition);
-    fromTransitions[transition->getDest()->getId()];
+    fromTransitions[transition->getSource()->getId()] = list;
     if (toTransitions.empty()) toTransitions = QMap<int,QList<Transition*>>();
     list = toTransitions[transition->getDest()->getId()];
     list.append(transition);
-    toTransitions[transition->getDest()->getId()];
+    toTransitions[transition->getDest()->getId()] = list;
 }
 
 void Automata::replaceTransition(Transition* oldT, Transition* newT) {
@@ -61,26 +64,26 @@ void Automata::replaceTransition(Transition* oldT, Transition* newT) {
     if (transitions.remove(oldT))
     {
         transitions.insert(newT);
-        QList<Transition*> list = fromTransitions[oldT->getDest()->getId()];
+        QList<Transition*> list = fromTransitions[oldT->getSource()->getId()];
         list.replace(list.indexOf(oldT),newT);
-        fromTransitions[newT->getDest()->getId()];
+        fromTransitions[newT->getSource()->getId()] = list;
         list = toTransitions[oldT->getDest()->getId()];
         list.replace(list.indexOf(oldT),newT);
-        toTransitions[newT->getDest()->getId()];
+        toTransitions[newT->getDest()->getId()] = list;
     }
 }
 
 void Automata::removeTransition(Transition* transition) {
     transitions.remove(transition);
-    QList<Transition*> list = fromTransitions[transition->getDest()->getId()];
+    QList<Transition*> list = fromTransitions[transition->getSource()->getId()];
     list.remove(list.indexOf(transition));
-    fromTransitions[transition->getDest()->getId()];
+    fromTransitions[transition->getSource()->getId()] = list;
     list = toTransitions[transition->getDest()->getId()];
     list.remove(list.indexOf(transition));
-    toTransitions[transition->getDest()->getId()];
+    toTransitions[transition->getDest()->getId()] = list;
 }
 
-State* Automata::createState(QPoint point, int id) {
+State* Automata::createState(QPointF point, int id) {
     if (id == -1)
         id = lastGivenId++;
     State* state = new State(id,point,this);
@@ -123,7 +126,7 @@ State* Automata::getStateById(int id) {
 
 QList<State*> Automata::getStates() {
     QList<State*> list(states.begin(),states.end());
-    std::sort(list.begin(),list.end(),[](const State& a, const State& b){return a.getId() < b.getId();});
+    // std::sort(list.begin(),list.end());
     return list;
 }
 
@@ -162,6 +165,22 @@ bool Automata::isFinalState(State* state) {
     return finalStates.contains(state);
 }
 
+#include <iostream>
 nlohmann::json Automata::toJson() {
     //TO-DO:
+    nlohmann::json data;
+    for (const auto& state : states)
+    {
+        const auto& stateStr = QString::number(state->getId()).toStdString().c_str();
+        data["Automata"]["State"][stateStr]["pos"]["x"] = state->getPoint().x();
+        data["Automata"]["State"][stateStr]["pos"]["y"] = state->getPoint().y();
+    }
+    for (const auto& transition : transitions)
+    {
+        const auto& edgeStr = strFormat("%d->%d",transition->getSource()->getId(),transition->getDest()->getId()).c_str();
+        data["Automata"]["Transition"][edgeStr]["source"] = transition->getSource()->getId();
+        data["Automata"]["Transition"][edgeStr]["dest"] = transition->getDest()->getId();
+    }
+    std::cout << std::setw(4) << data << std::endl;
+    return data;
 }

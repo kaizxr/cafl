@@ -3,7 +3,7 @@
 
 using namespace AA;
 
-State::State(int id, QPoint point, Automata* automata) : id(id), point(point), automata(automata)
+State::State(int id, QPointF point, Automata* automata) : id(id), point(point), automata(automata)
 {
 }
 
@@ -12,7 +12,7 @@ State::~State()
     
 }
 
-QPoint State::getPoint()
+QPointF State::getPoint()
 {
     return point;
 }
@@ -31,6 +31,11 @@ nlohmann::json State::toJson()
 {
     
 }
+
+// bool State::operator<(const State& other)
+// {
+//     return this->id < other.id;
+// }
 
 void State::setId(int id)
 {

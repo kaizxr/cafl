@@ -1,7 +1,12 @@
 #pragma once
-#include <QMainWindow>
+#include <QWindow>
 
 #define WINDOWS WindowsManager::getInstance()
+
+namespace Window::Simulation
+{
+    class Output;
+}
 
 class SandboxWindow;
 class TitleWindow;
@@ -18,7 +23,8 @@ public:
 private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
     std::shared_ptr<TitleWindow> createTitleWindow();
+    std::shared_ptr<Window::Simulation::Output> createOutputWindow();
 
     static WindowsManager* instance;
-    std::shared_ptr<QMainWindow> curWindow;
+    std::shared_ptr<QWidget> curWindow;
 };
