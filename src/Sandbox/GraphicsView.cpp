@@ -4,6 +4,7 @@
 #include "src/Sandbox/Node.h"
 #include "src/Sandbox/Selector.h"
 #include "src/Sandbox/Edge/Edge.h"
+#include "src/Sandbox/Edge/LoopEdge.h"
 
 #include <QGraphicsItem>
 #include <QMouseEvent>
@@ -140,7 +141,11 @@ void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
         id = lastGivenEdgeId++;
     else
         lastGivenEdgeId = id+1;
-    Edge* edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
+    BaseEdge* edge;
+    if (sourceId != destId)
+        edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
+    else
+        edge = new LoopEdge(id,getNodeById(sourceId).get(),text);
     edges.append(edge);
     scene()->addItem(edge);
 }
@@ -316,23 +321,19 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
             if (node->contains(event->pos()-node->pos()))
             {
                 destNode = node;
-                if (destNode != sourceNode)
-                {
-                    qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
-                    
-                    textEdit = std::make_shared<QPlainTextEdit>(this);
-                    int radius = CONST["Node"]["radius"];
-                    auto dPos = destNode->pos()+QPointF(radius,radius);
-                    auto sPos = sourceNode->pos()+QPointF(radius,radius);
-                    int w = CONST["Edge"]["InputBox"]["w"];
-                    int h = CONST["Edge"]["InputBox"]["h"];
-                    textEdit->setGeometry(QRect((dPos.x()+sPos.x())/2,(dPos.y()+sPos.y())/2,w,h));
-                    textEdit->show();
-                    textEdit->setFocus();
-                    actionType = eActionType::WAIT_EDGE_NAME;
-                    return;
-                }
-                break;
+                qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
+                
+                textEdit = std::make_shared<QPlainTextEdit>(this);
+                int radius = CONST["Node"]["radius"];
+                auto dPos = destNode->pos()+QPointF(radius,radius);
+                auto sPos = sourceNode->pos()+QPointF(radius,radius);
+                int w = CONST["Edge"]["InputBox"]["w"];
+                int h = CONST["Edge"]["InputBox"]["h"];
+                textEdit->setGeometry(QRect((dPos.x()+sPos.x())/2,(dPos.y()+sPos.y())/2,w,h));
+                textEdit->show();
+                textEdit->setFocus();
+                actionType = eActionType::WAIT_EDGE_NAME;
+                return;
             }
         }
         break;

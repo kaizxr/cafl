@@ -29,12 +29,6 @@ Edge::Edge(int id, Node *sourceNode, Node *destNode, QString text)
     adjust();
 }
 
-Edge::Edge(const QJsonObject &json)
-    : BaseEdge()
-{
-    adjust();
-}
-
 QPointF Edge::posText() const
 {
     QPointF textPoint;
@@ -192,11 +186,17 @@ QPointF Edge::newPosBezier() const
 
 QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+    qDebug() << "Edge::itemChange";
+    QLineF lpp(pos(), value.toPointF());
     switch (change) {
     case ItemPositionChange:
+        qDebug() << ItemPositionChange;
+        qDebug() << lpp;
         bezier = newPosBezier();
         break;
     case ItemPositionHasChanged:
+        qDebug() << ItemPositionHasChanged;
+        qDebug() << lpp;
         beforeLine.setPoints(mapFromScene(source->centeredPos()), mapFromScene(dest->centeredPos()));
         adjust();
         break;

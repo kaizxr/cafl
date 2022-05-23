@@ -3,7 +3,7 @@
 #include "lib/json.hpp"
 
 class QPlainTextEdit;
-class Edge;
+class BaseEdge;
 class Node;
 class Selector;
 class GraphicsView : public QGraphicsView
@@ -49,7 +49,7 @@ private:
     std::shared_ptr<Selector> selector;
 
     QList<std::shared_ptr<Node>> nodes;
-    QList<Edge*> edges;
+    QList<BaseEdge*> edges;
 
     eActionType actionType;
 

@@ -1,3 +1,4 @@
+#pragma once
 #include <QGraphicsItem>
 #include "src/Sandbox/SandboxObject.h"
 

@@ -13,6 +13,10 @@
         "textMargin": 5,
         "InputBox": {
             "w": 100, "h": 30
+        },
+        "LoopEdge": {
+            "offset": 62.5,
+            "radius": 25
         }
     },
     "Simulate": {

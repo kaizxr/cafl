@@ -5,7 +5,6 @@ class Edge : public BaseEdge
 {
 public:
     Edge(int id, Node *sourceNode, Node *destNode = nullptr, QString text = nullptr);
-    Edge(const QJsonObject &json);
 
 protected:
     QRectF boundingRect() const override;
