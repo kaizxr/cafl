@@ -137,17 +137,41 @@ std::shared_ptr<Node> GraphicsView::addNode(int x, int y, int id)
 
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
 {
-    if (id == -1)
+    auto oldEdge = checkEdge(getNodeById(sourceId).get(),getNodeById(destId).get());
+    if (!oldEdge)
+    {
+        if (id == -1)
         id = lastGivenEdgeId++;
+        else
+            lastGivenEdgeId = id+1;
+        BaseEdge* edge;
+        if (sourceId != destId)
+            edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
+        else
+            edge = new LoopEdge(id,getNodeById(sourceId).get(),text);
+        edges.append(edge);
+        scene()->addItem(edge);
+    }
     else
-        lastGivenEdgeId = id+1;
-    BaseEdge* edge;
-    if (sourceId != destId)
-        edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
-    else
-        edge = new LoopEdge(id,getNodeById(sourceId).get(),text);
-    edges.append(edge);
-    scene()->addItem(edge);
+    {
+        if (!text.isEmpty())
+        {
+            text = oldEdge->textContent() + "; " + text;
+            oldEdge->setTextContent(text);
+        }
+    }
+}
+
+BaseEdge* GraphicsView::checkEdge(Node* source, Node* dest)
+{
+    const auto& list = source->getEdges();
+
+    for (const auto& edge : list)
+    {
+        if (edge->sourceNode()->id() == source->id() && edge->destNode()->id() == dest->id())
+            return edge;
+    }
+    return nullptr;
 }
 
 std::shared_ptr<Node> GraphicsView::getNodeById(int id)

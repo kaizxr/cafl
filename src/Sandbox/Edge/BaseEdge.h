@@ -19,7 +19,7 @@ public:
     void remove();
 protected:
     QPolygonF arrowPolygon(QPointF peak, qreal angle) const;
-    virtual QPointF posText() const = 0;
+    virtual QPointF posText(QPainterPath path = QPainterPath()) const = 0;
     virtual QPainterPath pathText() const = 0;
     
     Node *source, *dest;

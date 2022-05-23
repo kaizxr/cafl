@@ -45,6 +45,7 @@ private:
     void tryMakeInitial();
     void makeInitial(Node* node);
     void convertToFSA();
+    BaseEdge* checkEdge(Node* source, Node* dest);
     
     std::shared_ptr<Selector> selector;
 

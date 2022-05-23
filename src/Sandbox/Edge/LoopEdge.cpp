@@ -124,7 +124,7 @@ float LoopEdge::getArrowAngle() const
     return lineToArrow.angle() - 90;
 }
 
-QPointF LoopEdge::posText() const
+QPointF LoopEdge::posText(QPainterPath path) const
 {
     int textOffset = CONST["Edge"]["textOffset"];
     QLineF l1;

@@ -12,7 +12,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void drawText(QPainter *painter, QPainterPath path, QString text);
     QPointF newPosBezier() const;
-    QPointF posText() const override;
+    QPointF posText(QPainterPath path = QPainterPath()) const override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     QPainterPath pathBezierCurve() const;
     QPainterPath pathText() const override;

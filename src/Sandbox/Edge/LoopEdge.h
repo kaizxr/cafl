@@ -18,7 +18,7 @@ public:
 protected:
     QPointF peakArrow() const;
     float getArrowAngle() const;
-    QPointF posText() const override;
+    QPointF posText(QPainterPath path = QPainterPath()) const override;
     virtual QPainterPath pathText() const override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     

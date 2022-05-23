@@ -29,18 +29,15 @@ Edge::Edge(int id, Node *sourceNode, Node *destNode, QString text)
     adjust();
 }
 
-QPointF Edge::posText() const
+QPointF Edge::posText(QPainterPath path) const
 {
     QPointF textPoint;
     int radius = CONST["Node"]["radius"];
     int textOffset = CONST["Edge"]["textOffset"];
     if(source != dest) {
-        QPainterPath path = pathBezierCurve();
+        if (path.isEmpty())
+            path = pathBezierCurve();
         textPoint = path.pointAtPercent(0.5);
-        qreal angle = getAngleAtMiddle(path);
-        qreal dx = textOffset * sin(angle * M_PI / 180);
-        qreal dy = -textOffset * cos(angle * M_PI / 180);
-        textPoint += QPointF(dx,dy);
     } else {
         textPoint = QPointF(boundingRect().center().x() - radius / 2, boundingRect().center().y());
     }
@@ -56,15 +53,17 @@ QPainterPath Edge::pathBezierCurve() const {
 }
 
 QPainterPath Edge::shape() const {
+    QTransform trans;
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);
     if (source != dest) {
-        if (!isSelected()) {
+        if (!isSelected())
             path = pathBezierCurve().united(pathText());
-        } else {
+        else
             path = pathPoint(newPosBezier());
-        }
-    } else {
+    }
+    else
+    {
         int radius = CONST["Node"]["radius"];
         path.addEllipse(source->centeredPos() + QPointF(radius, -radius),
                         radius + 2, radius + 2);
@@ -78,20 +77,7 @@ QRectF Edge::boundingRect() const
         return QRectF();
     if (source != dest) {
         QPainterPath path = pathBezierCurve();
-        QPolygonF pText;
-        QPointF textPoint = posText();
-        int w = fm.boundingRect(text).width();
-        int h = fm.boundingRect(text).height();
-        qreal x = textPoint.x() - w/2;
-        qreal y = textPoint.y();
-        qreal angle = -getAngleAtMiddle(pathBezierCurve());
-        qreal sinA = sin(angle * M_PI / 180);
-        qreal cosA = cos(angle * M_PI / 180);
-        QPointF a(x,y);
-        QPointF b(x-h*sinA,y-h*cosA);
-        QPointF c(b.x()+w*cosA,b.y()-h*sinA);
-        QPointF d(x+w*cosA,y-h*sinA);
-        pText << a << b << c << d;
+        QPainterPath pText = pathText();
         QPolygonF pBezier;
         pBezier << bezier + QPointF(-1, -1)
                 << bezier + QPointF(2, 0)
@@ -121,7 +107,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         QPointF bezierPaint = newPosBezier();
         myPath.quadTo(bezierPaint,mapFromScene(dest->centeredPos()));
         painter->drawPath(myPath);
-
+        painter->setBrush((isSelected() ? Qt::cyan: Qt::black));
         line.setLength(line.length() - radius);
         if (qFuzzyCompare(line.length(), qreal(0.)))
             return;
@@ -154,9 +140,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 void Edge::drawText(QPainter *painter, QPainterPath path, QString text)
 {
     QPointF textPoint = mapToScene(path.pointAtPercent(0.5));
-    // qreal d = (textPoint.x() - source->x()) * (dest->y() - source->y())
-    //      - (textPoint.y() - source->y()) * (dest->x() - source->x());
-    QPointF temp = path.pointAtPercent(path.percentAtLength(CONST["Node"]["radius"]));
     
     qreal angle = getAngleAtMiddle(path);
     QTransform trans;
@@ -164,11 +147,10 @@ void Edge::drawText(QPainter *painter, QPainterPath path, QString text)
     trans.rotate(angle);
     trans.translate(-textPoint.x(),-textPoint.y());
     int textOffset = CONST["Edge"]["textOffset"];
-    trans.translate(0,-textOffset);
-    // if (d >= 0)
-    //     trans.translate(0,-textOffset);
-    // else
-    //     trans.translate(0,textOffset);
+    if (source->pos().x() >= dest->pos().x())
+        trans.translate(0,textOffset+fm.height()/2);
+    else
+        trans.translate(0,-textOffset);
 
     painter->setTransform(trans);
     painter->drawText(textPoint.x()-fm.boundingRect(text).width()/2,textPoint.y(),text);
@@ -208,30 +190,43 @@ QVariant Edge::itemChange(GraphicsItemChange change, const QVariant &value)
 
 QPainterPath Edge::pathText() const {
     QPainterPath path;
+
     QPointF textPoint = posText();
+    int textOffset = CONST["Edge"]["textOffset"];
+
     int w = fm.boundingRect(text).width();
     int h = fm.boundingRect(text).height();
-    qreal x = textPoint.x() - w/2;
+    qreal x = textPoint.x();
     qreal y = textPoint.y();
-    qreal angle = -getAngleAtMiddle(pathBezierCurve());
-    qreal sinA = sin(angle * M_PI / 180);
-    qreal cosA = cos(angle * M_PI / 180);
-    QPointF a(x,y);
-    QPointF b(x-h*sinA,y-h*cosA);
-    QPointF c(b.x()+w*cosA,b.y()-h*sinA);
-    QPointF d(x+w*cosA,y-h*sinA);
+    qreal angle = getAngleAtMiddle(pathBezierCurve());
+
+    QPointF a(x-w/2,y);
+    QPointF b(x-w/2,y-h);
+    QPointF c(x+w/2,y-h);
+    QPointF d(x+w/2,y);
     path.moveTo(a);
     path.lineTo(b);
     path.lineTo(c);
     path.lineTo(d);
     path.lineTo(a);
+
+    QTransform trans;
+    trans.translate(x,y);
+    trans.rotate(angle);
+    trans.translate(-x,-y);
+    if (source->pos().x() >= dest->pos().x())
+        trans.translate(0,textOffset+fm.height());
+    else
+        trans.translate(0,-textOffset);
+    
+    path = trans.map(path);
     return path;
 }
 
 qreal Edge::getAngleAtMiddle(QPainterPath path) const
 {
     qreal angle = -path.angleAtPercent(0.5);
-    if (source->pos().x() >= dest->pos().x())
+    if (source->pos().x() > dest->pos().x())
         angle += 180;
     return angle;
 }

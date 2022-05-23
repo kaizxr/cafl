@@ -115,10 +115,8 @@ QRectF Node::boundingRect() const
 
 QPoint Node::centeredPos() const
 {
-    return QPoint(
-        pos().x() + boundingRect().width() / 2,
-        pos().y() + boundingRect().height() / 2
-    );
+    return QPoint(pos().x() + radius,
+                  pos().y() + radius);
 }
 
 void Node::addEdge(BaseEdge *edge)
