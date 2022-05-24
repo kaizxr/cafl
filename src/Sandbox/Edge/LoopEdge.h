@@ -15,10 +15,10 @@ public:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     QPainterPath shape() const override;
+    QPointF posText(QPainterPath path = QPainterPath()) const override;
 protected:
     QPointF peakArrow() const;
     float getArrowAngle() const;
-    QPointF posText(QPainterPath path = QPainterPath()) const override;
     virtual QPainterPath pathText() const override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     

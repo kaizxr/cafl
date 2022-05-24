@@ -26,6 +26,7 @@ SOURCES += \
     src/Sandbox/Edge/BaseEdge.cpp \
     src/Sandbox/Edge/Edge.cpp \
     src/Sandbox/Edge/LoopEdge.cpp \
+    src/Sandbox/TextBox/TextBox.cpp \
     src/Sandbox/GraphicsView.cpp \
     src/Sandbox/Node.cpp \
     src/Sandbox/SandboxObject.cpp \
@@ -61,6 +62,8 @@ HEADERS += \
     src/Sandbox/Edge/BaseEdge.h \
     src/Sandbox/Edge/Edge.h \
     src/Sandbox/Edge/LoopEdge.h \
+    src/Sandbox/TextBox/TextBox.h \
+    src/Sandbox/TextBox/TextListener.h \
     src/Sandbox/GraphicsView.h \
     src/Sandbox/Node.h \
     src/Sandbox/SandboxObject.h \

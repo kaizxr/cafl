@@ -23,6 +23,7 @@
 #include <QSpacerItem>
 #include <QGridLayout>
 
+#include "src/Sandbox/TextBox/TextBox.h"
 #include <src/Windows/Simulation/Output.h>
 
 #define DEBUG
@@ -78,14 +79,7 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
     qInfo("openFromJson");
     if (data.is_null())
         return;
-    scene()->clearSelection();
-    QPainterPath path;
-    path.moveTo(0,0);
-    path.lineTo(width(),0);
-    path.lineTo(width(),height());
-    path.lineTo(0,height());
-    path.lineTo(0,0);
-    scene()->setSelectionArea(path);
+    selectAllObjects();
     removeObjects();
     lastGivenEdgeId = 0;
     lastGivenNodeId = 0;
@@ -184,6 +178,17 @@ std::shared_ptr<Node> GraphicsView::getNodeById(int id)
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 {
+    if (event->button() == Qt::MouseButton::LeftButton)
+    {
+        for (const auto& edge : edges)
+        {
+            if (edge->contains(event->pos()-edge->pos()))
+            {
+                startRenameEdge(edge);
+            }
+        }
+    }
+
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -217,6 +222,22 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
                     }
                 }
             }
+            for (const auto& edge : edges)
+            {
+                if (edge->contains(event->pos()-edge->pos()))
+                {
+                    intersects = true;
+                    if (scene()->selectedItems().indexOf(edge) == -1 && scene()->selectedItems().empty())
+                    {
+                        edge->setSelected(true);
+                    }
+                    else if (scene()->selectedItems().indexOf(edge) == -1 && !scene()->selectedItems().empty())
+                    {
+                        scene()->clearSelection();
+                        edge->setSelected(true);
+                    }
+                }
+            }
             if (!intersects)
                 scene()->clearSelection();
 
@@ -239,13 +260,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             {
                 if (!textEdit->rect().contains(event->pos()-textEdit->pos()))
                 {
-                    qInfo(textEdit->toPlainText().toStdString().c_str());
-                    addEdge(sourceNode->id(),destNode->id(),textEdit->toPlainText());
-                    textEdit.reset();
-                    textEdit = nullptr;
-                    actionType == eActionType::NONE;
-                    sourceNode = nullptr;
-                    destNode = nullptr;
+                    setEdgeName(!textEdit->isRenaming() ? 0 : 1);
                 }
             }
 
@@ -261,7 +276,6 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             actionType = eActionType::ADD_EDGE;
             break;
         case ToolsManager::eToolType::HAND:
-            // scene()->clearSelection();
             actionType = eActionType::HAND_MOVE;
             break;
         default:
@@ -347,15 +361,13 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
                 destNode = node;
                 qInfo("dest node id = %d pos = %f:%f",destNode->id(),destNode->pos().x(),destNode->pos().y());
                 
-                textEdit = std::make_shared<QPlainTextEdit>(this);
                 int radius = CONST["Node"]["radius"];
                 auto dPos = destNode->pos()+QPointF(radius,radius);
                 auto sPos = sourceNode->pos()+QPointF(radius,radius);
                 int w = CONST["Edge"]["InputBox"]["w"];
                 int h = CONST["Edge"]["InputBox"]["h"];
-                textEdit->setGeometry(QRect((dPos.x()+sPos.x())/2,(dPos.y()+sPos.y())/2,w,h));
-                textEdit->show();
-                textEdit->setFocus();
+                auto rect = QRect((dPos.x()+sPos.x())/2,(dPos.y()+sPos.y())/2,w,h);
+                textEdit = std::make_shared<TextBox>(rect,QString(),false,this);
                 actionType = eActionType::WAIT_EDGE_NAME;
                 return;
             }
@@ -418,29 +430,6 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             toolbox->setHolding(true);
         }
     }
-    // if (event->key() == Qt::Key_D)
-    // {
-    //     QString str;
-    //     QMessageBox::StandardButtons buttons = QMessageBox::Ok;
-    //     auto sandbox = WINDOWS->getSandboxWindow();
-    //     auto box = new QMessageBox(QMessageBox::Icon(),"Found config","asdasdasdasdasdasdasdasdas",buttons,sandbox);
-    //     const auto& r = box->rect();
-    //     qInfo("sandbox pos %d:%d",sandbox->pos().x(),sandbox->pos().y());
-    //     box->setGeometry(sandbox->pos().x()+sandbox->width()/2,sandbox->pos().y()+sandbox->height()/2,600,400);
-    //     box->setStyleSheet("QLabel{min-width:200 px;min-height:120 px}");
-
-    //     // QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    //     // QGridLayout* layout = (QGridLayout*)box->layout();
-    //     // layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
-    //     box->exec();
-    // }
-//    if (event->key() == Qt::Key_F)
-//    {
-//        auto window = new Window::Simulation::Output(WINDOWS->getSandboxWindow());
-//        qInfo("window created");
-//        window->show();
-//        window->init();
-//    }
     if (event->key() == Qt::Key_D)
     {
         convertToFSA();
@@ -471,6 +460,11 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             WINDOWS->getSandboxWindow()->openGraph();
         }
     }
+    if (event->key() == Qt::Key_F2)
+    {
+        if (auto casted = dynamic_cast<BaseEdge*>(scene()->selectedItems().front()))
+            startRenameEdge(casted);
+    }
     if (event->key() == Qt::Key_Z)
     {
         if (event->modifiers() == Qt::ControlModifier)
@@ -497,6 +491,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         if (event->modifiers() == Qt::ControlModifier)
         {
             qInfo("ctrl+a was called");
+            selectAllObjects();
         }
     }
     QGraphicsView::keyPressEvent(event);
@@ -520,6 +515,47 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
         }
     }
     QGraphicsView::keyReleaseEvent(event);
+}
+
+void GraphicsView::onTextChanged(int code)
+{
+    setEdgeName(code);
+}
+
+void GraphicsView::setEdgeName(int code)
+{
+    auto edgeText = textEdit->toPlainText();
+    if (code == 0)
+    {
+        qInfo(edgeText.toStdString().c_str());
+        addEdge(sourceNode->id(),destNode->id(),edgeText);
+    }
+    else if (code == 1)
+    {
+        if (auto casted = dynamic_cast<BaseEdge*>(scene()->selectedItems().front()))
+        {
+            casted->setTextContent(edgeText);
+        }
+    }
+    textEdit.reset();
+    textEdit = nullptr;
+    actionType == eActionType::NONE;
+    sourceNode = nullptr;
+    destNode = nullptr;
+    this->setFocus();
+}
+
+void GraphicsView::startRenameEdge(BaseEdge* edge)
+{
+    scene()->clearSelection();
+    edge->setSelected(true);
+
+    auto pos = edge->posText();
+    int w = CONST["Edge"]["InputBox"]["w"];
+    int h = CONST["Edge"]["InputBox"]["h"];
+    auto rect = QRect(pos.x()-w/2,pos.y()-h/2,w,h);
+    textEdit = std::make_shared<TextBox>(rect,edge->textContent(),true,this);
+    actionType = eActionType::WAIT_EDGE_NAME;
 }
 
 void GraphicsView::resizeEvent(QResizeEvent *event)
@@ -693,4 +729,16 @@ void GraphicsView::convertToFSA()
     
     auto fr = new AA::Actions::FastRun(automata);
     fr->actionPerformed();
+}
+
+void GraphicsView::selectAllObjects()
+{
+    scene()->clearSelection();
+    QPainterPath path;
+    path.moveTo(0,0);
+    path.lineTo(width(),0);
+    path.lineTo(width(),height());
+    path.lineTo(0,height());
+    path.lineTo(0,0);
+    scene()->setSelectionArea(path);
 }

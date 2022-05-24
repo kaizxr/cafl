@@ -67,22 +67,16 @@ QPainterPath BaseEdge::pathPoint(QPointF point) const {
     return path;
 }
 
-BaseEdge *BaseEdge::create(const QJsonObject &json)
-{
-    // QJsonObject jsonIt = json["Item"].toObject();
-    // if (jsonIt["Type"].toInt() == eSandboxType::EDGE) {
-    //     return new Edge(json, graphicsView);
-    // } else if (jsonIt["Type"].toInt() == eSandboxType::CYCLE_EDGE) {
-    //     return new EdgeCircle(json, graphicsView);
-    // }
-    return nullptr;
-}
-
 void BaseEdge::remove()
 {
     source->removeEdge(this);
     if (source != dest)
         dest->removeEdge(this);
+}
+
+void BaseEdge::onTextChanged(int code)
+{
+    
 }
 
 QPolygonF BaseEdge::arrowPolygon(QPointF peak, qreal angle) const

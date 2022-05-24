@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QFont>
 #include <QFontMetrics>
+#include "src/Sandbox/TextBox/TextListener.h"
 
 enum class eSandboxType
 {
@@ -14,7 +15,7 @@ enum class eSandboxType
     CYCLE_EDGE
 };
 
-class SandboxObject : public QGraphicsItem
+class SandboxObject : public QGraphicsItem, public TextListener
 {
 public:
     SandboxObject(int id, QString text = nullptr);
@@ -23,6 +24,7 @@ public:
     virtual void setTextContent(QString text);
     virtual QString textContent() const { return text; }
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void onTextChanged(int code) override {};
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     QRectF enoughBoundingRect(QRectF rect) const;

@@ -6,6 +6,9 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QStyleOptionGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QPlainTextEdit>
+#include "src/Sandbox/TextBox/TextBox.h"
 
 Edge::Edge(int id, Node *sourceNode, Node *destNode, QString text)
     : BaseEdge(id, sourceNode, destNode, text)
@@ -56,18 +59,9 @@ QPainterPath Edge::shape() const {
     QTransform trans;
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);
-    if (source != dest) {
-        if (!isSelected())
-            path = pathBezierCurve().united(pathText());
-        else
-            path = pathPoint(newPosBezier());
-    }
-    else
-    {
-        int radius = CONST["Node"]["radius"];
-        path.addEllipse(source->centeredPos() + QPointF(radius, -radius),
-                        radius + 2, radius + 2);
-    }
+    path = pathBezierCurve().
+            united(pathText()).
+            united(pathPoint(newPosBezier()));
     return path;
 }
 

@@ -15,11 +15,11 @@ public:
     inline Node *destNode() const { return dest; }
     void adjust();
     QPainterPath pathPoint(QPointF point) const;
-    static BaseEdge *create(const QJsonObject &json);
     void remove();
+    virtual void onTextChanged(int code) override;
+    virtual QPointF posText(QPainterPath path = QPainterPath()) const = 0;
 protected:
     QPolygonF arrowPolygon(QPointF peak, qreal angle) const;
-    virtual QPointF posText(QPainterPath path = QPainterPath()) const = 0;
     virtual QPainterPath pathText() const = 0;
     
     Node *source, *dest;
