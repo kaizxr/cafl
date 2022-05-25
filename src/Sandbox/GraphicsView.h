@@ -33,7 +33,10 @@ public:
 
     void selectAllObjects();
     void convertToFSA();
-    
+    void makeInitial(Node* node);
+    void startRenameEdge(BaseEdge* edge);
+    void removeObject(QGraphicsItem* item);
+
     enum class eActionType
     {
         NONE,
@@ -50,10 +53,8 @@ private:
     void setTool(int tooltype);
     void makeNodesFinal();
     void tryMakeInitial();
-    void makeInitial(Node* node);
     BaseEdge* checkEdge(Node* source, Node* dest);
     void setEdgeName(int code);
-    void startRenameEdge(BaseEdge* edge);
     
     std::shared_ptr<Selector> selector;
 

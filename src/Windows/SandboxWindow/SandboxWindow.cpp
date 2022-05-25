@@ -5,13 +5,15 @@
 // initUI()
 #include "src/Sandbox/GraphicsView.h"
 #include "src/Sandbox/Node.h"
+#include "src/Sandbox/Edge/BaseEdge.h"
 #include "src/Utils/Constants.h"
 #include "src/Sandbox/Buttons/ToggleButton.h"
 #include "src/Sandbox/Buttons/ToolButtonGroup.h"
 
 #include "src/Windows/WindowsManager.h"
 #include "src/Sandbox/ToolsManager.h"
-#include "src/Sandbox/Buttons/ToolButtonGroup.h"
+
+#include "src/Sandbox/ContextMenu/ContextMenu.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -55,7 +57,9 @@ void SandboxWindow::initUI()
 
 void SandboxWindow::init()
 {
+    // graphicsView = new GraphicsView(ui->mainFrame);
     graphicsView = std::make_shared<GraphicsView>(ui->mainFrame);
+    graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
     graphicsView->setFocus();
     setMouseTracking(true);
 }
@@ -106,6 +110,11 @@ void SandboxWindow::openGraph()
     graphicsView->openFromJson(data);
 }
 
+GraphicsView* SandboxWindow::getGraphicsView()
+{
+    return graphicsView.get();
+}
+
 void SandboxWindow::initActions()
 {
     connect(ui->actionNewProject,    &QAction::triggered, this, &SandboxWindow::newProject       );
@@ -119,6 +128,8 @@ void SandboxWindow::initActions()
     connect(ui->actionHand,          &QAction::triggered, this, &SandboxWindow::handTool         );
     connect(ui->actionOneInput,      &QAction::triggered, this, &SandboxWindow::oneInput         );
     connect(ui->actionMultipleInput, &QAction::triggered, this, &SandboxWindow::multipleInput    );
+
+    connect(graphicsView.get(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(requestContextMenu(const QPoint&))    );
 }
 
 void SandboxWindow::resizeEvent(QResizeEvent* event)
@@ -203,5 +214,15 @@ void SandboxWindow::multipleInput()
 {
 }
 
+void SandboxWindow::requestContextMenu(const QPoint& pos)
+{
+    auto item = graphicsView->itemAt(pos);
+    if (!item)
+        return;
+    qInfo("requestContextMenu");
+    ContextMenu menu = ContextMenu(item, this);
+
+    menu.exec(graphicsView->mapToGlobal(pos));
+}
 
 

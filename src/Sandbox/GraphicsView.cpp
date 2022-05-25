@@ -565,6 +565,13 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
     scene()->setSceneRect(QRect(0,0,newSize.width(),newSize.height()));
 }
 
+void GraphicsView::removeObject(QGraphicsItem* item)
+{
+    scene()->clearSelection();
+    item->setSelected(true);
+    removeObjects();
+}
+
 void GraphicsView::removeObjects()
 {
     qInfo("delete");

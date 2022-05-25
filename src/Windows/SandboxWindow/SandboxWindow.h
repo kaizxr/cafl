@@ -23,6 +23,7 @@ public:
     void initUI();
     void saveJson(nlohmann::json data);
     void openGraph();
+    GraphicsView* getGraphicsView();
 
 private slots:
     void newProject();
@@ -36,6 +37,7 @@ private slots:
     void handTool();
     void oneInput();
     void multipleInput();
+    void requestContextMenu(const QPoint& pos);
 
 private:    
     void init();
@@ -45,6 +47,7 @@ private:
     void mouseMoveEvent(QMouseEvent* event) override;
 
     QString curFilename;
+    // GraphicsView* graphicsView;
     std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;

@@ -23,6 +23,7 @@ SOURCES += \
     src/Utils/Constants.cpp \
     src/Sandbox/Buttons/ToolButtonGroup.cpp \
     src/Sandbox/Buttons/ToggleButton.cpp \
+    src/Sandbox/ContextMenu/ContextMenu.cpp \
     src/Sandbox/Edge/BaseEdge.cpp \
     src/Sandbox/Edge/Edge.cpp \
     src/Sandbox/Edge/LoopEdge.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     src/Utils/Utils.h \
     src/Sandbox/Buttons/ToolButtonGroup.h \
     src/Sandbox/Buttons/ToggleButton.h \
+    src/Sandbox/ContextMenu/ContextMenu.h \
     src/Sandbox/Edge/BaseEdge.h \
     src/Sandbox/Edge/Edge.h \
     src/Sandbox/Edge/LoopEdge.h \
