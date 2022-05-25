@@ -34,15 +34,28 @@ QList<AA::Configuration*> StepByStepSimulator::stepConfigs(AA::Configuration* co
     {
         auto transition = dynamic_cast<FSA::Transition*>(t);
         auto transText = transition->getText();
-        
-        if (unprocessed.startsWith(transText))
+        auto tryAddConf = [&](const QString& str){
+            if (unprocessed.startsWith(str))
+            {
+                QString tInput = "";
+                if (transText.length() < unprocessed.length())
+                    tInput = unprocessed.right(transText.length());
+                auto destState = transition->getDest();
+                auto addConf = new FSA::Configuration(destState, castedConf, input, tInput);
+                list.append(addConf);
+            }
+        };
+        if (transText.contains(";"))
         {
-            QString tInput = "";
-            if (transText.length() < unprocessed.length())
-                tInput = unprocessed.right(transText.length());
-            auto destState = transition->getDest();
-            auto addConf = new FSA::Configuration(destState, castedConf, input, tInput);
-            list.append(addConf);
+            const auto textArr = transition->getText().split("; ");
+            for (const auto& t : textArr)
+            {
+                tryAddConf(t);
+            }
+        }
+        else
+        {
+            tryAddConf(transText);
         }
     }
     return list;

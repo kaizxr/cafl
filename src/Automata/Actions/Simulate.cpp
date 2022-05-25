@@ -23,6 +23,9 @@ void Simulate::actionPerformed()
     auto simulator = new FSA::StepByStepSimulator(automata);
 
     auto input = dialog->textValue();
+    qInfo("input %s",input.toStdString().c_str());
+    if (input.isEmpty())
+        input = "λ";
     configs = simulator->getInitialConfigs(input);
 
     handleInteraction(automata,simulator,configs,dialog);

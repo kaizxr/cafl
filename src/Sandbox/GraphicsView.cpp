@@ -132,6 +132,7 @@ std::shared_ptr<Node> GraphicsView::addNode(int x, int y, int id)
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
 {
     auto oldEdge = checkEdge(getNodeById(sourceId).get(),getNodeById(destId).get());
+
     if (!oldEdge)
     {
         if (id == -1)
@@ -150,8 +151,22 @@ void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
     {
         if (!text.isEmpty())
         {
-            text = oldEdge->textContent() + "; " + text;
-            oldEdge->setTextContent(text);
+            const auto oldText = oldEdge->textContent().split("; ");
+            bool existing = false;
+
+            for (const auto& t : oldText)
+            {
+                if (t == text)
+                {
+                    existing = true;
+                    break;
+                }
+            }
+            if (!existing)
+            {
+                text = oldEdge->textContent() + "; " + text;
+                oldEdge->setTextContent(text);
+            }
         }
     }
 }
@@ -380,7 +395,8 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
     }
 
     QGraphicsView::mouseReleaseEvent(event);
-    actionType = eActionType::NONE;
+    if (actionType != eActionType::WAIT_EDGE_NAME)
+        actionType = eActionType::NONE;
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
@@ -525,23 +541,28 @@ void GraphicsView::onTextChanged(int code)
 void GraphicsView::setEdgeName(int code)
 {
     auto edgeText = textEdit->toPlainText();
-    if (code == 0)
+
+    if (edgeText.isEmpty())
+        edgeText = "λ";
+
+    if (code == 0) // add new edge
     {
         qInfo(edgeText.toStdString().c_str());
         addEdge(sourceNode->id(),destNode->id(),edgeText);
     }
-    else if (code == 1)
+    else if (code == 1) // rename existing edge
     {
-        if (auto casted = dynamic_cast<BaseEdge*>(scene()->selectedItems().front()))
+        if (auto casted = dynamic_cast<BaseEdge*>(renamingEdge))
         {
             casted->setTextContent(edgeText);
         }
     }
     textEdit.reset();
     textEdit = nullptr;
-    actionType == eActionType::NONE;
+    actionType = eActionType::NONE;
     sourceNode = nullptr;
     destNode = nullptr;
+    renamingEdge = nullptr;
     this->setFocus();
 }
 
@@ -550,11 +571,12 @@ void GraphicsView::startRenameEdge(BaseEdge* edge)
     scene()->clearSelection();
     edge->setSelected(true);
 
+    renamingEdge = edge;
     auto pos = edge->posText();
     int w = CONST["Edge"]["InputBox"]["w"];
     int h = CONST["Edge"]["InputBox"]["h"];
     auto rect = QRect(pos.x()-w/2,pos.y()-h/2,w,h);
-    textEdit = std::make_shared<TextBox>(rect,edge->textContent(),true,this);
+    textEdit = std::make_shared<TextBox>(rect,renamingEdge->textContent(),true,this);
     actionType = eActionType::WAIT_EDGE_NAME;
 }
 
@@ -616,14 +638,14 @@ void GraphicsView::removeObjects()
         {
             auto edge = dynamic_cast<BaseEdge*>(item);
             qInfo("remove edge %d s = %d d = %d", edge->id(),edge->sourceNode()->id(),edge->destNode()->id());
-            scene()->removeItem(item);
+//            scene()->removeItem(item);
             delete item;
             qInfo("edge removed");
         }
         for (const auto& item : nodesToRemove)
         {
             qInfo("remove node %d", item->id());
-            scene()->removeItem(item.get());
+//            scene()->removeItem(item.get());
             const auto& i = nodes.indexOf(item);
             nodes.takeAt(i).reset();
             qInfo("node removed");
@@ -654,7 +676,7 @@ void GraphicsView::tryMakeInitial()
     {
         if (scene()->selectedItems().size() == 1)
         {
-            const auto& item = scene()->selectedItems().front();
+            const auto item = scene()->selectedItems().front();
             if (auto casted = dynamic_cast<Node*>(item))
             {
                 makeInitial(casted);

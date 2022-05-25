@@ -63,6 +63,7 @@ private:
 
     eActionType actionType;
 
+    BaseEdge* renamingEdge;
     std::shared_ptr<Node> initialNode;
     std::shared_ptr<Node> sourceNode;
     std::shared_ptr<Node> destNode;

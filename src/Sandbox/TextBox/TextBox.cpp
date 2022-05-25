@@ -9,6 +9,8 @@ TextBox::TextBox(QRect rect, QString text, bool rename, QWidget *parent)
     setGeometry(rect);
     show();
     setFocus();
+    if (rename)
+        this->selectAll();
 }
 
 TextBox::~TextBox()
