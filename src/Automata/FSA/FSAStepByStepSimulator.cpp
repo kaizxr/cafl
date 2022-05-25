@@ -38,8 +38,8 @@ QList<AA::Configuration*> StepByStepSimulator::stepConfigs(AA::Configuration* co
             if (unprocessed.startsWith(str))
             {
                 QString tInput = "";
-                if (transText.length() < unprocessed.length())
-                    tInput = unprocessed.right(transText.length());
+                if (str.length() < unprocessed.length())
+                    tInput = unprocessed.right(str.length());
                 auto destState = transition->getDest();
                 auto addConf = new FSA::Configuration(destState, castedConf, input, tInput);
                 list.append(addConf);

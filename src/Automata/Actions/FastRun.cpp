@@ -41,16 +41,23 @@ void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QL
             {
                 numberAccepted++;
                 if (!reportConfiguration(config))
+                {
                     return;
+                }
             }
             else
                 next.append(simulator->stepConfigs(config));
         }
+        configs.clear();
         configs = next;
     }
     if (numberAccepted == 0)
     {
         qInfo("numbersAccepted == 0");
+        QMessageBox::StandardButtons buttons = QMessageBox::Ok;
+        auto box = new QMessageBox(QMessageBox::Icon(),"Found config","No configs were found",buttons);
+        box->exec();
+        delete box;
         return;
     }
 }
@@ -79,4 +86,9 @@ bool FastRun::reportConfiguration(AA::Configuration* conf)
     qInfo("found str %s", str.toStdString().c_str());
     auto box = new QMessageBox(QMessageBox::Icon(),"Found config",str,buttons);
     box->exec();
+
+    delete box;
+    delete conf;
+
+    return true;
 }
