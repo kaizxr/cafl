@@ -9,6 +9,10 @@
 #include "src/Sandbox/Buttons/ToggleButton.h"
 #include "src/Sandbox/Buttons/ToolButtonGroup.h"
 
+#include "src/Windows/WindowsManager.h"
+#include "src/Sandbox/ToolsManager.h"
+#include "src/Sandbox/Buttons/ToolButtonGroup.h"
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
@@ -27,9 +31,6 @@ SandboxWindow::SandboxWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SandboxWindow)
 {
-#ifdef DEBUG
-    qInfo("SandboxWindow constructor");
-#endif
     ui->setupUi(this);
 
     init();
@@ -39,28 +40,17 @@ SandboxWindow::SandboxWindow(QWidget *parent)
 SandboxWindow::~SandboxWindow()
 {
     delete ui;
-#ifdef DEBUG
-    qInfo("~SandboxWindow finished");
-#endif
 }
 
 void SandboxWindow::initUI()
 {
-#ifdef DEBUG
-    qInfo("initUI");
-#endif
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
-    // graphicsView->setSceneRect(QRectF(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     
     graphicsView->addNode(150,450);
     graphicsView->addNode(400,450);
 
     auto instance = ToolButtonGroup::getInstance(ui->frame);
     buttonGroup = std::shared_ptr<ToolButtonGroup>(instance);
-
-#ifdef DEBUG
-    qInfo(strFormat("scene rect = %f:%f:%f:%f\n ", graphicsView->sceneRect().x(), graphicsView->sceneRect().y(), graphicsView->sceneRect().width(), graphicsView->sceneRect().height()).c_str());
-#endif
 }
 
 void SandboxWindow::init()
@@ -118,15 +108,17 @@ void SandboxWindow::openGraph()
 
 void SandboxWindow::initActions()
 {
-    connect(ui->actionNewFile,  &QAction::triggered, this, &SandboxWindow::newFile);
-    connect(ui->actionOpenFile, &QAction::triggered, this, &SandboxWindow::openFile);
-    connect(ui->actionSaveAs,   &QAction::triggered, this, &SandboxWindow::saveAs);
-    connect(ui->actionExit,     &QAction::triggered, this, &SandboxWindow::exit);
-    connect(ui->actionCopy,     &QAction::triggered, this, &SandboxWindow::copy);
-    connect(ui->actionPaste,    &QAction::triggered, this, &SandboxWindow::paste);
-    connect(ui->actionCut,      &QAction::triggered, this, &SandboxWindow::cut);
-    connect(ui->actionUndo,     &QAction::triggered, this, &SandboxWindow::undo);
-    connect(ui->actionRedo,     &QAction::triggered, this, &SandboxWindow::redo);
+    connect(ui->actionNewProject,    &QAction::triggered, this, &SandboxWindow::newProject       );
+    connect(ui->actionOpenProject,   &QAction::triggered, this, &SandboxWindow::openProject      );
+    connect(ui->actionSaveAs,        &QAction::triggered, this, &SandboxWindow::saveAs           );
+    connect(ui->actionExit,          &QAction::triggered, this, &SandboxWindow::exit             );
+    connect(ui->actionSelectAll,     &QAction::triggered, this, &SandboxWindow::selectAllObjects );
+    connect(ui->actionSelect,        &QAction::triggered, this, &SandboxWindow::selectTool       );
+    connect(ui->actionNode,          &QAction::triggered, this, &SandboxWindow::nodeTool         );
+    connect(ui->actionEdge,          &QAction::triggered, this, &SandboxWindow::edgeTool         );
+    connect(ui->actionHand,          &QAction::triggered, this, &SandboxWindow::handTool         );
+    connect(ui->actionOneInput,      &QAction::triggered, this, &SandboxWindow::oneInput         );
+    connect(ui->actionMultipleInput, &QAction::triggered, this, &SandboxWindow::multipleInput    );
 }
 
 void SandboxWindow::resizeEvent(QResizeEvent* event)
@@ -144,106 +136,71 @@ void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
     if (y < 0) y = 0;
     if (x > ui->mainFrame->width()) x = ui->mainFrame->width();
     if (y > ui->mainFrame->height()) y = ui->mainFrame->height();
-
-    // temp = strFormat("mainFrame pos = %d:%d:%d:%d\n mouse pos = %d:%d\n ",
-    //     ui->mainFrame->x(), ui->mainFrame->y(), ui->mainFrame->width(), ui->mainFrame->height(),
-    //     x, y);
-    // ui->label_3->setText(QString(temp.c_str()));
 }
 
-void SandboxWindow::newFile()
+void SandboxWindow::newProject()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::newFile()");
-#endif
-    // ui->textEdit->setText(QString());
+    WINDOWS->changeWindow("sandbox");
 }
 
-void SandboxWindow::openFile()
+void SandboxWindow::openProject()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::openFile()");
-#endif
-    // QString filename = QFileDialog::getOpenFileName(this, QString("Open the file"));
-    // QFile file(filename);
-    // curFileName = filename;
-    // if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
-    //     QMessageBox::warning(this, "Warning", "Cannot open file : " + file.errorString());
-    //     return;
-    // }
-    // setWindowTitle(filename);
-    // QTextStream in(&file);
-    // QString text = in.readAll();
-    // ui->textEdit->setText(text);
-    // file.close();
+    openGraph();
 }
 
 void SandboxWindow::saveAs()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::saveAs()");
-#endif
-    QString filename = QFileDialog::getSaveFileName(this, QString("Save as"));
-    QFile file(filename);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, "Warning", "Cannot save file : " + file.errorString());
-        return;
-    }
-    curFilename = filename;
-    setWindowTitle(filename);
-    // ui->
-    QTextStream out(&file);
-    // QString text = ui->textEdit->toPlainText();
-    // out << text;
-    file.close();
+    if (graphicsView)
+        graphicsView->writeToJson();
 }
 
 void SandboxWindow::exit()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::exit()");
-#endif
     QApplication::quit();
 }
 
-void SandboxWindow::copy()
+void SandboxWindow::selectAllObjects()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::copy()");
-#endif
-    // ui->textEdit->copy();
+    if (graphicsView)
+        graphicsView->selectAllObjects();
 }
 
-void SandboxWindow::paste()
+void SandboxWindow::selectTool()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::paste()");
-#endif
-    // ui->textEdit->paste();
+    const auto& toolType = ToolsManager::eToolType::SELECT;
+    TOOLS->setToolType(toolType);
+    TOOLBOX->toggleButtonGroup((int)toolType);
 }
 
-void SandboxWindow::cut()
+void SandboxWindow::nodeTool()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::cut()");
-#endif
-    // ui->textEdit->cut();
+    const auto& toolType = ToolsManager::eToolType::NODE;
+    TOOLS->setToolType(toolType);
+    TOOLBOX->toggleButtonGroup((int)toolType);
 }
 
-void SandboxWindow::undo()
+void SandboxWindow::edgeTool()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::undo()");
-#endif
-    // ui->textEdit->undo();
+    const auto& toolType = ToolsManager::eToolType::EDGE;
+    TOOLS->setToolType(toolType);
+    TOOLBOX->toggleButtonGroup((int)toolType);
 }
 
-void SandboxWindow::redo()
+void SandboxWindow::handTool()
 {
-#ifdef DEBUG
-    qInfo("Sandbox::redo()");
-#endif
-    // ui->textEdit->redo();
+    const auto& toolType = ToolsManager::eToolType::HAND;
+    TOOLS->setToolType(toolType);
+    TOOLBOX->toggleButtonGroup((int)toolType);
+}
+
+void SandboxWindow::oneInput()
+{
+    if (graphicsView)
+        graphicsView->convertToFSA();
+}
+
+void SandboxWindow::multipleInput()
+{
 }
 
 

@@ -31,6 +31,9 @@ public:
 
     void onTextChanged(int code) override;
 
+    void selectAllObjects();
+    void convertToFSA();
+    
     enum class eActionType
     {
         NONE,
@@ -48,9 +51,7 @@ private:
     void makeNodesFinal();
     void tryMakeInitial();
     void makeInitial(Node* node);
-    void convertToFSA();
     BaseEdge* checkEdge(Node* source, Node* dest);
-    void selectAllObjects();
     void setEdgeName(int code);
     void startRenameEdge(BaseEdge* edge);
     

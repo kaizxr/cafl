@@ -25,15 +25,17 @@ public:
     void openGraph();
 
 private slots:
-    void newFile();
-    void openFile();
+    void newProject();
+    void openProject();
     void saveAs();
     void exit();
-    void copy();
-    void paste();
-    void cut();
-    void undo();
-    void redo();
+    void selectAllObjects();
+    void selectTool();
+    void nodeTool();
+    void edgeTool();
+    void handTool();
+    void oneInput();
+    void multipleInput();
 
 private:    
     void init();
