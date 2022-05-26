@@ -10,12 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     src/Automata/Actions/FastRun.cpp \
+    src/Automata/Actions/MultipleRun.cpp \
     src/Automata/Actions/Simulate.cpp \
     src/Automata/FSA/FSAAlphabetRetriever.cpp \
     src/Automata/FSA/FSAAutomata.cpp \
     src/Automata/FSA/FSAConfiguration.cpp \
     src/Automata/FSA/FSAStepByStepSimulator.cpp \
     src/Automata/FSA/FSATransition.cpp \
+    src/Automata/Helpers/SimulateHelper.cpp \
     src/Automata/Automata.cpp \
     src/Automata/Configuration.cpp \
     src/Automata/State.cpp \
@@ -35,7 +37,6 @@ SOURCES += \
     src/Sandbox/ToolsManager.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
     src/Windows/Simulation/Output.cpp \
-    src/Windows/Simulation/FastRun/TraceObject.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
     src/Windows/WindowsManager.cpp \
     src/main.cpp
@@ -43,12 +44,14 @@ SOURCES += \
 HEADERS += \
     lib/json.hpp \
     src/Automata/Actions/FastRun.h \
+    src/Automata/Actions/MultipleRun.h \
     src/Automata/Actions/Simulate.h \
     src/Automata/FSA/FSAAlphabetRetriever.h \
     src/Automata/FSA/FSAAutomata.h \
     src/Automata/FSA/FSAConfiguration.h \
     src/Automata/FSA/FSAStepByStepSimulator.h \
     src/Automata/FSA/FSATransition.h \
+    src/Automata/Helpers/SimulateHelper.h \
     src/Automata/AlphabetRetriever.h \
     src/Automata/Automata.h \
     src/Automata/Configuration.h \
@@ -73,7 +76,6 @@ HEADERS += \
     src/Sandbox/ToolsManager.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
     src/Windows/Simulation/Output.h \
-    src/Windows/Simulation/FastRun/TraceObject.h \
     src/Windows/TitleWindow/TitleWindow.h \
     src/Windows/WindowsManager.h
 

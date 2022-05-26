@@ -2,7 +2,10 @@
 #include <QGraphicsView>
 #include "src/Sandbox/TextBox/TextListener.h"
 #include "lib/json.hpp"
-
+namespace AA
+{
+    class Automata;
+}
 class TextBox;
 class QPlainTextEdit;
 class BaseEdge;
@@ -17,7 +20,7 @@ public:
     void writeToJson();
     void openFromJson(const nlohmann::json& data);
 
-    std::shared_ptr<Node> addNode(int x, int y, int id = -1);
+    void addNode(int x, int y, int id = -1, bool isFinal = false, bool isInitial = false);
     void addEdge(int sourceId, int destId, QString text = nullptr, int id = -1);
     std::shared_ptr<Node> getNodeById(int id);
 
@@ -32,10 +35,12 @@ public:
     void onTextChanged(int code) override;
 
     void selectAllObjects();
-    void convertToFSA();
+    void startSimulateAction(QList<QString> input);
+    AA::Automata* convertToFSA();
     void makeInitial(Node* node);
     void startRenameEdge(BaseEdge* edge);
     void removeObject(QGraphicsItem* item);
+    AA::Automata* getAutomata();
 
     enum class eActionType
     {

@@ -25,6 +25,7 @@
 
 #include "src/Sandbox/TextBox/TextBox.h"
 #include <src/Windows/Simulation/Output.h>
+#include "src/Automata/Helpers/SimulateHelper.h"
 
 #define DEBUG
 
@@ -99,34 +100,39 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
             initial = it.value()["initial"];
         x += radius;
         y += radius;
-        auto node = addNode(x,y,id);
-        node->setFinal(final);
-        node->setInitial(initial);
+        addNode(x,y,id,final,initial);
     }
     std::cout << "nodes added" << std::endl;
-    for (auto it = data["Graph"]["Edge"].begin(); it != data["Graph"]["Edge"].end(); ++it)
+    if (data["Graph"].contains("Edge") && data["Graph"]["Edge"].is_array())
     {
-        std::cout << it.key() << " | " << it.value() << "\n";
-        auto id = std::stoi(it.key());
-        int sourceId = it.value()["source"];
-        int destId = it.value()["dest"];
-        std::string stdtext = it.value()["text"];
-        QString text(stdtext.c_str());
-        addEdge(sourceId,destId,text,id);
+        for (auto it = data["Graph"]["Edge"].begin(); it != data["Graph"]["Edge"].end(); ++it)
+        {
+            std::cout << it.key() << " | " << it.value() << "\n";
+            auto id = std::stoi(it.key());
+            int sourceId = it.value()["source"];
+            int destId = it.value()["dest"];
+            std::string stdtext = it.value()["text"];
+            QString text(stdtext.c_str());
+            addEdge(sourceId,destId,text,id);
+        }
+        std::cout << "edges added" << std::endl;
     }
-    std::cout << "edges added" << std::endl;
 }
 
-std::shared_ptr<Node> GraphicsView::addNode(int x, int y, int id)
+void GraphicsView::addNode(int x, int y, int id, bool isFinal, bool isInitial)
 {
     if (id == -1)
         id = lastGivenNodeId++;
     else
         lastGivenNodeId = id+1;
     std::shared_ptr<Node> node = std::make_shared<Node>(id, QPoint(x, y));
+    node->setFinal(isFinal);
+    node->setInitial(isInitial);
+    qInfo("addNode init use count %d",node.use_count());
     scene()->addItem(node.get());
     nodes.push_back(node);
-    return node;
+    // node.reset();
+    qInfo("addNode nodes use count %d",node.use_count());
 }
 
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
@@ -448,7 +454,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     }
     if (event->key() == Qt::Key_D)
     {
-        convertToFSA();
+        SIMULATE->startFastRun();
     }
     if (event->key() == Qt::Key_F)
     {
@@ -644,10 +650,19 @@ void GraphicsView::removeObjects()
         }
         for (const auto& item : nodesToRemove)
         {
+            auto s = item.use_count();
             qInfo("remove node %d", item->id());
 //            scene()->removeItem(item.get());
+            if (item->isInitial())
+            {
+                auto ss = initialNode.use_count();
+                initialNode.reset();
+                s = item.use_count();
+                ss = initialNode.use_count();
+            }
             const auto& i = nodes.indexOf(item);
             nodes.takeAt(i).reset();
+            s = item.use_count();
             qInfo("node removed");
         }
     }
@@ -724,9 +739,26 @@ void GraphicsView::makeInitial(Node* item)
 #include "src/Automata/FSA/FSATransition.h"
 #include "src/Automata/State.h"
 #include "src/Automata/Actions/FastRun.h"
+#include "src/Automata/Actions/MultipleRun.h"
 #include "src/Automata/FSA/FSAStepByStepSimulator.h"
 
-void GraphicsView::convertToFSA()
+void GraphicsView::startSimulateAction(QList<QString> inputs)
+{
+    auto automata = convertToFSA();
+
+    if (inputs.isEmpty())
+    {
+        auto fr = AA::Actions::FastRun(automata);
+        fr.preHandle();
+    }
+    else
+    {
+        auto ml = AA::Actions::MultipleRun(automata, inputs);
+        ml.preHandle();
+    }
+}
+
+AA::Automata* GraphicsView::convertToFSA()
 {
     auto automata = new FSA::Automata();
     auto states = QList<AA::State*>();
@@ -754,10 +786,7 @@ void GraphicsView::convertToFSA()
             edge->textContent());
         automata->addTransition(transition);
     }
-    auto data = automata->toJson();
-    
-    auto fr = new AA::Actions::FastRun(automata);
-    fr->actionPerformed();
+    return automata;
 }
 
 void GraphicsView::selectAllObjects()

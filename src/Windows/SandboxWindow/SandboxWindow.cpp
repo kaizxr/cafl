@@ -14,6 +14,8 @@
 #include "src/Sandbox/ToolsManager.h"
 
 #include "src/Sandbox/ContextMenu/ContextMenu.h"
+#include "src/Automata/Helpers/SimulateHelper.h"
+#include "src/Windows/Simulation/Output.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -101,7 +103,7 @@ void SandboxWindow::openGraph()
     if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
         QMessageBox::warning(this, "Warning", "Cannot open file : " + file.errorString());
         return;
-    }   
+    }
     std::ifstream in(filename.toStdString().c_str());
     nlohmann::json data;
     in >> data;
@@ -207,11 +209,14 @@ void SandboxWindow::handTool()
 void SandboxWindow::oneInput()
 {
     if (graphicsView)
-        graphicsView->convertToFSA();
+        SIMULATE->startFastRun();
 }
 
 void SandboxWindow::multipleInput()
-{
+{    
+    auto window = new Window::Simulation::Output();
+    window->show();
+    window->init();
 }
 
 void SandboxWindow::requestContextMenu(const QPoint& pos)

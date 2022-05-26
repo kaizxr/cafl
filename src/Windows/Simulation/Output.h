@@ -2,6 +2,7 @@
 #define OUTPUT_H
 
 #include <QWidget>
+#include <QTableWidget>
 #include <QLabel>
 #include <QGraphicsView>
 
@@ -22,19 +23,17 @@ namespace Window
 
             void init();
             void setLabelText(QString text);
+            virtual void keyPressEvent(QKeyEvent* event) override;
 
         private:
             QLabel text;
+            QTableWidget* table;
             QGraphicsView* graphicsView;
             Ui::Output *ui;
 
-        public:
-            enum class eType
-            {
-                NONE = -1,
-                FAST_RUN,
-                SIMULATE
-            };
+        private slots:
+            void exit();
+            void run();
         };
     }
 }

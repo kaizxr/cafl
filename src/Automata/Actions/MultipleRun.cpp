@@ -1,4 +1,4 @@
-#include "FastRun.h"
+#include "MultipleRun.h"
 #include "src/Utils/Constants.h"
 #include "src/Automata/Configuration.h"
 #include "src/Automata/Simulator.h"
@@ -7,20 +7,39 @@
 
 using namespace AA::Actions;
 
-FastRun::FastRun(AA::Automata* automata) : Simulate(automata)
+MultipleRun::MultipleRun(AA::Automata* automata, QList<QString> inputs)
+    : FastRun(automata), inputs(inputs)
 {
-    name = "Fast run";
+    name = "Multiple run";
 }
 
-FastRun::~FastRun()
+MultipleRun::~MultipleRun()
 {
 }
-bool FastRun::confirmContinue(int generated)
+bool MultipleRun::confirmContinue(int generated)
 {
 
 }
 
-void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QList<AA::Configuration*> configs, QInputDialog* initialInput)
+void MultipleRun::preHandle()
+{
+    qInfo("start MultipleRun::preHandle()");
+    auto configs = QList<AA::Configuration*>();
+    auto simulator = new FSA::StepByStepSimulator(automata);
+
+    for (auto input : inputs)
+    {   
+        qInfo("input %s",input.toStdString().c_str());
+        if (input.isEmpty())
+            input = "λ";
+        configs = simulator->getInitialConfigs(input);
+
+        handleInteraction(automata,simulator,configs,nullptr);
+    }
+    qInfo("end MultipleRun::preHandle()");
+}
+
+void MultipleRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QList<AA::Configuration*> configs, QInputDialog* initialInput)
 {
     qInfo("fast run handle");
     int numberGenerated = 0;
@@ -55,15 +74,12 @@ void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QL
     if (numberAccepted == 0)
     {
         qInfo("numbersAccepted == 0");
-        QMessageBox::StandardButtons buttons = QMessageBox::Ok;
-        auto box = new QMessageBox(QMessageBox::Icon(),"Found config","No configs were found",buttons);
-        box->exec();
-        delete box;
+        outputs.append("NOT ACCEPTED");
         return;
     }
 }
 
-bool FastRun::reportConfiguration(AA::Configuration* conf)
+bool MultipleRun::reportConfiguration(AA::Configuration* conf)
 {
     // CREATE OUTPUT WINDOW WITH HIERARCHY
     QString initstr, str;
@@ -85,11 +101,14 @@ bool FastRun::reportConfiguration(AA::Configuration* conf)
     }
     str = str.left(str.length()-2);
     qInfo("found str %s", str.toStdString().c_str());
-    auto box = new QMessageBox(QMessageBox::Icon(),"Found config",str,buttons);
-    box->exec();
+    outputs.append(str);
 
-    delete box;
     delete conf;
 
     return true;
+}
+
+QList<QString> MultipleRun::getOutputs() const
+{
+    return outputs;
 }

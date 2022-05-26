@@ -18,13 +18,11 @@ namespace AA
             Simulate(AA::Automata* automata);
             virtual ~Simulate();
             virtual void handleInteraction(Automata* automata, AA::Simulator* simulator, QList<AA::Configuration*> configs, QInputDialog* initialInput);
-            void actionPerformed();
+            virtual void preHandle();
         protected:
             AA::Simulator* getSimulator(AA::Automata* automata);
             QInputDialog* createInputDialog(QString title);
             QString name;
-        private:
-
             AA::Automata* automata;
         };
     }

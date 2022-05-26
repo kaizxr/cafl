@@ -16,7 +16,7 @@ Simulate::~Simulate()
 {
 }
 
-void Simulate::actionPerformed()
+void Simulate::preHandle()
 {
     auto dialog = createInputDialog(nullptr);
     auto configs = QList<AA::Configuration*>();
