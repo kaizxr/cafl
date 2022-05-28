@@ -128,11 +128,9 @@ void GraphicsView::addNode(int x, int y, int id, bool isFinal, bool isInitial)
     std::shared_ptr<Node> node = std::make_shared<Node>(id, QPoint(x, y));
     node->setFinal(isFinal);
     node->setInitial(isInitial);
-    qInfo("addNode init use count %d",node.use_count());
     scene()->addItem(node.get());
     nodes.push_back(node);
     // node.reset();
-    qInfo("addNode nodes use count %d",node.use_count());
 }
 
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
@@ -589,7 +587,6 @@ void GraphicsView::startRenameEdge(BaseEdge* edge)
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     auto newSize = event->size();
-    qInfo("newSize %d:%d",newSize.width(),newSize.height());
     scene()->setSceneRect(QRect(0,0,newSize.width(),newSize.height()));
 }
 
