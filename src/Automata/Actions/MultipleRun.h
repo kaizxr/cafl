@@ -16,7 +16,7 @@ namespace AA
             void preHandle() override;
             QList<QString> getOutputs() const;
         protected:
-            bool reportConfiguration(AA::Configuration* conf);
+            virtual bool reportConfiguration(AA::Configuration* conf);
         private:
             QList<QString> inputs;
             QList<QString> outputs;

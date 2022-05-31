@@ -14,6 +14,8 @@ public:
 
     bool isRenaming() const;
 
+    void focusOutEvent(QFocusEvent *e) override;
+
 private:
     void sendOnTextChanged(int code);
     bool rename;

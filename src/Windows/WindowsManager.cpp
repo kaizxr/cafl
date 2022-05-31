@@ -1,6 +1,7 @@
 #include "src/Windows/WindowsManager.h"
 
 #include "src/Windows/SandboxWindow/SandboxWindow.h"
+#include "src/Windows/PlaygroundWindow/PlaygroundWindow.h"
 #include "src/Windows/TitleWindow/TitleWindow.h"
 #include "src/Windows/Simulation/Output.h"
 
@@ -44,6 +45,8 @@ void WindowsManager::changeWindow(std::string windowType)
 
     if (windowType == "sandbox")
         curWindow = createSandboxWindow();
+    if (windowType == "playground")
+        curWindow = createPlaygroundWindow();
     else if (windowType == "title")
         curWindow = createTitleWindow();
     else if (windowType == "output")
@@ -55,17 +58,23 @@ void WindowsManager::changeWindow(std::string windowType)
         qInfo("error");
 #endif
 }
-SandboxWindow* WindowsManager::getSandboxWindow()
+
+QWidget* WindowsManager::getCurWindow()
 {
-    auto window = dynamic_cast<SandboxWindow*>(curWindow.get());
-    if (window)
-        return window;
-    return nullptr;
+    return curWindow.get();
 }
 
 std::shared_ptr<SandboxWindow> WindowsManager::createSandboxWindow()
 {
     std::shared_ptr<SandboxWindow> window = std::make_shared<SandboxWindow>();
+    window->show();
+    window->initUI();
+    return window;
+}
+
+std::shared_ptr<PlaygroundWindow> WindowsManager::createPlaygroundWindow()
+{
+    std::shared_ptr<PlaygroundWindow> window = std::make_shared<PlaygroundWindow>();
     window->show();
     window->initUI();
     return window;

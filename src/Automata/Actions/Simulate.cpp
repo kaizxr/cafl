@@ -45,10 +45,14 @@ QInputDialog* Simulate::createInputDialog(QString title)
 {
     if (title.isEmpty())
         title = "Input";
-    auto dialog = new QInputDialog(WINDOWS->getSandboxWindow());
-    dialog->setWindowTitle(title);
-    dialog->show();
-    dialog->exec();
-	return dialog;
+    if (auto sandbox = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+    {
+        auto dialog = new QInputDialog(sandbox);
+        dialog->setWindowTitle(title);
+        dialog->show();
+        dialog->exec();
+        return dialog;
+    }
+    return nullptr;
 }
 

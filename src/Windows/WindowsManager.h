@@ -9,6 +9,7 @@ namespace Window::Simulation
 }
 
 class SandboxWindow;
+class PlaygroundWindow;
 class TitleWindow;
 class WindowsManager
 {
@@ -18,10 +19,11 @@ public:
     WindowsManager();
     ~WindowsManager();
     void changeWindow(std::string windowType = "title");
-    SandboxWindow* getSandboxWindow();
+    QWidget* getCurWindow();
 
 private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
+    std::shared_ptr<PlaygroundWindow> createPlaygroundWindow();
     std::shared_ptr<TitleWindow> createTitleWindow();
     std::shared_ptr<Window::Simulation::Output> createOutputWindow();
 

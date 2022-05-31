@@ -74,7 +74,7 @@ void MultipleRun::handleInteraction(Automata* automata, AA::Simulator* simulator
     if (numberAccepted == 0)
     {
         qInfo("numbersAccepted == 0");
-        outputs.append("NOT ACCEPTED");
+        outputs.append("REJECTED");
         return;
     }
 }

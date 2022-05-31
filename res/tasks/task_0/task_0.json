@@ -1,0 +1,22 @@
+{
+    "title": "Задача 1",
+    "desc":"ыыыы",
+    "inputs":
+    [
+        "0",
+        "1",
+        "01",
+        "10",
+        "111",
+        "0000"
+    ],
+    "output":
+    [
+        false,
+        true,
+        false,
+        false,
+        true,
+        false
+    ]
+}

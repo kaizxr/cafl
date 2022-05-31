@@ -22,6 +22,8 @@ SOURCES += \
     src/Automata/Configuration.cpp \
     src/Automata/State.cpp \
     src/Automata/Transition.cpp \
+    src/Playground/PlaygroundManager.cpp \
+    src/Utils/SingletonManager.cpp \
     src/Utils/Constants.cpp \
     src/Sandbox/Buttons/ToolButtonGroup.cpp \
     src/Sandbox/Buttons/ToggleButton.cpp \
@@ -35,6 +37,7 @@ SOURCES += \
     src/Sandbox/SandboxObject.cpp \
     src/Sandbox/Selector.cpp \
     src/Sandbox/ToolsManager.cpp \
+    src/Windows/PlaygroundWindow/PlaygroundWindow.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
     src/Windows/Simulation/Output.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
@@ -59,6 +62,8 @@ HEADERS += \
     src/Automata/Simulator.h \
     src/Automata/State.h \
     src/Automata/Transition.h \
+    src/Playground/PlaygroundManager.h \
+    src/Utils/SingletonManager.h \
     src/Utils/Constants.h \
     src/Utils/Utils.h \
     src/Sandbox/Buttons/ToolButtonGroup.h \
@@ -74,6 +79,7 @@ HEADERS += \
     src/Sandbox/SandboxObject.h \
     src/Sandbox/Selector.h \
     src/Sandbox/ToolsManager.h \
+    src/Windows/PlaygroundWindow/PlaygroundWindow.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
     src/Windows/Simulation/Output.h \
     src/Windows/TitleWindow/TitleWindow.h \
@@ -81,6 +87,7 @@ HEADERS += \
 
 FORMS += \
     res/ui/output.ui \
+    res/ui/playgroundwindow.ui \
     res/ui/sandboxwindow.ui \
     res/ui/titlewindow.ui
 

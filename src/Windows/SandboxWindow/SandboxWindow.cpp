@@ -35,6 +35,7 @@ SandboxWindow::SandboxWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SandboxWindow)
 {
+    qInfo("sandbox window constructor");
     ui->setupUi(this);
 
     init();

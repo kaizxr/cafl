@@ -45,6 +45,23 @@ GraphicsView::~GraphicsView()
 {
 }
 
+void GraphicsView::reload()
+{
+    selectAllObjects();
+    removeObjects();
+    lastGivenEdgeId = 0;
+    lastGivenNodeId = 0;
+    initialNode.reset();
+    sourceNode.reset();
+    destNode.reset();
+    textEdit.reset();
+    selector.reset();
+    nodes.clear();
+    edges.clear();
+    actionType = eActionType::NONE;
+    update(0,0,rect().width(),rect().height());
+}
+
 nlohmann::json GraphicsView::toJson()
 {
     nlohmann::json data;
@@ -71,8 +88,11 @@ nlohmann::json GraphicsView::toJson()
 
 void GraphicsView::writeToJson()
 {
-    const auto& data = toJson();
-    WINDOWS->getInstance()->getSandboxWindow()->saveJson(data);
+    if (auto casted = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+    {
+        const auto& data = toJson();
+        casted->saveJson(data);
+    }
 }
 
 void GraphicsView::openFromJson(const nlohmann::json& data)
@@ -275,14 +295,6 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
             actionType = eActionType::ADD_NODE;
             break;
         case ToolsManager::eToolType::EDGE:
-            if (actionType == eActionType::WAIT_EDGE_NAME && textEdit)
-            {
-                if (!textEdit->rect().contains(event->pos()-textEdit->pos()))
-                {
-                    setEdgeName(!textEdit->isRenaming() ? 0 : 1);
-                }
-            }
-
             for (const auto& node : nodes)
             {
                 if (node->contains(event->pos()-node->pos()))
@@ -477,7 +489,8 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         if (event->modifiers() == Qt::ControlModifier)
         {
             qInfo("ctrl+o was called");
-            WINDOWS->getSandboxWindow()->openGraph();
+            if (auto casted = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+                casted->openGraph();
         }
     }
     if (event->key() == Qt::Key_F2)
@@ -641,7 +654,6 @@ void GraphicsView::removeObjects()
         {
             auto edge = dynamic_cast<BaseEdge*>(item);
             qInfo("remove edge %d s = %d d = %d", edge->id(),edge->sourceNode()->id(),edge->destNode()->id());
-//            scene()->removeItem(item);
             delete item;
             qInfo("edge removed");
         }
@@ -649,7 +661,6 @@ void GraphicsView::removeObjects()
         {
             auto s = item.use_count();
             qInfo("remove node %d", item->id());
-//            scene()->removeItem(item.get());
             if (item->isInitial())
             {
                 auto ss = initialNode.use_count();

@@ -1,5 +1,6 @@
 #include "TextBox.h"
 #include "TextListener.h"
+#include <QFocusEvent>
 
 TextBox::TextBox(QRect rect, QString text, bool rename, QWidget *parent)
     : QPlainTextEdit(text,parent), rename(rename)
@@ -57,4 +58,12 @@ void TextBox::removeListener(TextListener* listener)
 bool TextBox::isRenaming() const
 {
     return rename;
+}
+
+void TextBox::focusOutEvent(QFocusEvent *e)
+{
+    if (!toPlainText().isEmpty())
+        sendOnTextChanged(0);
+    else
+        sendOnTextChanged(2);
 }

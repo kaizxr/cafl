@@ -4,6 +4,7 @@
 #include "src/Sandbox/Edge/BaseEdge.h"
 #include "src/Windows/WindowsManager.h"
 #include "src/Windows/SandboxWindow/SandboxWindow.h"
+#include "src/Windows/PlaygroundWindow/PlaygroundWindow.h"
 #include "src/Sandbox/GraphicsView.h"
 
 ContextMenu::ContextMenu(QGraphicsItem* item, QWidget* parent)
@@ -36,7 +37,10 @@ void ContextMenu::makeInitial()
 {
     if (auto casted = dynamic_cast<Node*>(item))
     {
-        WINDOWS->getSandboxWindow()->getGraphicsView()->makeInitial(casted);
+        if (auto sandbox = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+            sandbox->getGraphicsView()->makeInitial(casted);
+        else if (auto playground = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
+            playground->getGraphicsView()->makeInitial(casted);
     }
 }
 
@@ -49,10 +53,19 @@ void ContextMenu::makeFinal()
 void ContextMenu::rename()
 {
     if (auto casted = dynamic_cast<BaseEdge*>(item))
-        WINDOWS->getSandboxWindow()->getGraphicsView()->startRenameEdge(casted);
+    {
+        if (auto sandbox = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+            sandbox->getGraphicsView()->startRenameEdge(casted);
+        else if (auto playground = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
+            playground->getGraphicsView()->startRenameEdge(casted);
+
+    }
 }
 
 void ContextMenu::remove()
 {
-    WINDOWS->getSandboxWindow()->getGraphicsView()->removeObject(item);
+    if (auto sandbox = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+        sandbox->getGraphicsView()->removeObject(item);
+    else if (auto playground = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
+        playground->getGraphicsView()->removeObject(item);
 }

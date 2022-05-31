@@ -16,6 +16,7 @@ class GraphicsView : public QGraphicsView, public TextListener
 public:
     GraphicsView(QWidget* parent = nullptr);
     ~GraphicsView();
+    void reload();
     nlohmann::json toJson();
     void writeToJson();
     void openFromJson(const nlohmann::json& data);
