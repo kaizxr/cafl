@@ -1,22 +1,28 @@
 {
-    "title": "Проверка на наличие символа в строке",
-    "desc":"Составьте конечный автомат, принимающий все строки из алфавита {0,1} не содержащих символа 0\n\nВходные данные - Выходные данные\n0 - REJECTED\n1 - ACCEPTED\n01 - REJECTED\n10 - REJECTED\n111 - ACCEPTED\n0000 - REJECTED",
+    "title": "Автомат оканчивающийся на 010",
+    "desc":"Составьте конечный автомат, принимающий строки из алфавита {0,1} оканчивающиеся на 010\n\nВходные данные - Выходные данные\n0 - REJECTED\n1 - REJECTED\n01 - REJECTED\n10 - REJECTED\n000 - REJECTED\n010 - ACCEPTED\n011 - REJECTED\n111 - REJECTED\n0010 - REJECTED\n0011 - REJECTED\n1010 - REJECTED\n1011 - REJECTED\n00010 - REJECTED\n10010 - REJECTED",
     "inputs":
     [
-        "0",
-        "1",
-        "01",
-        "10",
+        "010",
+        "011",
         "111",
-        "0000"
+        "0010",
+        "0011",
+        "1010",
+        "1011",
+        "00010",
+        "10010"
     ],
-    "output":
+    "outputs":
     [
-        false,
         true,
         false,
         false,
         true,
-        false
+        false,
+        true,
+        false,
+        true,
+        true
     ]
 }
