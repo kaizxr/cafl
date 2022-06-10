@@ -40,6 +40,7 @@ SOURCES += \
     src/Windows/PlaygroundWindow/PlaygroundWindow.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
     src/Windows/Simulation/Output.cpp \
+    src/Windows/TaskConstructorWindow/SimpleTaskCreator.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
     src/Windows/WindowsManager.cpp \
     src/main.cpp
@@ -82,6 +83,7 @@ HEADERS += \
     src/Windows/PlaygroundWindow/PlaygroundWindow.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
     src/Windows/Simulation/Output.h \
+    src/Windows/TaskConstructorWindow/SimpleTaskCreator.h \
     src/Windows/TitleWindow/TitleWindow.h \
     src/Windows/WindowsManager.h
 
@@ -89,6 +91,7 @@ FORMS += \
     res/ui/output.ui \
     res/ui/playgroundwindow.ui \
     res/ui/sandboxwindow.ui \
+    res/ui/simpletaskcreator.ui \
     res/ui/titlewindow.ui
 
 # Default rules for deployment.

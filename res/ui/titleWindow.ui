@@ -14,7 +14,7 @@
    <string>TitleWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="newButton">
+   <widget class="QPushButton" name="sandboxButton">
     <property name="geometry">
      <rect>
       <x>64</x>
@@ -30,10 +30,10 @@
      </font>
     </property>
     <property name="text">
-     <string>New Project</string>
+     <string>Sandbox</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="openButton">
+   <widget class="QPushButton" name="playgroundButton">
     <property name="geometry">
      <rect>
       <x>64</x>
@@ -49,15 +49,15 @@
      </font>
     </property>
     <property name="text">
-     <string>Open Project</string>
+     <string>Playground</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="faRButton">
+   <widget class="QPushButton" name="taskConstructorButton">
     <property name="geometry">
      <rect>
-      <x>218</x>
+      <x>64</x>
       <y>392</y>
-      <width>100</width>
+      <width>672</width>
       <height>100</height>
      </rect>
     </property>
@@ -68,66 +68,7 @@
      </font>
     </property>
     <property name="text">
-     <string>FA</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pdaRButton">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>392</y>
-      <width>100</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Montserrat Light</family>
-      <pointsize>28</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>PDA</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="tmRButton">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>482</x>
-      <y>392</y>
-      <width>100</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <family>Montserrat Light</family>
-      <pointsize>28</pointsize>
-     </font>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>TM</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>64</width>
-      <height>64</height>
-     </size>
+     <string>Task Constructor</string>
     </property>
    </widget>
   </widget>

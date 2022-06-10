@@ -29,6 +29,7 @@ private slots:
     void newProject();
     void openProject();
     void saveAs();
+    void backToStartWindow();
     void exit();
     void selectAllObjects();
     void selectTool();

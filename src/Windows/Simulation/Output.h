@@ -7,7 +7,7 @@
 #include <QGraphicsView>
 
 namespace Ui {
-class Output;
+    class Output;
 }
 namespace Window
 {
@@ -21,7 +21,7 @@ namespace Window
             explicit Output(QWidget *parent = nullptr);
             ~Output();
 
-            void init();
+            void initUI();
             void setLabelText(QString text);
             virtual void keyPressEvent(QKeyEvent* event) override;
 

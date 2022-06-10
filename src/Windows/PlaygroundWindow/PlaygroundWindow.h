@@ -25,6 +25,7 @@ public:
 
 private slots:
     void retry();
+    void backToStartWindow();
     void exit();
     void selectAllObjects();
     void selectTool();

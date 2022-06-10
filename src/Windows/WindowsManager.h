@@ -10,6 +10,7 @@ namespace Window::Simulation
 
 class SandboxWindow;
 class PlaygroundWindow;
+class SimpleTaskCreator;
 class TitleWindow;
 class WindowsManager
 {
@@ -25,6 +26,7 @@ private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
     std::shared_ptr<PlaygroundWindow> createPlaygroundWindow();
     std::shared_ptr<TitleWindow> createTitleWindow();
+    std::shared_ptr<SimpleTaskCreator> createSimpleTaskCreator();
     std::shared_ptr<Window::Simulation::Output> createOutputWindow();
 
     static WindowsManager* instance;

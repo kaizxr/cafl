@@ -8,7 +8,6 @@
 #include "src/Sandbox/ContextMenu/ContextMenu.h"
 #include "src/Automata/Helpers/SimulateHelper.h"
 #include <QMessageBox>
-#include "src/Utils/SingletonManager.h"
 
 PlaygroundWindow::PlaygroundWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -56,17 +55,18 @@ void PlaygroundWindow::init()
 
 void PlaygroundWindow::initActions()
 {
-    connect(ui->actionRetry,     &QAction::triggered, this, &PlaygroundWindow::retry       );
-    connect(ui->actionExit,      &QAction::triggered, this, &PlaygroundWindow::exit             );
-    connect(ui->actionSelectAll, &QAction::triggered, this, &PlaygroundWindow::selectAllObjects );
-    connect(ui->actionSelect,    &QAction::triggered, this, &PlaygroundWindow::selectTool       );
-    connect(ui->actionNode,      &QAction::triggered, this, &PlaygroundWindow::nodeTool         );
-    connect(ui->actionEdge,      &QAction::triggered, this, &PlaygroundWindow::edgeTool         );
-    connect(ui->actionHand,      &QAction::triggered, this, &PlaygroundWindow::handTool         );
-    connect(ui->actionTest,      &QAction::triggered, this, &PlaygroundWindow::test         );
+    connect(ui->actionRetry,       &QAction::triggered,   this, &PlaygroundWindow::retry             );
+    connect(ui->actionStartWindow, &QAction::triggered,   this, &PlaygroundWindow::backToStartWindow );
+    connect(ui->actionExit,        &QAction::triggered,   this, &PlaygroundWindow::exit              );
+    connect(ui->actionSelectAll,   &QAction::triggered,   this, &PlaygroundWindow::selectAllObjects  );
+    connect(ui->actionSelect,      &QAction::triggered,   this, &PlaygroundWindow::selectTool        );
+    connect(ui->actionNode,        &QAction::triggered,   this, &PlaygroundWindow::nodeTool          );
+    connect(ui->actionEdge,        &QAction::triggered,   this, &PlaygroundWindow::edgeTool          );
+    connect(ui->actionHand,        &QAction::triggered,   this, &PlaygroundWindow::handTool          );
+    connect(ui->actionTest,        &QAction::triggered,   this, &PlaygroundWindow::test              );
 
-    connect(ui->clearButton,     &QPushButton::pressed, this, &PlaygroundWindow::retry       );
-    connect(ui->checkButton,     &QPushButton::pressed, this, &PlaygroundWindow::test       );
+    connect(ui->clearButton,       &QPushButton::pressed, this, &PlaygroundWindow::retry             );
+    connect(ui->checkButton,       &QPushButton::pressed, this, &PlaygroundWindow::test              );
     connect(graphicsView.get(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(requestContextMenu(const QPoint&))    );
 }
 
@@ -83,6 +83,11 @@ void PlaygroundWindow::resizeEvent(QResizeEvent* event)
 void PlaygroundWindow::retry()
 {
     reload();
+}
+
+void PlaygroundWindow::backToStartWindow()
+{
+    WINDOWS->changeWindow("title");
 }
 
 void PlaygroundWindow::exit()

@@ -3,6 +3,7 @@
 #include "src/Windows/SandboxWindow/SandboxWindow.h"
 #include "src/Windows/PlaygroundWindow/PlaygroundWindow.h"
 #include "src/Windows/TitleWindow/TitleWindow.h"
+#include "src/Windows/TaskConstructorWindow/SimpleTaskCreator.h"
 #include "src/Windows/Simulation/Output.h"
 
 WindowsManager* WindowsManager::instance = nullptr;
@@ -49,6 +50,8 @@ void WindowsManager::changeWindow(std::string windowType)
         curWindow = createPlaygroundWindow();
     else if (windowType == "title")
         curWindow = createTitleWindow();
+    else if (windowType == "taskConstructor")
+        curWindow = createSimpleTaskCreator();
     else if (windowType == "output")
     {
         curWindow = createOutputWindow();
@@ -87,10 +90,18 @@ std::shared_ptr<TitleWindow> WindowsManager::createTitleWindow()
     return window;
 }
 
+std::shared_ptr<SimpleTaskCreator> WindowsManager::createSimpleTaskCreator()
+{
+    std::shared_ptr<SimpleTaskCreator> window = std::make_shared<SimpleTaskCreator>();
+    window->show();
+    window->initUI();
+    return window;
+}
+
 std::shared_ptr<Window::Simulation::Output> WindowsManager::createOutputWindow()
 {
     std::shared_ptr<Window::Simulation::Output> window = std::make_shared<Window::Simulation::Output>();
     window->show();
-    window->init();
+    window->initUI();
     return window;
 }

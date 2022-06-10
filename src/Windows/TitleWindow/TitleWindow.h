@@ -17,11 +17,9 @@ public:
     ~TitleWindow();
 
 private slots:
-    void newProject();
-    void openProject();
-    void faType();
-    void pdaType();
-    void tmType();
+    void openSandbox();
+    void openPlayground();
+    void openTConstructor();
 
 private:
     void initActions();

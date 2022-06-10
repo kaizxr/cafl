@@ -18,7 +18,7 @@ Output::~Output()
     delete ui;
 }
 
-void Output::init()
+void Output::initUI()
 {
     table = new QTableWidget(1,2,this);
     table->show();

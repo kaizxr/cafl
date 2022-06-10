@@ -51,16 +51,12 @@ void SandboxWindow::initUI()
 {
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     
-    graphicsView->addNode(150,450);
-    graphicsView->addNode(400,450);
-
     auto instance = ToolButtonGroup::getInstance(ui->frame);
     buttonGroup = std::shared_ptr<ToolButtonGroup>(instance);
 }
 
 void SandboxWindow::init()
 {
-    // graphicsView = new GraphicsView(ui->mainFrame);
     graphicsView = std::make_shared<GraphicsView>(ui->mainFrame);
     graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
     graphicsView->setFocus();
@@ -120,17 +116,18 @@ GraphicsView* SandboxWindow::getGraphicsView()
 
 void SandboxWindow::initActions()
 {
-    connect(ui->actionNewProject,    &QAction::triggered, this, &SandboxWindow::newProject       );
-    connect(ui->actionOpenProject,   &QAction::triggered, this, &SandboxWindow::openProject      );
-    connect(ui->actionSaveAs,        &QAction::triggered, this, &SandboxWindow::saveAs           );
-    connect(ui->actionExit,          &QAction::triggered, this, &SandboxWindow::exit             );
-    connect(ui->actionSelectAll,     &QAction::triggered, this, &SandboxWindow::selectAllObjects );
-    connect(ui->actionSelect,        &QAction::triggered, this, &SandboxWindow::selectTool       );
-    connect(ui->actionNode,          &QAction::triggered, this, &SandboxWindow::nodeTool         );
-    connect(ui->actionEdge,          &QAction::triggered, this, &SandboxWindow::edgeTool         );
-    connect(ui->actionHand,          &QAction::triggered, this, &SandboxWindow::handTool         );
-    connect(ui->actionOneInput,      &QAction::triggered, this, &SandboxWindow::oneInput         );
-    connect(ui->actionMultipleInput, &QAction::triggered, this, &SandboxWindow::multipleInput    );
+    connect(ui->actionNewProject,    &QAction::triggered, this, &SandboxWindow::newProject        );
+    connect(ui->actionOpenProject,   &QAction::triggered, this, &SandboxWindow::openProject       );
+    connect(ui->actionSaveAs,        &QAction::triggered, this, &SandboxWindow::saveAs            );
+    connect(ui->actionExit,          &QAction::triggered, this, &SandboxWindow::exit              );
+    connect(ui->actionStartWindow,   &QAction::triggered, this, &SandboxWindow::backToStartWindow );
+    connect(ui->actionSelectAll,     &QAction::triggered, this, &SandboxWindow::selectAllObjects  );
+    connect(ui->actionSelect,        &QAction::triggered, this, &SandboxWindow::selectTool        );
+    connect(ui->actionNode,          &QAction::triggered, this, &SandboxWindow::nodeTool          );
+    connect(ui->actionEdge,          &QAction::triggered, this, &SandboxWindow::edgeTool          );
+    connect(ui->actionHand,          &QAction::triggered, this, &SandboxWindow::handTool          );
+    connect(ui->actionOneInput,      &QAction::triggered, this, &SandboxWindow::oneInput          );
+    connect(ui->actionMultipleInput, &QAction::triggered, this, &SandboxWindow::multipleInput     );
 
     connect(graphicsView.get(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(requestContextMenu(const QPoint&))    );
 }
@@ -166,6 +163,11 @@ void SandboxWindow::saveAs()
 {
     if (graphicsView)
         graphicsView->writeToJson();
+}
+
+void SandboxWindow::backToStartWindow()
+{
+    WINDOWS->changeWindow("title");
 }
 
 void SandboxWindow::exit()
@@ -217,7 +219,7 @@ void SandboxWindow::multipleInput()
 {    
     auto window = new Window::Simulation::Output();
     window->show();
-    window->init();
+    window->initUI();
 }
 
 void SandboxWindow::requestContextMenu(const QPoint& pos)

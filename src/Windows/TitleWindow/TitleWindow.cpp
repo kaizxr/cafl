@@ -12,73 +12,34 @@ TitleWindow::TitleWindow(QWidget *parent)
     , ui(new Ui::TitleWindow)
 {
     ui->setupUi(this);
-    this->setCentralWidget(ui->centralwidget);
-
     initActions();
 }
 
 TitleWindow::~TitleWindow()
 {
     delete ui;
-#ifdef DEBUG
-    qInfo("~TitleWindow finished");
-#endif
 }
 
 void TitleWindow::initActions()
 {
-    connect(ui->newButton,  &QPushButton::clicked, this, &TitleWindow::newProject);
-    connect(ui->openButton, &QPushButton::clicked, this, &TitleWindow::openProject);
-    connect(ui->faRButton,  &QPushButton::clicked, this, &TitleWindow::faType);
-    connect(ui->pdaRButton, &QPushButton::clicked, this, &TitleWindow::pdaType);
-    connect(ui->tmRButton,  &QPushButton::clicked, this, &TitleWindow::tmType);
+    connect(ui->sandboxButton,  &QPushButton::clicked, this, &TitleWindow::openSandbox);
+    connect(ui->playgroundButton, &QPushButton::clicked, this, &TitleWindow::openPlayground);
+    connect(ui->taskConstructorButton, &QPushButton::clicked, this, &TitleWindow::openTConstructor);
 }
 
-void TitleWindow::newProject()
+void TitleWindow::openSandbox()
 {
-#ifdef DEBUG
-    qInfo("newProject");
-#endif
-
     WINDOWS->changeWindow("sandbox");
 }
 
-void TitleWindow::openProject()
+void TitleWindow::openPlayground()
 {
-#ifdef DEBUG
-    qInfo("openProject");
-#endif
-
-    QString filename = QFileDialog::getOpenFileName(this);
-    if (!filename.isEmpty())
-    {
-        WINDOWS->changeWindow("sandbox");
-    }
-    // QFile file(filename);
-    // if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
-    //     QMessageBox::warning(this, "Warning", "Cannot open file : " + file.errorString());
-    //     return;
-    // }
+    WINDOWS->changeWindow("playground");
 }
 
-void TitleWindow::faType()
+void TitleWindow::openTConstructor()
 {
-#ifdef DEBUG
-    qInfo("faType");
-#endif
+    WINDOWS->changeWindow("taskConstructor");
 }
 
-void TitleWindow::pdaType()
-{
-#ifdef DEBUG
-    qInfo("pdaType");
-#endif
-}
-
-void TitleWindow::tmType()
-{
-#ifdef DEBUG
-    qInfo("tmType");
-#endif
-}
 

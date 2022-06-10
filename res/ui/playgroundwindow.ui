@@ -312,6 +312,8 @@ background-color: rgb(102, 102, 102);</string>
     </property>
     <addaction name="actionRetry"/>
     <addaction name="separator"/>
+    <addaction name="actionStartWindow"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -378,6 +380,11 @@ background-color: rgb(102, 102, 102);</string>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionStartWindow">
+   <property name="text">
+    <string>Start window</string>
    </property>
   </action>
  </widget>
