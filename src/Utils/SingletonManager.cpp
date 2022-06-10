@@ -37,6 +37,5 @@ void SingletonManager::reload()
 {
     Constants::getInstance()->cleanup();
     SIMULATE->cleanup();
-    TOOLBOX->cleanup();
     TOOLS->cleanup();
 }

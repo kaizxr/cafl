@@ -51,8 +51,7 @@ void SandboxWindow::initUI()
 {
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
     
-    auto instance = ToolButtonGroup::getInstance(ui->frame);
-    buttonGroup = std::shared_ptr<ToolButtonGroup>(instance);
+    buttonGroup = std::shared_ptr<ToolButtonGroup>(new ToolButtonGroup(ui->frame));
 }
 
 void SandboxWindow::init()
@@ -109,11 +108,6 @@ void SandboxWindow::openGraph()
     graphicsView->openFromJson(data);
 }
 
-GraphicsView* SandboxWindow::getGraphicsView()
-{
-    return graphicsView.get();
-}
-
 void SandboxWindow::initActions()
 {
     connect(ui->actionNewProject,    &QAction::triggered, this, &SandboxWindow::newProject        );
@@ -122,6 +116,9 @@ void SandboxWindow::initActions()
     connect(ui->actionExit,          &QAction::triggered, this, &SandboxWindow::exit              );
     connect(ui->actionStartWindow,   &QAction::triggered, this, &SandboxWindow::backToStartWindow );
     connect(ui->actionSelectAll,     &QAction::triggered, this, &SandboxWindow::selectAllObjects  );
+    connect(ui->actionRemove,        &QAction::triggered, this, &SandboxWindow::removeSelected    );
+    connect(ui->actionMakeFinal,     &QAction::triggered, this, &SandboxWindow::makeFinal         );
+    connect(ui->actionMakeInitial,   &QAction::triggered, this, &SandboxWindow::makeInitial       );
     connect(ui->actionSelect,        &QAction::triggered, this, &SandboxWindow::selectTool        );
     connect(ui->actionNode,          &QAction::triggered, this, &SandboxWindow::nodeTool          );
     connect(ui->actionEdge,          &QAction::triggered, this, &SandboxWindow::edgeTool          );
@@ -135,18 +132,6 @@ void SandboxWindow::initActions()
 void SandboxWindow::resizeEvent(QResizeEvent* event)
 {
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(),ui->mainFrame->height()));
-}
-
-void SandboxWindow::mouseMoveEvent(QMouseEvent* event)
-{
-    std::string temp;
-    int x = event->pos().x() - ui->mainFrame->x();
-    int y = event->pos().y() - ui->mainFrame->y();
-
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x > ui->mainFrame->width()) x = ui->mainFrame->width();
-    if (y > ui->mainFrame->height()) y = ui->mainFrame->height();
 }
 
 void SandboxWindow::newProject()
@@ -181,32 +166,51 @@ void SandboxWindow::selectAllObjects()
         graphicsView->selectAllObjects();
 }
 
+void SandboxWindow::removeSelected()
+{
+    if (graphicsView)
+        graphicsView->removeObjects();
+}
+
+
+void SandboxWindow::makeFinal()
+{
+    if (graphicsView)
+        graphicsView->tryMakeFinal();
+}
+
+void SandboxWindow::makeInitial()
+{
+    if (graphicsView)
+        graphicsView->tryMakeInitial();
+}
+
 void SandboxWindow::selectTool()
 {
     const auto& toolType = ToolsManager::eToolType::SELECT;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void SandboxWindow::nodeTool()
 {
     const auto& toolType = ToolsManager::eToolType::NODE;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void SandboxWindow::edgeTool()
 {
     const auto& toolType = ToolsManager::eToolType::EDGE;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void SandboxWindow::handTool()
 {
     const auto& toolType = ToolsManager::eToolType::HAND;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void SandboxWindow::oneInput()

@@ -149,8 +149,12 @@ void GraphicsView::addNode(int x, int y, int id, bool isFinal, bool isInitial)
     node->setFinal(isFinal);
     node->setInitial(isInitial);
     scene()->addItem(node.get());
+    if (nodes.length() == 0)
+    {
+        node->setInitial(true);
+        initialNode = node;
+    }
     nodes.push_back(node);
-    // node.reset();
 }
 
 void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
@@ -429,37 +433,44 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     {
         const auto& toolType = ToolsManager::eToolType::SELECT;
         TOOLS->setToolType(toolType);
-        TOOLBOX->toggleButtonGroup((int)toolType);
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
+            window->getButtonGroup()->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_W)
     {
         const auto& toolType = ToolsManager::eToolType::NODE;
         TOOLS->setToolType(toolType);
-        TOOLBOX->toggleButtonGroup((int)toolType);
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
+            window->getButtonGroup()->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_E)
     {
         const auto& toolType = ToolsManager::eToolType::EDGE;
         TOOLS->setToolType(toolType);
-        TOOLBOX->toggleButtonGroup((int)toolType);
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
+            window->getButtonGroup()->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_R)
     {
         const auto& toolType = ToolsManager::eToolType::HAND;
         TOOLS->setToolType(toolType);
-        TOOLBOX->toggleButtonGroup((int)toolType);
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
+            window->getButtonGroup()->toggleButtonGroup((int)toolType);
     }
     if (event->key() == Qt::Key_Space)
     {
         qInfo("press space");
-        auto toolbox = TOOLBOX;
-        if (!toolbox->isHolding())
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
         {
-            qInfo("TOOLBOX !isHolding");
-            const auto& toolType = ToolsManager::eToolType::HAND;
-            TOOLS->setToolType(toolType);
-            toolbox->toggleButtonGroup((int)toolType);
-            toolbox->setHolding(true);
+            auto toolbox = window->getButtonGroup();
+            if (!toolbox->isHolding())
+            {
+                qInfo("TOOLBOX !isHolding");
+                const auto& toolType = ToolsManager::eToolType::HAND;
+                TOOLS->setToolType(toolType);
+                toolbox->toggleButtonGroup((int)toolType);
+                toolbox->setHolding(true);
+            }
         }
     }
     if (event->key() == Qt::Key_D)
@@ -469,7 +480,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_F)
     {
         qInfo("F");
-        makeNodesFinal();
+        tryMakeFinal();
     }
     if (event->key() == Qt::Key_G)
     {
@@ -538,13 +549,16 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
     }
     if (event->key() == Qt::Key_Space)
     {
-        auto toolbox = TOOLBOX;
-        if (toolbox->isHolding())
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
         {
-            const int t = toolbox->getPrevActiveId();
-            TOOLS->setToolType((ToolsManager::eToolType)t);
-            toolbox->toggleButtonGroup(t);
-            toolbox->setHolding(false);
+            auto toolbox = window->getButtonGroup();
+            if (toolbox->isHolding())
+            {
+                const int t = toolbox->getPrevActiveId();
+                TOOLS->setToolType((ToolsManager::eToolType)t);
+                toolbox->toggleButtonGroup(t);
+                toolbox->setHolding(false);
+            }
         }
     }
     QGraphicsView::keyReleaseEvent(event);
@@ -678,7 +692,7 @@ void GraphicsView::removeObjects()
     qInfo("updated edges size: %lld", edges.size());
 }
 
-void GraphicsView::makeNodesFinal()
+void GraphicsView::tryMakeFinal()
 {
     if (scene()->selectedItems().size() > 0)
     {
@@ -728,11 +742,14 @@ void GraphicsView::makeInitial(Node* item)
 {
     if (initialNode)
     {
+        bool itemIsInit = item->isInitial();
         initialNode->setInitial(false);
         int radius = CONST["Node"]["radius"];
         update(initialNode->centeredPos().x()-radius*2,
-               initialNode->centeredPos().y()-radius*2,
-               radius*4,radius*4);
+            initialNode->centeredPos().y()-radius*2,
+            radius*4,radius*4);
+        if (itemIsInit)
+            return;
     }
     for (const auto& node : nodes)
     {

@@ -33,7 +33,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>180</width>
+      <width>185</width>
       <height>24</height>
      </rect>
     </property>
@@ -44,9 +44,9 @@
    <widget class="QPushButton" name="exitButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>205</x>
       <y>10</y>
-      <width>190</width>
+      <width>185</width>
       <height>24</height>
      </rect>
     </property>

@@ -42,6 +42,7 @@ SOURCES += \
     src/Windows/Simulation/Output.cpp \
     src/Windows/TaskConstructorWindow/SimpleTaskCreator.cpp \
     src/Windows/TitleWindow/TitleWindow.cpp \
+    src/Windows/BaseGraphEditorWindow.cpp \
     src/Windows/WindowsManager.cpp \
     src/main.cpp
 
@@ -85,6 +86,7 @@ HEADERS += \
     src/Windows/Simulation/Output.h \
     src/Windows/TaskConstructorWindow/SimpleTaskCreator.h \
     src/Windows/TitleWindow/TitleWindow.h \
+    src/Windows/BaseGraphEditorWindow.h \
     src/Windows/WindowsManager.h
 
 FORMS += \

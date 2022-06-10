@@ -3,6 +3,7 @@
 #define SANDBOXWINDOW_H
 
 #include <QMainWindow>
+#include "src/Windows/BaseGraphEditorWindow.h"
 #include "lib/json.hpp"
 
 QT_BEGIN_NAMESPACE
@@ -12,7 +13,7 @@ QT_END_NAMESPACE
 class Node;
 class GraphicsView;
 class ToolButtonGroup;
-class SandboxWindow : public QMainWindow
+class SandboxWindow : public QMainWindow, public BaseGraphEditorWindow
 {
     Q_OBJECT
 
@@ -23,7 +24,6 @@ public:
     void initUI();
     void saveJson(nlohmann::json data);
     void openGraph();
-    GraphicsView* getGraphicsView();
 
 private slots:
     void newProject();
@@ -32,6 +32,9 @@ private slots:
     void backToStartWindow();
     void exit();
     void selectAllObjects();
+    void removeSelected();
+    void makeFinal();
+    void makeInitial();
     void selectTool();
     void nodeTool();
     void edgeTool();
@@ -45,13 +48,9 @@ private:
     void initActions();
 
     void resizeEvent(QResizeEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
 
     QString curFilename;
-    // GraphicsView* graphicsView;
-    std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
     Ui::SandboxWindow *ui;
-    std::shared_ptr<ToolButtonGroup> buttonGroup;
 };
 #endif // SANDBOXWINDOW_H

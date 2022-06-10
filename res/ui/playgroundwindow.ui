@@ -193,22 +193,6 @@ background-color: rgb(102, 102, 102);</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="taskTitle">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>80</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="taskDesc">
              <property name="text">
               <string>TextLabel</string>
@@ -308,9 +292,10 @@ background-color: rgb(102, 102, 102);</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Файл</string>
     </property>
     <addaction name="actionRetry"/>
+    <addaction name="actionChooseTask"/>
     <addaction name="separator"/>
     <addaction name="actionStartWindow"/>
     <addaction name="separator"/>
@@ -318,29 +303,26 @@ background-color: rgb(102, 102, 102);</string>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>Правка</string>
     </property>
     <addaction name="actionSelectAll"/>
+    <addaction name="actionRemove"/>
+    <addaction name="separator"/>
+    <addaction name="actionMakeFinal"/>
+    <addaction name="actionMakeInitial"/>
    </widget>
    <widget class="QMenu" name="menuTool">
     <property name="title">
-     <string>Tool</string>
+     <string>Инструменты</string>
     </property>
     <addaction name="actionSelect"/>
     <addaction name="actionNode"/>
     <addaction name="actionEdge"/>
     <addaction name="actionHand"/>
    </widget>
-   <widget class="QMenu" name="menuRun">
-    <property name="title">
-     <string>Run</string>
-    </property>
-    <addaction name="actionTest"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuTool"/>
-   <addaction name="menuRun"/>
   </widget>
   <action name="actionTest">
    <property name="text">
@@ -349,42 +331,62 @@ background-color: rgb(102, 102, 102);</string>
   </action>
   <action name="actionSelect">
    <property name="text">
-    <string>Select</string>
+    <string>Инструмент &quot;Выбрать&quot; (Q)</string>
    </property>
   </action>
   <action name="actionNode">
    <property name="text">
-    <string>Node</string>
+    <string>Добавление вершины (W)</string>
    </property>
   </action>
   <action name="actionEdge">
    <property name="text">
-    <string>Edge</string>
+    <string>Добавление ребра (E)</string>
    </property>
   </action>
   <action name="actionHand">
    <property name="text">
-    <string>Hand</string>
+    <string>Инструмент &quot;Рука&quot; (R)</string>
    </property>
   </action>
   <action name="actionSelectAll">
    <property name="text">
-    <string>Select All</string>
+    <string>Выбрать всё (Ctrl+A)</string>
    </property>
   </action>
   <action name="actionRetry">
    <property name="text">
-    <string>Retry</string>
+    <string>Очистить холст</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>Выход</string>
    </property>
   </action>
   <action name="actionStartWindow">
    <property name="text">
-    <string>Start window</string>
+    <string>Вернуться на начальный экран</string>
+   </property>
+  </action>
+  <action name="actionChooseTask">
+   <property name="text">
+    <string>Выбрать задание</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="text">
+    <string>Удалить выбранные объекты (Del)</string>
+   </property>
+  </action>
+  <action name="actionMakeFinal">
+   <property name="text">
+    <string>Сделать вершины финальными (F)</string>
+   </property>
+  </action>
+  <action name="actionMakeInitial">
+   <property name="text">
+    <string>Сделать вершину начальной (G)</string>
    </property>
   </action>
  </widget>

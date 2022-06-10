@@ -46,16 +46,14 @@ void WindowsManager::changeWindow(std::string windowType)
 
     if (windowType == "sandbox")
         curWindow = createSandboxWindow();
-    if (windowType == "playground")
+    else if (windowType == "playground")
         curWindow = createPlaygroundWindow();
     else if (windowType == "title")
         curWindow = createTitleWindow();
     else if (windowType == "taskConstructor")
         curWindow = createSimpleTaskCreator();
     else if (windowType == "output")
-    {
         curWindow = createOutputWindow();
-    }
 #ifdef DEBUG
     else
         qInfo("error");

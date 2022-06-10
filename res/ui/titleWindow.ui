@@ -30,7 +30,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Sandbox</string>
+     <string>Конструктор автоматов</string>
     </property>
    </widget>
    <widget class="QPushButton" name="playgroundButton">
@@ -49,7 +49,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Playground</string>
+     <string>Выполнение заданий</string>
     </property>
    </widget>
    <widget class="QPushButton" name="taskConstructorButton">
@@ -68,7 +68,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Task Constructor</string>
+     <string>Конструктор заданий</string>
     </property>
    </widget>
   </widget>

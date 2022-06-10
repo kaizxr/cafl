@@ -38,9 +38,12 @@ public:
     void selectAllObjects();
     void startSimulateAction(QList<QString> input);
     AA::Automata* convertToFSA();
+    void tryMakeFinal();
+    void tryMakeInitial();
     void makeInitial(Node* node);
     void startRenameEdge(BaseEdge* edge);
     void removeObject(QGraphicsItem* item);
+    void removeObjects();
     AA::Automata* getAutomata();
 
     enum class eActionType
@@ -55,10 +58,7 @@ public:
     };
 private:
     void resizeEvent(QResizeEvent *event) override;
-    void removeObjects();
     void setTool(int tooltype);
-    void makeNodesFinal();
-    void tryMakeInitial();
     BaseEdge* checkEdge(Node* source, Node* dest);
     void setEdgeName(int code);
     

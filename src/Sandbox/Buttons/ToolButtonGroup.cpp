@@ -4,29 +4,22 @@
 #include <QApplication>
 #include <QWidget>
 
-ToolButtonGroup* ToolButtonGroup::instance = nullptr;
-
-ToolButtonGroup* ToolButtonGroup::getInstance(QWidget* widgetParent)
-{
-	if (!instance)
-	{
-        instance = new ToolButtonGroup(widgetParent);
-    }
-	return instance;
-}
-
-void ToolButtonGroup::cleanup()
-{
-	delete instance;
-	instance = nullptr;
-}
+#include <iostream>
 
 ToolButtonGroup::ToolButtonGroup(QWidget* widgetParent) : QButtonGroup(widgetParent)
 {
     auto selectTool = new ToggleButton(QRect(8,8,32,32),QIcon(":/icons/icons/white_select.png"),widgetParent);
+    selectTool->setToolTip("Инструмент \"Выбрать\" (Q)");
+    selectTool->setStyleSheet("color: #000000;");
     auto nodeTool = new ToggleButton(QRect(48,8,32,32),QIcon(":/icons/icons/white_add_node.png"),widgetParent);
+    nodeTool->setToolTip("Добавление вершины (W)");
+    nodeTool->setStyleSheet("color: #000000;");
     auto edgeTool = new ToggleButton(QRect(88,8,32,32),QIcon(":/icons/icons/white_add_edge.png"),widgetParent);
+    edgeTool->setToolTip("Добавление ребра (E)");
+    edgeTool->setStyleSheet("color: #000000;");
     auto handTool = new ToggleButton(QRect(128,8,32,32),QIcon(":/icons/icons/white_hand.png"),widgetParent);
+    handTool->setToolTip("Инструмент рука (R/Пробел)");
+    handTool->setStyleSheet("color: #000000;");
     addButton(selectTool,0);
     addButton(nodeTool,1);
     addButton(edgeTool,2);

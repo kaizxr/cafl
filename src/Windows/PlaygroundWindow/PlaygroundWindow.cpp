@@ -8,6 +8,8 @@
 #include "src/Sandbox/ContextMenu/ContextMenu.h"
 #include "src/Automata/Helpers/SimulateHelper.h"
 #include <QMessageBox>
+#include <QInputDialog>
+#include <iostream>
 
 PlaygroundWindow::PlaygroundWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,19 +30,13 @@ void PlaygroundWindow::initUI()
 {
     qInfo("initUI %d:%d",ui->mainFrame->width(),ui->mainFrame->height());
     graphicsView->setGeometry(QRect(0,0,ui->mainFrame->width(), ui->mainFrame->height()));
-    auto instance = ToolButtonGroup::getInstance(ui->frame);
-    buttonGroup = instance;
+    buttonGroup = std::shared_ptr<ToolButtonGroup>(new ToolButtonGroup(ui->frame));
 
     qInfo("%d",playgroundManager->getCurrentTaskId());
     std::string title = playgroundManager->getCurrentTaskData()["title"];
     std::string desc = playgroundManager->getCurrentTaskData()["desc"];
-    ui->taskTitle->setText(title.c_str());
+    ui->titleLabel->setText(title.c_str());
     ui->taskDesc->setText(desc.c_str());
-}
-
-GraphicsView* PlaygroundWindow::getGraphicsView()
-{
-    return graphicsView.get();
 }
 
 void PlaygroundWindow::init()
@@ -56,9 +52,13 @@ void PlaygroundWindow::init()
 void PlaygroundWindow::initActions()
 {
     connect(ui->actionRetry,       &QAction::triggered,   this, &PlaygroundWindow::retry             );
+    connect(ui->actionChooseTask,  &QAction::triggered,   this, &PlaygroundWindow::chooseTask        );
     connect(ui->actionStartWindow, &QAction::triggered,   this, &PlaygroundWindow::backToStartWindow );
     connect(ui->actionExit,        &QAction::triggered,   this, &PlaygroundWindow::exit              );
     connect(ui->actionSelectAll,   &QAction::triggered,   this, &PlaygroundWindow::selectAllObjects  );
+    connect(ui->actionRemove,      &QAction::triggered,   this, &PlaygroundWindow::removeSelected    );
+    connect(ui->actionMakeFinal,   &QAction::triggered,   this, &PlaygroundWindow::makeFinal         );
+    connect(ui->actionMakeInitial, &QAction::triggered,   this, &PlaygroundWindow::makeInitial       );
     connect(ui->actionSelect,      &QAction::triggered,   this, &PlaygroundWindow::selectTool        );
     connect(ui->actionNode,        &QAction::triggered,   this, &PlaygroundWindow::nodeTool          );
     connect(ui->actionEdge,        &QAction::triggered,   this, &PlaygroundWindow::edgeTool          );
@@ -85,6 +85,24 @@ void PlaygroundWindow::retry()
     reload();
 }
 
+void PlaygroundWindow::chooseTask()
+{
+    int forcedId = 0;
+
+    if (auto sandbox = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
+    {
+        auto dialog = new QInputDialog(sandbox);
+        dialog->setWindowTitle("Type task id");
+        dialog->show();
+        dialog->exec();
+        forcedId = dialog->textValue().toInt();
+    }
+    std::cout << forcedId << std::endl;
+
+    playgroundManager->tryOpenTask(forcedId);
+    WINDOWS->changeWindow("playground");
+}
+
 void PlaygroundWindow::backToStartWindow()
 {
     WINDOWS->changeWindow("title");
@@ -101,32 +119,51 @@ void PlaygroundWindow::selectAllObjects()
         graphicsView->selectAllObjects();
 }
 
+void PlaygroundWindow::removeSelected()
+{
+    if (graphicsView)
+        graphicsView->removeObjects();
+}
+
+
+void PlaygroundWindow::makeFinal()
+{
+    if (graphicsView)
+        graphicsView->tryMakeFinal();
+}
+
+void PlaygroundWindow::makeInitial()
+{
+    if (graphicsView)
+        graphicsView->tryMakeInitial();
+}
+
 void PlaygroundWindow::selectTool()
 {
     const auto& toolType = ToolsManager::eToolType::SELECT;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void PlaygroundWindow::nodeTool()
 {
     const auto& toolType = ToolsManager::eToolType::NODE;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void PlaygroundWindow::edgeTool()
 {
     const auto& toolType = ToolsManager::eToolType::EDGE;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 void PlaygroundWindow::handTool()
 {
     const auto& toolType = ToolsManager::eToolType::HAND;
     TOOLS->setToolType(toolType);
-    TOOLBOX->toggleButtonGroup((int)toolType);
+    buttonGroup->toggleButtonGroup((int)toolType);
 }
 
 #include <iostream>

@@ -3,6 +3,7 @@
 #define PLAYGROUNDWINDOW_H
 
 #include <QMainWindow>
+#include "src/Windows/BaseGraphEditorWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class PlaygroundWindow; }
@@ -12,7 +13,7 @@ class PlaygroundManager;
 class Node;
 class GraphicsView;
 class ToolButtonGroup;
-class PlaygroundWindow : public QMainWindow
+class PlaygroundWindow : public QMainWindow, public BaseGraphEditorWindow
 {
     Q_OBJECT
 
@@ -21,13 +22,16 @@ public:
     ~PlaygroundWindow();
 
     void initUI();
-    GraphicsView* getGraphicsView();
 
 private slots:
     void retry();
+    void chooseTask();
     void backToStartWindow();
     void exit();
     void selectAllObjects();
+    void removeSelected();
+    void makeFinal();
+    void makeInitial();
     void selectTool();
     void nodeTool();
     void edgeTool();
@@ -42,9 +46,7 @@ private:
 
     void resizeEvent(QResizeEvent* event) override;
     
-    std::shared_ptr<GraphicsView> graphicsView;
     std::shared_ptr<Node> node0; 
-    ToolButtonGroup* buttonGroup;
     std::shared_ptr<PlaygroundManager> playgroundManager;
     Ui::PlaygroundWindow *ui;
 };

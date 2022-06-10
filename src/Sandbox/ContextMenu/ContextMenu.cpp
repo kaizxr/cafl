@@ -37,10 +37,8 @@ void ContextMenu::makeInitial()
 {
     if (auto casted = dynamic_cast<Node*>(item))
     {
-        if (auto sandbox = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
-            sandbox->getGraphicsView()->makeInitial(casted);
-        else if (auto playground = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
-            playground->getGraphicsView()->makeInitial(casted);
+        if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
+            window->getGraphicsView()->makeInitial(casted);
     }
 }
 

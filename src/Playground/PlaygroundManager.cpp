@@ -18,20 +18,44 @@ void PlaygroundManager::parse()
     std::ifstream in("res/tasks/data.json");
     in >> data;
     in.close();
-    currentTask = data["tasks"]["current"];
-    in = std::ifstream(strFormat("res/tasks/task_%d/task_%d.json",currentTask,currentTask));
+    currentTaskId = data["tasks"]["current"];
+    in = std::ifstream(strFormat("res/tasks/task_%d/task_%d.json",currentTaskId,currentTaskId));
     in >> currentTaskData;
-    qInfo("currentTask = %d", currentTask);
+    qInfo("currentTask = %d", currentTaskId);
 }
 
 int PlaygroundManager::getCurrentTaskId() const
 {
-    return currentTask;
+    return currentTaskId;
 }
 
 void PlaygroundManager::nextTask()
 {
-    data["tasks"]["current"] = ++currentTask;
+    if (data["tasks"].contains("is_forced"))
+    {
+        if (bool isForced = data["tasks"]["is_forced"])
+        {
+            data["tasks"]["is_forced"] = false;
+            currentTaskId = data["tasks"]["prev"];
+            data["tasks"]["prev"] = currentTaskId;
+            data["tasks"]["current"] = ++currentTaskId;
+        }
+    }
+    else
+    {
+        data["tasks"]["prev"] = currentTaskId;
+        data["tasks"]["current"] = ++currentTaskId;
+    }
+
+    std::ofstream out("res/tasks/data.json");
+    out << std::setw(4) << data << std::endl;
+}
+
+void PlaygroundManager::tryOpenTask(int forcedId)
+{
+    data["tasks"]["is_forced"] = true;
+    data["tasks"]["prev"] = currentTaskId;
+    data["tasks"]["current"] = forcedId;
 
     std::ofstream out("res/tasks/data.json");
     out << std::setw(4) << data << std::endl;

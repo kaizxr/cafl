@@ -31,27 +31,27 @@
    <widget class="QPushButton" name="runButton">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>10</x>
       <y>10</y>
-      <width>80</width>
+      <width>185</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Run</string>
+     <string>Протестировать</string>
     </property>
    </widget>
    <widget class="QPushButton" name="exitButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>205</x>
       <y>10</y>
-      <width>80</width>
+      <width>185</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Exit</string>
+     <string>Выход</string>
     </property>
    </widget>
   </widget>

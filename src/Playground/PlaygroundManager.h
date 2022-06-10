@@ -9,11 +9,13 @@ public:
     void parse();
     int getCurrentTaskId() const;
     void nextTask();
+    void tryOpenTask(int forcedId);
     nlohmann::json getCurrentTaskData();
     nlohmann::json getData();
 
 private:
-    int currentTask;
+    int forcedTaskId;
+    int currentTaskId;
     nlohmann::json currentTaskData;
     nlohmann::json data;
 };

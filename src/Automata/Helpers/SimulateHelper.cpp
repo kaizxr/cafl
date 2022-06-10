@@ -1,7 +1,8 @@
 #include "SimulateHelper.h"
 #include "src/Windows/WindowsManager.h"
-#include "src/Windows/PlaygroundWindow/PlaygroundWindow.h"
-#include "src/Windows/SandboxWindow/SandboxWindow.h"
+#include "src/Windows/BaseGraphEditorWindow.h"
+//#include "src/Windows/PlaygroundWindow/PlaygroundWindow.h"
+//#include "src/Windows/SandboxWindow/SandboxWindow.h"
 #include "src/Sandbox/GraphicsView.h"
 
 #include "src/Automata/FSA/FSAAutomata.h"
@@ -40,7 +41,7 @@ SimulateHelper::~SimulateHelper()
 void SimulateHelper::startFastRun()
 {
     inputs.clear();
-    if (auto casted = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+    if (auto casted = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
     {
         auto automata = casted->getGraphicsView()->convertToFSA();
     
@@ -53,13 +54,9 @@ void SimulateHelper::startMultipleRun(QList<QString> inputs)
 {
     this->inputs = inputs;
     AA::Automata* automata;
-    if (auto casted = dynamic_cast<SandboxWindow*>(WINDOWS->getCurWindow()))
+    if (auto window = dynamic_cast<BaseGraphEditorWindow*>(WINDOWS->getCurWindow()))
     {
-        automata = casted->getGraphicsView()->convertToFSA();
-    }
-    else if (auto casted = dynamic_cast<PlaygroundWindow*>(WINDOWS->getCurWindow()))
-    {
-        automata = casted->getGraphicsView()->convertToFSA();
+        automata = window->getGraphicsView()->convertToFSA();
     }
 
     auto ml = AA::Actions::MultipleRun(automata, inputs);

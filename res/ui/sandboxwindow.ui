@@ -159,75 +159,6 @@ color: rgb(255, 255, 255);</string>
          <number>0</number>
         </property>
         <item>
-         <widget class="QFrame" name="leftFrame">
-          <property name="maximumSize">
-           <size>
-            <width>256</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">border-color: rgb(112, 0, 0);
-background-color: rgb(102, 102, 102);</string>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QLabel" name="label_3">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>256</width>
-             <height>704</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Краткая инструкция:
-
-Кнопки в сверху переключают инструменты:
-1. Инструмент &quot;Выбрать&quot; [Q]
-2. Добавление вершины [W]
-3. Добавление ребра [E]
-4. Инструмент &quot;Рука&quot; [R/Spacebar]
-
-Горячие клавиши:
-[Ctrl+S]: Сохранить как...;
-[Ctrl+O]: Открыть граф;
-[F]: Сделать выбранные вершины финальными;
-[G]: Сделать выбранную вершину начальной;
-[D]: Быстрый запуск КА на входной строке.
-</string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::PlainText</enum>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="margin">
-            <number>8</number>
-           </property>
-          </widget>
-          <widget class="QTableWidget" name="tableWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>256</width>
-             <height>192</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item>
          <widget class="QFrame" name="mainFrame">
           <property name="mouseTracking">
            <bool>false</bool>
@@ -252,7 +183,7 @@ background-color: rgb(102, 102, 102);</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Файл</string>
     </property>
     <addaction name="actionNewProject"/>
     <addaction name="actionOpenProject"/>
@@ -264,13 +195,17 @@ background-color: rgb(102, 102, 102);</string>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>Правка</string>
     </property>
     <addaction name="actionSelectAll"/>
+    <addaction name="actionRemove"/>
+    <addaction name="separator"/>
+    <addaction name="actionMakeFinal"/>
+    <addaction name="actionMakeInitial"/>
    </widget>
    <widget class="QMenu" name="menuTool">
     <property name="title">
-     <string>Tool</string>
+     <string>Инструменты</string>
     </property>
     <addaction name="actionSelect"/>
     <addaction name="actionNode"/>
@@ -279,7 +214,7 @@ background-color: rgb(102, 102, 102);</string>
    </widget>
    <widget class="QMenu" name="menuRun">
     <property name="title">
-     <string>Run</string>
+     <string>Тестирование</string>
     </property>
     <addaction name="actionOneInput"/>
     <addaction name="actionMultipleInput"/>
@@ -291,62 +226,77 @@ background-color: rgb(102, 102, 102);</string>
   </widget>
   <action name="actionOneInput">
    <property name="text">
-    <string>One input</string>
+    <string>Тестирование на строке</string>
    </property>
   </action>
   <action name="actionMultipleInput">
    <property name="text">
-    <string>Multiple inputs</string>
+    <string>Тестирование на нескольких строках</string>
    </property>
   </action>
   <action name="actionSelect">
    <property name="text">
-    <string>Select</string>
+    <string>Инструмент &quot;Выбрать&quot; (Q)</string>
    </property>
   </action>
   <action name="actionNode">
    <property name="text">
-    <string>Node</string>
+    <string>Добавление вершины (W)</string>
    </property>
   </action>
   <action name="actionEdge">
    <property name="text">
-    <string>Edge</string>
+    <string>Добавление ребра (E)</string>
    </property>
   </action>
   <action name="actionHand">
    <property name="text">
-    <string>Hand</string>
+    <string>Инструмент &quot;Рука&quot; (R)</string>
    </property>
   </action>
   <action name="actionSelectAll">
    <property name="text">
-    <string>Select All</string>
+    <string>Выбрать всё (Ctrl+A)</string>
    </property>
   </action>
   <action name="actionNewProject">
    <property name="text">
-    <string>New project</string>
+    <string>Новый проект</string>
    </property>
   </action>
   <action name="actionOpenProject">
    <property name="text">
-    <string>Open project</string>
+    <string>Открыть граф (Ctrl+O)</string>
    </property>
   </action>
   <action name="actionSaveAs">
    <property name="text">
-    <string>Save as</string>
+    <string>Сохранить как (Ctrl+S)</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>Выход</string>
    </property>
   </action>
   <action name="actionStartWindow">
    <property name="text">
-    <string>Start window</string>
+    <string>Вернуться на начальный экран</string>
+   </property>
+  </action>
+  <action name="actionMakeFinal">
+   <property name="text">
+    <string>Сделать вершины финальной (F)</string>
+   </property>
+  </action>
+  <action name="actionMakeInitial">
+   <property name="text">
+    <string>Сделать вершину начальной (G)</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="text">
+    <string>Удалить выбранные объекты (Del)</string>
    </property>
   </action>
  </widget>
