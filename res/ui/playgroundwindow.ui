@@ -14,8 +14,7 @@
    <string>PlaygroundWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(71, 71, 71);
-color: rgb(255, 255, 255);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -48,7 +47,8 @@ color: rgb(255, 255, 255);</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(85, 85, 85);</string>
+         <string notr="true">background-color: rgb(71, 71, 71);
+color: rgb(255, 255, 255);</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -168,7 +168,8 @@ color: rgb(255, 255, 255);</string>
           </property>
           <property name="styleSheet">
            <string notr="true">border-color: rgb(112, 0, 0);
-background-color: rgb(102, 102, 102);</string>
+background-color: rgb(102, 102, 102);
+color: rgb(255, 255, 255);</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>

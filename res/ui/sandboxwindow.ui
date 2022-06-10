@@ -14,8 +14,7 @@
    <string>SandboxWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(71, 71, 71);
-color: rgb(255, 255, 255);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -48,7 +47,8 @@ color: rgb(255, 255, 255);</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(85, 85, 85);</string>
+         <string notr="true">background-color: rgb(71, 71, 71);
+color: rgb(255, 255, 255);</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -194,6 +194,14 @@ color: rgb(255, 255, 255);</string>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>240</width>
+      <height>155</height>
+     </rect>
+    </property>
     <property name="title">
      <string>Правка</string>
     </property>
