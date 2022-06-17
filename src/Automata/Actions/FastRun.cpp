@@ -64,7 +64,7 @@ bool FastRun::reportConfiguration(AA::Configuration* conf)
     QMessageBox::StandardButtons buttons = QMessageBox::Ok;
     while (conf)
     {
-        initstr += QString::number(conf->getCurrentState()->getId());
+        initstr += conf->getCurrentState()->getText();
         conf = conf->getParent();
         if (conf)
             initstr += ";";

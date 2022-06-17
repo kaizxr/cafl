@@ -69,6 +69,7 @@ nlohmann::json GraphicsView::toJson()
         const auto& nodeStr = QString::number(node->id()).toStdString().c_str();
         data["Graph"]["Node"][nodeStr]["pos"]["x"] = node->pos().x();
         data["Graph"]["Node"][nodeStr]["pos"]["y"] = node->pos().y();
+        data["Graph"]["Node"][nodeStr]["text"] = node->textContent().toStdString().c_str();
         if (node->isInitial())
             data["Graph"]["Node"][nodeStr]["initial"] = true;
         if (node->isFinal())
@@ -110,13 +111,17 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
         int y = it.value()["pos"]["y"];
         bool final = false;
         bool initial = false;
+        std::string stdtext;
         if (it.value().contains("final"))
             final = it.value()["final"];
         if (it.value().contains("initial"))
             initial = it.value()["initial"];
+        if (it.value().contains("text"))
+            stdtext = it.value()["text"];
+        QString text = QString(stdtext.c_str());
         x += radius;
         y += radius;
-        addNode(x,y,id,final,initial);
+        addNode(x,y,id,final,initial,text);
     }
     if (data["Graph"].contains("Edge"))
     {
@@ -133,15 +138,18 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
     }
 }
 
-void GraphicsView::addNode(int x, int y, int id, bool isFinal, bool isInitial)
+void GraphicsView::addNode(int x, int y, int id, bool isFinal, bool isInitial, QString text)
 {
     if (id == -1)
         id = lastGivenNodeId++;
     else
         lastGivenNodeId = id+1;
+    if (text.isEmpty())
+        text = QString::number(id);
     std::shared_ptr<Node> node = std::make_shared<Node>(id, QPoint(x, y));
     node->setFinal(isFinal);
     node->setInitial(isInitial);
+    node->setTextContent(text);
     scene()->addItem(node.get());
     if (nodes.length() == 0)
     {
@@ -224,6 +232,15 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
             if (edge->contains(event->pos()-edge->pos()))
             {
                 startRenameEdge(edge);
+                return;
+            }
+        }
+        for (const auto& node : nodes)
+        {
+            if (node->contains(event->pos()-node->pos()))
+            {
+                startRenameNode(node.get());
+                return;
             }
         }
     }
@@ -421,7 +438,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
     }
 
     QGraphicsView::mouseReleaseEvent(event);
-    if (actionType != eActionType::WAIT_EDGE_NAME)
+    if (actionType != eActionType::WAIT_EDGE_NAME && actionType != eActionType::WAIT_NODE_NAME)
         actionType = eActionType::NONE;
 }
 
@@ -572,7 +589,10 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 
 void GraphicsView::onTextChanged(int code)
 {
-    setEdgeName(code);
+    if (actionType == eActionType::WAIT_EDGE_NAME)
+        setEdgeName(code);
+    else if (actionType == eActionType::WAIT_NODE_NAME)
+        setNodeName(code);
 }
 
 void GraphicsView::setEdgeName(int code)
@@ -617,6 +637,46 @@ void GraphicsView::startRenameEdge(BaseEdge* edge)
     auto rect = QRect(pos.x()-w/2,pos.y()-h/2,w,h);
     textEdit = std::make_shared<TextBox>(rect,renamingEdge->textContent(),true,this);
     actionType = eActionType::WAIT_EDGE_NAME;
+}
+
+void GraphicsView::setNodeName(int code)
+{
+    qInfo("set node name %d", code);
+    auto nodeText = textEdit->toPlainText();
+
+    if (nodeText.isEmpty())
+        nodeText = renamingNode->textContent();
+
+    if (code == 0)
+    {
+        return;
+    }
+    else if (code == 1) // rename
+    {
+        if (auto casted = dynamic_cast<Node*>(renamingNode))
+        {
+            casted->setTextContent(nodeText);
+        }
+    }
+    actionType = eActionType::NONE;
+    textEdit.reset();
+    textEdit = nullptr;
+    renamingNode = nullptr;
+    this->setFocus();
+}
+
+void GraphicsView::startRenameNode(Node* node)
+{
+    scene()->clearSelection();
+    node->setSelected(true);
+
+    renamingNode = node;
+    auto pos = node->centeredPos();
+    int w = CONST["Edge"]["InputBox"]["w"];
+    int h = CONST["Edge"]["InputBox"]["h"];
+    auto rect = QRect(pos.x()-w/2,pos.y()-h/2,w,h);
+    textEdit = std::make_shared<TextBox>(rect,renamingNode->textContent(),true,this);
+    actionType = eActionType::WAIT_NODE_NAME;
 }
 
 void GraphicsView::resizeEvent(QResizeEvent *event)
@@ -799,7 +859,7 @@ AA::Automata* GraphicsView::convertToFSA()
 
     for (const auto& node : nodes)
     {
-        auto state = automata->createState(node->pos(),node->id());
+        auto state = automata->createState(node->pos(),node->id(),node->textContent());
         if (node->isInitial())
             automata->setInitialState(state);
         if (node->isFinal())

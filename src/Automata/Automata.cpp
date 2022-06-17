@@ -83,10 +83,12 @@ void Automata::removeTransition(Transition* transition) {
     toTransitions[transition->getDest()->getId()] = list;
 }
 
-State* Automata::createState(QPointF point, int id) {
+State* Automata::createState(QPointF point, int id, QString text) {
     if (id == -1)
         id = lastGivenId++;
-    State* state = new State(id,point,this);
+    if (text.isEmpty())
+        text = QString::number(id);
+    State* state = new State(id,point,this,text);
     addState(state);
     lastGivenId = id;
     return state;

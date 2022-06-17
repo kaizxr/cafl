@@ -79,7 +79,7 @@ bool MultipleRun::reportConfiguration(AA::Configuration* conf)
     QString initstr, str;
     while (conf)
     {
-        initstr += QString::number(conf->getCurrentState()->getId());
+        initstr += conf->getCurrentState()->getText();
         conf = conf->getParent();
         if (conf)
             initstr += ";";

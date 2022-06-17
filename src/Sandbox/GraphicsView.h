@@ -21,7 +21,7 @@ public:
     void writeToJson();
     void openFromJson(const nlohmann::json& data);
 
-    void addNode(int x, int y, int id = -1, bool isFinal = false, bool isInitial = false);
+    void addNode(int x, int y, int id = -1, bool isFinal = false, bool isInitial = false, QString text = QString());
     void addEdge(int sourceId, int destId, QString text = nullptr, int id = -1);
     std::shared_ptr<Node> getNodeById(int id);
 
@@ -42,6 +42,7 @@ public:
     void tryMakeInitial();
     void makeInitial(Node* node);
     void startRenameEdge(BaseEdge* edge);
+    void startRenameNode(Node* node);
     void removeObject(QGraphicsItem* item);
     void removeObjects();
     AA::Automata* getAutomata();
@@ -52,6 +53,7 @@ public:
         SELECT,
         ADD_EDGE,
         WAIT_EDGE_NAME,
+        WAIT_NODE_NAME,
         ADD_NODE,
         HAND_MOVE,
         MOVE
@@ -61,6 +63,7 @@ private:
     void setTool(int tooltype);
     BaseEdge* checkEdge(Node* source, Node* dest);
     void setEdgeName(int code);
+    void setNodeName(int code);
     
     std::shared_ptr<Selector> selector;
 
@@ -70,6 +73,7 @@ private:
     eActionType actionType;
 
     BaseEdge* renamingEdge;
+    Node* renamingNode;
     QGraphicsLineItem* newEdgeLineItem;
     QLine newEdgeLine;
     std::shared_ptr<Node> initialNode;

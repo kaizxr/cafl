@@ -3,13 +3,18 @@
 
 using namespace AA;
 
-State::State(int id, QPointF point, Automata* automata) : id(id), point(point), automata(automata)
+State::State(int id, QPointF point, Automata* automata, QString text) : id(id), point(point), automata(automata), text(text)
 {
 }
 
 State::~State()
 {
     
+}
+
+QString State::getText() const
+{
+    return text;
 }
 
 QPointF State::getPoint()

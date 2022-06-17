@@ -24,7 +24,7 @@ namespace AA
         void replaceTransition(Transition* oldT, Transition* newT);
         void removeTransition(Transition* transition);
 
-        State* createState(QPointF point, int id = -1);
+        State* createState(QPointF point, int id = -1, QString text = QString());
         void addState(State* state);
         void removeState(State* state);
         State* getStateById(int id);
