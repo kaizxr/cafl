@@ -70,6 +70,8 @@ private:
     eActionType actionType;
 
     BaseEdge* renamingEdge;
+    QGraphicsLineItem* newEdgeLineItem;
+    QLine newEdgeLine;
     std::shared_ptr<Node> initialNode;
     std::shared_ptr<Node> sourceNode;
     std::shared_ptr<Node> destNode;

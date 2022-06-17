@@ -301,6 +301,9 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
                 {
                     sourceNode = node;
                     qInfo("source node id = %d pos = %f:%f",sourceNode->id(),sourceNode->pos().x(),sourceNode->pos().y());
+                    newEdgeLine = QLine(sourceNode->centeredPos(),sourceNode->centeredPos());
+                    newEdgeLineItem = new QGraphicsLineItem(newEdgeLine);
+                    scene()->addItem(newEdgeLineItem);
                     break;
                 }
             }
@@ -349,6 +352,11 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* event)
     case eActionType::ADD_NODE:
         break;
     case eActionType::ADD_EDGE:
+        if (newEdgeLineItem)
+        {
+            newEdgeLine.setP2(QPoint(localX,localY));
+            newEdgeLineItem->setLine(newEdgeLine);
+        }
         break;
     case eActionType::HAND_MOVE:
         for (auto& node : scene()->items())
@@ -403,6 +411,8 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
                 return;
             }
         }
+        scene()->removeItem(newEdgeLineItem);
+        newEdgeLineItem = nullptr;
         break;
     case eActionType::HAND_MOVE:
         break;
@@ -584,9 +594,11 @@ void GraphicsView::setEdgeName(int code)
             casted->setTextContent(edgeText);
         }
     }
+    actionType = eActionType::NONE;
     textEdit.reset();
     textEdit = nullptr;
-    actionType = eActionType::NONE;
+    scene()->removeItem(newEdgeLineItem);
+    newEdgeLineItem = nullptr;
     sourceNode = nullptr;
     destNode = nullptr;
     renamingEdge = nullptr;
