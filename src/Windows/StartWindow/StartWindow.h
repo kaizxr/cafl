@@ -1,20 +1,20 @@
 #pragma once
-#ifndef TITLEWINDOW_H
-#define TITLEWINDOW_H
+#ifndef STARTWINDOW_H
+#define STARTWINDOW_H
 
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class TitleWindow; }
+namespace Ui { class StartWindow; }
 QT_END_NAMESPACE
 
-class TitleWindow : public QMainWindow
+class StartWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    TitleWindow(QWidget *parent = nullptr);
-    ~TitleWindow();
+    StartWindow(QWidget *parent = nullptr);
+    ~StartWindow();
 
 private slots:
     void openSandbox();
@@ -23,6 +23,6 @@ private slots:
 
 private:
     void initActions();
-    Ui::TitleWindow *ui;
+    Ui::StartWindow *ui;
 };
-#endif // TITLEWINDOW_H
+#endif // STARTWINDOW_H

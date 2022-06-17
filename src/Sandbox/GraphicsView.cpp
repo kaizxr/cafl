@@ -24,7 +24,6 @@
 #include <QGridLayout>
 
 #include "src/Sandbox/TextBox/TextBox.h"
-#include <src/Windows/Simulation/Output.h>
 #include "src/Automata/Helpers/SimulateHelper.h"
 
 #define DEBUG
@@ -97,17 +96,14 @@ void GraphicsView::writeToJson()
 
 void GraphicsView::openFromJson(const nlohmann::json& data)
 {
-    qInfo("openFromJson");
     if (data.is_null())
         return;
     selectAllObjects();
     removeObjects();
     lastGivenEdgeId = 0;
     lastGivenNodeId = 0;
-    qInfo("objects removed");
     for (auto it = data["Graph"]["Node"].begin(); it != data["Graph"]["Node"].end(); ++it)
     {
-        std::cout << it.key() << " | " << it.value() << "\n";
         auto id = std::stoi(it.key());
         int radius = CONST["Node"]["radius"];
         int x = it.value()["pos"]["x"];
@@ -122,8 +118,7 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
         y += radius;
         addNode(x,y,id,final,initial);
     }
-    std::cout << "nodes added" << std::endl;
-    if (data["Graph"].contains("Edge") && data["Graph"]["Edge"].is_array())
+    if (data["Graph"].contains("Edge"))
     {
         for (auto it = data["Graph"]["Edge"].begin(); it != data["Graph"]["Edge"].end(); ++it)
         {
@@ -135,7 +130,6 @@ void GraphicsView::openFromJson(const nlohmann::json& data)
             QString text(stdtext.c_str());
             addEdge(sourceId,destId,text,id);
         }
-        std::cout << "edges added" << std::endl;
     }
 }
 
@@ -169,7 +163,9 @@ void GraphicsView::addEdge(int sourceId, int destId, QString text, int id)
             lastGivenEdgeId = id+1;
         BaseEdge* edge;
         if (sourceId != destId)
+        {
             edge = new Edge(id,getNodeById(sourceId).get(),getNodeById(destId).get(),text);
+        }
         else
             edge = new LoopEdge(id,getNodeById(sourceId).get(),text);
         edges.append(edge);

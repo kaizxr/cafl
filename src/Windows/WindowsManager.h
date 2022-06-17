@@ -5,13 +5,13 @@
 
 namespace Window::Simulation
 {
-    class Output;
+    class MultipleInput;
 }
 
 class SandboxWindow;
 class PlaygroundWindow;
 class SimpleTaskCreator;
-class TitleWindow;
+class StartWindow;
 class WindowsManager
 {
 public:
@@ -25,9 +25,9 @@ public:
 private:
     std::shared_ptr<SandboxWindow> createSandboxWindow();
     std::shared_ptr<PlaygroundWindow> createPlaygroundWindow();
-    std::shared_ptr<TitleWindow> createTitleWindow();
+    std::shared_ptr<StartWindow> createStartWindow();
     std::shared_ptr<SimpleTaskCreator> createSimpleTaskCreator();
-    std::shared_ptr<Window::Simulation::Output> createOutputWindow();
+    std::shared_ptr<Window::Simulation::MultipleInput> createMultipleInputWindow();
 
     static WindowsManager* instance;
     std::shared_ptr<QWidget> curWindow;

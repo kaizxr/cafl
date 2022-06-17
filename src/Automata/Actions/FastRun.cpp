@@ -22,19 +22,15 @@ bool FastRun::confirmContinue(int generated)
 
 void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QList<AA::Configuration*> configs, QInputDialog* initialInput)
 {
-    qInfo("fast run handle");
     int numberGenerated = 0;
     int warningGenerated = CONST["Simulate"]["WarningStep"];
     int numberAccepted = 0;
     while (configs.length() > 0) {
         numberGenerated += configs.length();
         if (numberGenerated >= warningGenerated) {
-            // if (!confirmContinue(numberGenerated))
-            //     return;
             while (numberGenerated >= warningGenerated)
                 warningGenerated *= 2;
         }
-        // Get the next batch of configurations.
         auto next = QList<AA::Configuration*>();
         for (auto& config : configs)
         {
@@ -54,7 +50,6 @@ void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QL
     }
     if (numberAccepted == 0)
     {
-        qInfo("numbersAccepted == 0");
         QMessageBox::StandardButtons buttons = QMessageBox::Ok;
         auto box = new QMessageBox(QMessageBox::Icon(),"Found config","No configs were found",buttons);
         box->exec();
@@ -65,7 +60,6 @@ void FastRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QL
 
 bool FastRun::reportConfiguration(AA::Configuration* conf)
 {
-    // CREATE OUTPUT WINDOW WITH HIERARCHY
     QString initstr, str;
     QMessageBox::StandardButtons buttons = QMessageBox::Ok;
     while (conf)

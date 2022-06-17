@@ -1,41 +1,41 @@
-#include "Output.h"
-#include "ui_output.h"
+#include "MultipleInput.h"
+#include "ui_multipleinput.h"
 #include "src/Automata/Helpers/SimulateHelper.h"
 #include <QKeyEvent>
 
 using namespace Window::Simulation;
 
-Output::Output(QWidget *parent) :
+MultipleInput::MultipleInput(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Output)
+    ui(new Ui::MultipleInput)
 {
     ui->setupUi(this);
 }
 
-Output::~Output()
+MultipleInput::~MultipleInput()
 {
     delete table;
     delete ui;
 }
 
-void Output::initUI()
+void MultipleInput::initUI()
 {
     table = new QTableWidget(1,2,this);
     table->show();
     table->setFocus();
-    table->setGeometry(QRect(0,0,380,240));
+    table->setGeometry(QRect(10,10,380,240));
     table->setColumnWidth(0,210);
     table->setColumnWidth(1,150);
-    connect(ui->exitButton, &QPushButton::clicked, this, &Output::exit);
-    connect(ui->runButton, &QPushButton::clicked, this, &Output::run);
+    connect(ui->exitButton, &QPushButton::clicked, this, &MultipleInput::exit);
+    connect(ui->runButton, &QPushButton::clicked, this, &MultipleInput::run);
 }
 
-void Output::setLabelText(QString text)
+void MultipleInput::setLabelText(QString text)
 {
     
 }
 
-void Output::keyPressEvent(QKeyEvent* event)
+void MultipleInput::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
@@ -56,12 +56,12 @@ void Output::keyPressEvent(QKeyEvent* event)
     }
 }
 
-void Output::exit()
+void MultipleInput::exit()
 {
     close();
 }
 
-void Output::run()
+void MultipleInput::run()
 {
     QList<QString> inputs;
     int n = table->rowCount();

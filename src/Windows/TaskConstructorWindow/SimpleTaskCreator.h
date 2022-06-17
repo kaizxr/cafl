@@ -23,9 +23,7 @@ public:
     virtual void keyPressEvent(QKeyEvent* event) override;
 
 private:
-    QLabel text;
     QTableWidget* table;
-    QGraphicsView* graphicsView;
     Ui::SimpleTaskCreator *ui;
 
 private slots:

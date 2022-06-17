@@ -1,5 +1,5 @@
-#ifndef OUTPUT_H
-#define OUTPUT_H
+#ifndef MULTIPLEINPUT_H
+#define MULTIPLEINPUT_H
 
 #include <QWidget>
 #include <QTableWidget>
@@ -7,19 +7,19 @@
 #include <QGraphicsView>
 
 namespace Ui {
-    class Output;
+    class MultipleInput;
 }
 namespace Window
 {
     namespace Simulation
     {
-        class Output : public QWidget
+        class MultipleInput : public QWidget
         {
             Q_OBJECT
 
         public:
-            explicit Output(QWidget *parent = nullptr);
-            ~Output();
+            explicit MultipleInput(QWidget *parent = nullptr);
+            ~MultipleInput();
 
             void initUI();
             void setLabelText(QString text);
@@ -29,7 +29,7 @@ namespace Window
             QLabel text;
             QTableWidget* table;
             QGraphicsView* graphicsView;
-            Ui::Output *ui;
+            Ui::MultipleInput *ui;
 
         private slots:
             void exit();
@@ -38,4 +38,4 @@ namespace Window
     }
 }
 
-#endif // OUTPUT_H
+#endif // MULTIPLEINPUT_H

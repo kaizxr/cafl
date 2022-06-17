@@ -41,19 +41,15 @@ void MultipleRun::preHandle()
 
 void MultipleRun::handleInteraction(Automata* automata, AA::Simulator* simulator, QList<AA::Configuration*> configs, QInputDialog* initialInput)
 {
-    qInfo("fast run handle");
     int numberGenerated = 0;
     int warningGenerated = CONST["Simulate"]["WarningStep"];
     int numberAccepted = 0;
     while (configs.length() > 0) {
         numberGenerated += configs.length();
         if (numberGenerated >= warningGenerated) {
-            // if (!confirmContinue(numberGenerated))
-            //     return;
             while (numberGenerated >= warningGenerated)
                 warningGenerated *= 2;
         }
-        // Get the next batch of configurations.
         auto next = QList<AA::Configuration*>();
         for (auto& config : configs)
         {
@@ -73,7 +69,6 @@ void MultipleRun::handleInteraction(Automata* automata, AA::Simulator* simulator
     }
     if (numberAccepted == 0)
     {
-        qInfo("numbersAccepted == 0");
         outputs.append("REJECTED");
         return;
     }
@@ -81,9 +76,7 @@ void MultipleRun::handleInteraction(Automata* automata, AA::Simulator* simulator
 
 bool MultipleRun::reportConfiguration(AA::Configuration* conf)
 {
-    // CREATE OUTPUT WINDOW WITH HIERARCHY
     QString initstr, str;
-    QMessageBox::StandardButtons buttons = QMessageBox::Ok;
     while (conf)
     {
         initstr += QString::number(conf->getCurrentState()->getId());
@@ -100,7 +93,6 @@ bool MultipleRun::reportConfiguration(AA::Configuration* conf)
         str += "->";
     }
     str = str.left(str.length()-2);
-    qInfo("found str %s", str.toStdString().c_str());
     outputs.append(str);
 
     delete conf;

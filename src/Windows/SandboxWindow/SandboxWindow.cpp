@@ -15,7 +15,7 @@
 
 #include "src/Sandbox/ContextMenu/ContextMenu.h"
 #include "src/Automata/Helpers/SimulateHelper.h"
-#include "src/Windows/Simulation/Output.h"
+#include "src/Windows/Simulation/MultipleInput.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -221,7 +221,7 @@ void SandboxWindow::oneInput()
 
 void SandboxWindow::multipleInput()
 {    
-    auto window = new Window::Simulation::Output();
+    auto window = new Window::Simulation::MultipleInput();
     window->show();
     window->initUI();
 }

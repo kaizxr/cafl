@@ -29,6 +29,7 @@ Edge::Edge(int id, Node *sourceNode, Node *destNode, QString text)
     line3.setLength(pow(-1, countCopy) * countCopy * 20);
     bezier.setX(line3.p2().x());
     bezier.setY(line3.p2().y());
+    controlPoint = bezier;
     adjust();
 }
 

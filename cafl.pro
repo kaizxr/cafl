@@ -39,9 +39,9 @@ SOURCES += \
     src/Sandbox/ToolsManager.cpp \
     src/Windows/PlaygroundWindow/PlaygroundWindow.cpp \
     src/Windows/SandboxWindow/SandboxWindow.cpp \
-    src/Windows/Simulation/Output.cpp \
+    src/Windows/Simulation/MultipleInput.cpp \
     src/Windows/TaskConstructorWindow/SimpleTaskCreator.cpp \
-    src/Windows/TitleWindow/TitleWindow.cpp \
+    src/Windows/StartWindow/StartWindow.cpp \
     src/Windows/BaseGraphEditorWindow.cpp \
     src/Windows/WindowsManager.cpp \
     src/main.cpp
@@ -83,18 +83,18 @@ HEADERS += \
     src/Sandbox/ToolsManager.h \
     src/Windows/PlaygroundWindow/PlaygroundWindow.h \
     src/Windows/SandboxWindow/SandboxWindow.h \
-    src/Windows/Simulation/Output.h \
+    src/Windows/Simulation/MultipleInput.h \
     src/Windows/TaskConstructorWindow/SimpleTaskCreator.h \
-    src/Windows/TitleWindow/TitleWindow.h \
+    src/Windows/StartWindow/StartWindow.h \
     src/Windows/BaseGraphEditorWindow.h \
     src/Windows/WindowsManager.h
 
 FORMS += \
-    res/ui/output.ui \
+    res/ui/multipleinput.ui \
     res/ui/playgroundwindow.ui \
     res/ui/sandboxwindow.ui \
     res/ui/simpletaskcreator.ui \
-    res/ui/titlewindow.ui
+    res/ui/startwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
