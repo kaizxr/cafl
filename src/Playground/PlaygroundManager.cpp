@@ -20,8 +20,14 @@ void PlaygroundManager::parse()
     in.close();
     currentTaskId = data["tasks"]["current"];
     in = std::ifstream(strFormat("res/tasks/task_%d/task_%d.json",currentTaskId,currentTaskId));
+    if (in.peek() == std::ifstream::traits_type::eof())
+    {
+        in.close();
+        in = std::ifstream("res/tasks/error.json");
+    }
     in >> currentTaskData;
     qInfo("currentTask = %d", currentTaskId);
+    in.close();
 }
 
 int PlaygroundManager::getCurrentTaskId() const
@@ -40,15 +46,21 @@ void PlaygroundManager::nextTask()
             data["tasks"]["prev"] = currentTaskId;
             data["tasks"]["current"] = ++currentTaskId;
         }
+        else
+        {
+            data["tasks"]["prev"] = currentTaskId;
+            data["tasks"]["current"] = ++currentTaskId;
+        }
     }
     else
     {
         data["tasks"]["prev"] = currentTaskId;
         data["tasks"]["current"] = ++currentTaskId;
     }
-
+    QFile::remove("res/tasks/data.json");
     std::ofstream out("res/tasks/data.json");
     out << std::setw(4) << data << std::endl;
+    out.close();
 }
 
 void PlaygroundManager::tryOpenTask(int forcedId)
@@ -59,6 +71,7 @@ void PlaygroundManager::tryOpenTask(int forcedId)
 
     std::ofstream out("res/tasks/data.json");
     out << std::setw(4) << data << std::endl;
+    out.close();
 }
 
 nlohmann::json PlaygroundManager::getCurrentTaskData()
